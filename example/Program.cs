@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
@@ -16,7 +18,15 @@ namespace SpectreLoggerExample
                 builder.AddSpectreConsole(options =>
                 {
                     options.MinimumLevel = LogLevel.Trace;
-                    options.ConfigureProfiles(profile => profile.OutputTemplate = @"[{LogLevel}] {Message}{Exception:nl}");
+                    options.ConfigureProfiles(profile =>
+                    {
+                        profile.OutputTemplate = @"{LogLevel}: {CategoryName}{NewLine:5}{Message}{Exception:NewLine}";
+                        profile.ConfigureRendererOptions<ExceptionRenderingOptions>(
+                            opt =>
+                            {
+                                opt.SourcePathFormatter = Path.GetFileName;
+                            });
+                    });
                 });
 
                 builder.SetMinimumLevel(LogLevel.Trace);
@@ -31,7 +41,7 @@ namespace SpectreLoggerExample
             logger.LogDebug("This is a {level} message", "Debug");
             logger.LogTrace("This is a {level} message", "Trace");
 
-            if (args.Length == 1 && args[0] == "colors")
+            if (args.Any(a => a == "colors"))
             {
                 foreach (var property in typeof(Color).GetProperties().Where(p => p.PropertyType == typeof(Color)))
                 {
@@ -42,12 +52,20 @@ namespace SpectreLoggerExample
 
             try
             {
-                throw new InvalidOperationException();
+                ThrowIt(new string[] { }, out var rv);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "This is an error");
+                if (args.Any(a => a == "exception"))
+                {
+                    logger.LogError(ex, "So this just happened");
+                }
             }
+        }
+
+        private static T ThrowIt<T>(IEnumerable<T> items, out KeyValuePair<string, T> returnValue)
+        {
+            throw new InvalidOperationException();
         }
     }
 }

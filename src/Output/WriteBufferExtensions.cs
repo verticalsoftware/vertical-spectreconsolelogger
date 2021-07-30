@@ -2,9 +2,9 @@ using Vertical.SpectreLogger.Options;
 
 namespace Vertical.SpectreLogger.Output
 {
-    internal static class WriteBufferExtensions
+    public static class WriteBufferExtensions
     {
-        internal static void Append(this IWriteBuffer writeBuffer,
+        public static void Append(this IWriteBuffer writeBuffer,
             FormattingProfile profile,
             string content,
             string? markup = null)
@@ -21,5 +21,11 @@ namespace Vertical.SpectreLogger.Output
                 writeBuffer.AppendUnescaped("[/]");
             }
         }
+
+        public static void AppendMarkup(this IWriteBuffer writeBuffer, string markup) =>
+            writeBuffer.AppendUnescaped($"[{markup}]");
+
+        public static void AppendMarkupCloseTag(this IWriteBuffer writeBuffer) =>
+            writeBuffer.AppendUnescaped("[/]");
     }
 }

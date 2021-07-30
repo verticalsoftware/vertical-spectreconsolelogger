@@ -20,7 +20,7 @@ namespace Vertical.SpectreLogger
         private static readonly ConcurrentDictionary<string, ILogger> CachedLoggers = new();
         
         private readonly IOptions<SpectreLoggerOptions> _optionsProvider;
-        private readonly ITemplateRendererProvider _rendererProvider;
+        private readonly ITemplateRendererBuilder _rendererBuilder;
         private readonly AsyncLocal<ImmutableStack<SpectreLoggerScope>> _asyncLocalScopes = new();
         private readonly IWriteBufferFactory _writeBufferFactory;
 
@@ -28,14 +28,14 @@ namespace Vertical.SpectreLogger
         /// Creates a new instance of this type.
         /// </summary>
         /// <param name="optionsProvider">Options provider.</param>
-        /// <param name="rendererProvider">Template format provider</param>
+        /// <param name="rendererBuilder">Template format provider</param>
         /// <param name="writeBufferFactory">Write buffer factory</param>
         public SpectreLoggerProvider(IOptions<SpectreLoggerOptions> optionsProvider, 
-            ITemplateRendererProvider rendererProvider,
+            ITemplateRendererBuilder rendererBuilder,
             IWriteBufferFactory writeBufferFactory)
         {
             _optionsProvider = optionsProvider;
-            _rendererProvider = rendererProvider;
+            _rendererBuilder = rendererBuilder;
             _writeBufferFactory = writeBufferFactory;
         }
         
@@ -54,16 +54,16 @@ namespace Vertical.SpectreLogger
         /// <inheritdoc />
         public ILogger CreateLogger(string categoryName)
         {
-            return CachedLoggers.GetOrAdd(categoryName, catg => new SpectreLogger(
+            return CachedLoggers.GetOrAdd(categoryName, name => new SpectreLogger(
                 this,
                 _optionsProvider.Value,
                 _writeBufferFactory,
-                _rendererProvider,
-                catg));
+                _rendererBuilder,
+                name));
         }
 
         /// <summary>
-        /// Gets the current scopes, in order.
+        /// Gets the local current scopes, in order.
         /// </summary>
         internal IEnumerable<object?> Scopes => _asyncLocalScopes.Value?
             .Reverse()

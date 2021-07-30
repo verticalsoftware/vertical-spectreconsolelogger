@@ -6,13 +6,11 @@ namespace Vertical.SpectreLogger.Rendering
     /// <summary>
     /// Renders the category name.
     /// </summary>
+    [Template("{CategoryName}")]
     public class CategoryNameRenderer : ITemplateRenderer
     {
         /// <inheritdoc />
-        public string Template => "{CategoryName}";
-
-        /// <inheritdoc />
-        public void Format(IWriteBuffer buffer, ref LogEventInfo eventInfo)
+        public void Render(IWriteBuffer buffer, ref LogEventInfo eventInfo)
         {
             if (string.IsNullOrWhiteSpace(eventInfo.CategoryName))
                 return;

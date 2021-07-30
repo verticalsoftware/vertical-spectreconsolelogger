@@ -19,7 +19,7 @@ namespace Vertical.SpectreLogger.Rendering
         public string Template => throw new NotImplementedException();
 
         /// <inheritdoc />
-        public void Format(IWriteBuffer buffer, ref LogEventInfo eventInfo)
+        public void Render(IWriteBuffer buffer, ref LogEventInfo eventInfo)
         {
             buffer.AppendUnescaped(_span);
         }

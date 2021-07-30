@@ -1,5 +1,5 @@
 using System;
-using System.Text;
+using System.Text.RegularExpressions;
 using Vertical.SpectreLogger.Output;
 
 namespace Vertical.SpectreLogger.Rendering
@@ -7,17 +7,34 @@ namespace Vertical.SpectreLogger.Rendering
     /// <summary>
     /// Renderer that writes newlines to the buffer.
     /// </summary>
+    [Template(MyTemplate)]
     public class NewLineRenderer : ITemplateRenderer
     {
-        internal static ITemplateRenderer Default { get; } = new NewLineRenderer();
-        
-        /// <inheritdoc />
-        public string Template => "{NewLine}";
+        private const string MyTemplate = @"{NewLine(:(\d+))?}";
+        private readonly int _indent;
+
+        public NewLineRenderer(string? templateContext = null)
+        {
+            if (templateContext == null)
+                return;
+            
+            var match = Regex.Match(templateContext, MyTemplate);
+
+            if (int.TryParse(match.Groups[2].Value, out var i))
+            {
+                _indent = i;
+            }
+        }
 
         /// <inheritdoc />
-        public void Format(IWriteBuffer buffer, ref LogEventInfo eventInfo)
+        public void Render(IWriteBuffer buffer, ref LogEventInfo eventInfo)
         {
             buffer.Append(eventInfo.FormattingProfile, Environment.NewLine);
+
+            if (_indent > 0)
+            {
+                buffer.AppendWhitespace(_indent);
+            }
         }
     }
 }

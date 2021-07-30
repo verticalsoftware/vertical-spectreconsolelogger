@@ -39,8 +39,7 @@ namespace Vertical.SpectreLogger.Output
                         break;
                     
                     case '\n':
-                        _stringBuilder.AppendLine();
-                        _stringBuilder.Append(' ', profile.NewLineIndent);
+                        AppendLine(profile);
                         break;
                     
                     case '[':
@@ -56,9 +55,21 @@ namespace Vertical.SpectreLogger.Output
         }
 
         /// <inheritdoc />
-        public void AppendUnescaped(string markup)
+        public void AppendWhitespace(int count = 1)
         {
-            _stringBuilder.Append(markup);
+            _stringBuilder.Append(' ', count);
+        }
+
+        /// <inheritdoc />
+        public void AppendLine(FormattingProfile profile)
+        {
+            _stringBuilder.AppendLine();
+        }
+
+        /// <inheritdoc />
+        public void AppendUnescaped(string content)
+        {
+            _stringBuilder.Append(content);
         }
 
         /// <inheritdoc />

@@ -16,10 +16,21 @@ namespace Vertical.SpectreLogger.Output
         void Append(FormattingProfile profile, string str);
 
         /// <summary>
+        /// Appends whitespace content to the buffer.
+        /// </summary>
+        /// <param name="count">The number of whitespace characters to append.</param>
+        void AppendWhitespace(int count = 1);
+
+        /// <summary>
+        /// Appends a newline to the buffer.
+        /// </summary>
+        void AppendLine(FormattingProfile profile);
+
+        /// <summary>
         /// Appends markup to the buffer.
         /// </summary>
-        /// <param name="markup">Markup to append.</param>
-        void AppendUnescaped(string markup);
+        /// <param name="content">Markup to append.</param>
+        void AppendUnescaped(string content);
 
         /// <summary>
         /// Flushes the content to the target.

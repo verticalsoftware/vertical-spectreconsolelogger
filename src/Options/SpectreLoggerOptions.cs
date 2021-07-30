@@ -8,6 +8,8 @@ namespace Vertical.SpectreLogger.Options
     /// </summary>
     public class SpectreLoggerOptions
     {
+        internal static readonly SpectreLoggerOptions Default = new();
+        
         /// <summary>
         /// Creates a new instance of this type.
         /// </summary>

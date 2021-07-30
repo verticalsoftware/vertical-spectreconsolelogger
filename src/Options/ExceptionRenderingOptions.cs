@@ -25,7 +25,7 @@ namespace Vertical.SpectreLogger.Options
         /// <summary>
         /// Gets or sets a function that formats the source path.
         /// </summary>
-        public Func<string, string> SourcePathFormatter { get; set; } = path => path;
+        public Func<string, string>? SourcePathFormatter { get; set; } = path => path;
         
         /// <summary>
         /// Gets or sets the markup to apply when rendering the exception name.
@@ -38,19 +38,39 @@ namespace Vertical.SpectreLogger.Options
         public string? ExceptionMessageMarkup { get; set; }
         
         /// <summary>
-        /// Gets or sets the markup to apply to a stack frame.
+        /// Gets or sets the markup to apply to a stack trace frame.
         /// </summary>
         public string? StackFrameMarkup { get; set; }
+
+        /// <summary>
+        /// Gets or sets whether to render source paths in the stack trace.
+        /// </summary>
+        public bool RenderSourcePaths { get; set; } = true;
         
         /// <summary>
         /// Gets or sets the mark to apply when rendering a stack frame source path.
         /// </summary>
         public string? SourcePathMarkup { get; set; }
-
+        
+        /// <summary>
+        /// Gets or sets a function that formats stack trace method names.
+        /// </summary>
+        public Func<string, string>? MethodNameFormatter { get; set; }
+        
         /// <summary>
         /// Gets or sets the markup to apply when rendering a stack frame method name.
         /// </summary>
         public string? MethodNameMarkup { get; set; }
+
+        /// <summary>
+        /// Gets or sets whether to render parameter types.
+        /// </summary>
+        public bool RenderParameterTypes { get; set; } = true;
+
+        /// <summary>
+        /// Gets or sets whether to render parameter names.
+        /// </summary>
+        public bool RenderParameterNames { get; set; } = true;
         
         /// <summary>
         /// Gets or sets the markup to apply when rendering a stack frame parameter type.
@@ -65,6 +85,6 @@ namespace Vertical.SpectreLogger.Options
         /// <summary>
         /// Gets or sets the markup to apply when rendering a stack frame line number.
         /// </summary>
-        public string? LineNumberMarkup { get; set; }
+        public string? SourceLineNumberMarkup { get; set; }
     }
 }

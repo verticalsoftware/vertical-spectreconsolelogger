@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
@@ -26,19 +27,32 @@ namespace Vertical.SpectreLogger
             services.Configure(configureOptions);
             services.AddSingleton<ILoggerProvider, SpectreLoggerProvider>();
             services.AddSingleton<IStringBuilderPool>(new StringBuilderPool(5));
-            services.AddSingleton<ITemplateRendererProvider, TemplateRendererProvider>();
+            services.AddSingleton<ITemplateRendererBuilder, TemplateRendererBuilder>();
             services.AddSingleton<IWriteBufferFactory, DefaultWriteBufferFactory>();
             services.AddSingleton(AnsiConsole.Console);
 
-            var formatterTypes = typeof(SpectreLogger)
-                .Assembly
-                .GetTypes()
-                .Where(type => typeof(ITemplateRenderer).IsAssignableFrom(type))
-                .Where(type => !type.IsAbstract && type.IsClass && type.IsPublic);
+            loggingBuilder.AddSpectreConsoleRenderersFromAssembly(typeof(LoggingBuilderExtensions).Assembly);
 
-            foreach (var formatterType in formatterTypes)
+            return loggingBuilder;
+        }
+
+        /// <summary>
+        /// Adds all implemented template renderers from the given assembly to
+        /// the logging configuration.
+        /// </summary>
+        /// <param name="loggingBuilder">Logging builder.</param>
+        /// <param name="assembly">Assembly</param>
+        /// <returns><see cref="ILoggingBuilder"/></returns>
+        public static ILoggingBuilder AddSpectreConsoleRenderersFromAssembly(this ILoggingBuilder loggingBuilder,
+            Assembly assembly)
+        {
+            var rendererTypes = assembly
+                .GetTypes()
+                .Where(t => t.IsPublic && t.IsClass && typeof(ITemplateRenderer).IsAssignableFrom(t));
+
+            foreach (var type in rendererTypes)
             {
-                services.AddSingleton(typeof(ITemplateRenderer), formatterType);
+                loggingBuilder.AddSpectreConsoleRenderer(type);
             }
 
             return loggingBuilder;
@@ -50,23 +64,16 @@ namespace Vertical.SpectreLogger
         /// <param name="loggingBuilder">Logging builder</param>
         /// <typeparam name="T">The type of template renderer to register.</typeparam>
         /// <returns><see cref="ILoggingBuilder"/></returns>
-        public static ILoggingBuilder AddSpectreConsoleFormatter<T>(this ILoggingBuilder loggingBuilder)
+        public static ILoggingBuilder AddSpectreConsoleRenderer<T>(this ILoggingBuilder loggingBuilder)
             where T : class, ITemplateRenderer
         {
-            loggingBuilder.Services.AddSingleton<ITemplateRenderer, T>();
-            return loggingBuilder;
+            return loggingBuilder.AddSpectreConsoleRenderer(typeof(T));
         }
 
-        /// <summary>
-        /// Adds a custom template renderer instance.
-        /// </summary>
-        /// <param name="loggingBuilder">The logging builder instance.</param>
-        /// <param name="renderer">The formatter instance.</param>
-        /// <returns><see cref="ILoggingBuilder"/></returns>
-        public static ILoggingBuilder AddSpectreConsoleFormatter(this ILoggingBuilder loggingBuilder, 
-            ITemplateRenderer renderer)
+        private static ILoggingBuilder AddSpectreConsoleRenderer(this ILoggingBuilder loggingBuilder,
+            Type rendererType)
         {
-            loggingBuilder.Services.AddSingleton<ITemplateRenderer>(renderer);
+            loggingBuilder.Services.AddSingleton(new TemplateDescriptor(rendererType));
             return loggingBuilder;
         }
     }

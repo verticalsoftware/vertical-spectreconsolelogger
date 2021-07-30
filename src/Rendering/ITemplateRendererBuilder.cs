@@ -6,7 +6,7 @@ namespace Vertical.SpectreLogger.Rendering
     /// <summary>
     /// Locates the appropriate formatters to use given a template string.
     /// </summary>
-    public interface ITemplateRendererProvider
+    public interface ITemplateRendererBuilder
     {
         /// <summary>
         /// Gets the formatters for a provided log level.

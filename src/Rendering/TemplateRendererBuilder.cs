@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Vertical.SpectreLogger.Internal;
@@ -9,30 +8,30 @@ using Vertical.SpectreLogger.Options;
 
 namespace Vertical.SpectreLogger.Rendering
 {
-    internal class TemplateRendererProvider : ITemplateRendererProvider
+    internal class TemplateRendererBuilder : ITemplateRendererBuilder
     {
         private readonly Dictionary<LogLevel, ITemplateRenderer[]> _rendererDictionary;
         
-         public TemplateRendererProvider(IOptions<SpectreLoggerOptions> optionsProvider,
-             IEnumerable<ITemplateRenderer> renderers)
+         public TemplateRendererBuilder(IOptions<SpectreLoggerOptions> optionsProvider,
+             IEnumerable<TemplateDescriptor> descriptors)
          {
-             _rendererDictionary = Build(optionsProvider.Value, renderers);
+             _rendererDictionary = Build(optionsProvider.Value, descriptors);
          }
 
          private static Dictionary<LogLevel, ITemplateRenderer[]> Build(
              SpectreLoggerOptions options, 
-             IEnumerable<ITemplateRenderer> renderers)
+             IEnumerable<TemplateDescriptor> descriptors)
          {
              return options
                  .FormattingProfiles
-                 .Select(entry => (key: entry.Key, value: BuildRendererCollection(entry.Value, renderers)))
+                 .Select(entry => (key: entry.Key, value: BuildRendererCollection(entry.Value, descriptors)))
                  .ToDictionary(result => result.key, result => result.value);
          }
 
          private static ITemplateRenderer[] BuildRendererCollection(FormattingProfile profile, 
-             IEnumerable<ITemplateRenderer> renderers)
+             IEnumerable<TemplateDescriptor> descriptors)
          {
-             var template = (profile.OutputTemplate ?? SpectreLoggerDefaults.OutputTemplate);
+             var template = profile.OutputTemplate ?? SpectreLoggerDefaults.OutputTemplate;
              var list = new List<ITemplateRenderer>();
 
              if (profile.BaseMarkup != null)
@@ -43,12 +42,12 @@ namespace Vertical.SpectreLogger.Rendering
 
              foreach (var (token, isTemplate) in TemplateParser.Parse(template, preserveFormat: true))
              {
-                 ITemplateRenderer? renderer;
+                 TemplateDescriptor? selector = null;
                  
                  // ReSharper disable once PossibleMultipleEnumeration
-                 if (isTemplate && (renderer = renderers.LastOrDefault(instance => Regex
-                     .IsMatch(token, instance.Template))) != null)
+                 if (isTemplate && (selector = descriptors.LastOrDefault(sel => sel.Select(token))) != null)
                  {
+                     var renderer = selector.Create(token);
                      list.Add(renderer);
                      continue;
                  }
@@ -61,7 +60,7 @@ namespace Vertical.SpectreLogger.Rendering
                  list.Add(new UnescapedSpanRenderer("[/]"));
              }
              
-             list.Add(NewLineRenderer.Default);
+             list.Add(new NewLineRenderer());
 
              return list.ToArray();
          }

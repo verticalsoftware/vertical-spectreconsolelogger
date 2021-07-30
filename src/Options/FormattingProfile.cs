@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 
 namespace Vertical.SpectreLogger.Options
 {
@@ -9,6 +10,11 @@ namespace Vertical.SpectreLogger.Options
     /// </summary>
     public class FormattingProfile
     {
+        /// <summary>
+        /// Gets the log level.
+        /// </summary>
+        public LogLevel LogLevel { get; internal set; }
+        
         /// <summary>
         /// Gets or sets the output template.
         /// </summary>
@@ -40,11 +46,6 @@ namespace Vertical.SpectreLogger.Options
         /// to specific string representations.
         /// </summary>
         public Dictionary<Type, Func<object?, string?>> ValueFormatters { get; } = new();
-        
-        /// <summary>
-        /// Gets or sets the number of spaces to indent new lines in logging output.
-        /// </summary>
-        public int NewLineIndent { get; set; }
 
         /// <summary>
         /// Gets a dictionary of option objects keyed by specific type.

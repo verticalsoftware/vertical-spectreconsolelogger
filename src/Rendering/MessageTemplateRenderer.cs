@@ -7,13 +7,11 @@ using Vertical.SpectreLogger.Output;
 
 namespace Vertical.SpectreLogger.Rendering
 {
+    [Template("{Message}")]
     public class MessageTemplateRenderer : ITemplateRenderer
     {
         /// <inheritdoc />
-        public string Template => "{Message}";
-
-        /// <inheritdoc />
-        public void Format(IWriteBuffer buffer, ref LogEventInfo eventInfo)
+        public void Render(IWriteBuffer buffer, ref LogEventInfo eventInfo)
         {
             var profile = eventInfo.FormattingProfile;
 
