@@ -1,3 +1,5 @@
+using Spectre.Console;
+using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.MatchableTypes;
 using Vertical.SpectreLogger.Output;
 
@@ -16,15 +18,12 @@ namespace Vertical.SpectreLogger.Rendering
                 return;
 
             var categoryName = eventInfo.CategoryName;
-            
-            var rendered = eventInfo.FormattingProfile.ValueFormatters.TryGetValue(typeof(CategoryName), out var function)
-                ? function(categoryName)
-                : categoryName;
 
-            if (rendered == null)
-                return;
+            var profile = eventInfo.FormattingProfile;
+            var formatted = profile.ValueFormatters.GetValueOrDefault(typeof(CategoryName))?
+                .Invoke(categoryName) ?? categoryName;
 
-            buffer.Append(eventInfo.FormattingProfile, rendered);
+            buffer.Write(formatted.EscapeMarkup());
         }
     }
 }

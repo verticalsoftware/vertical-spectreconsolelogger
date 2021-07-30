@@ -43,16 +43,23 @@ namespace Vertical.SpectreLogger.Rendering
              foreach (var (token, isTemplate) in TemplateParser.Parse(template, preserveFormat: true))
              {
                  TemplateDescriptor? selector = null;
-                 
-                 // ReSharper disable once PossibleMultipleEnumeration
-                 if (isTemplate && (selector = descriptors.LastOrDefault(sel => sel.Select(token))) != null)
+
+                 switch (isTemplate)
                  {
-                     var renderer = selector.Create(token);
-                     list.Add(renderer);
-                     continue;
+                     // ReSharper disable once PossibleMultipleEnumeration
+                     case true when (selector = descriptors.LastOrDefault(sel => sel.Select(token))) != null:
+                         var renderer = selector.Create(token);
+                         list.Add(renderer);
+                         break;
+                     
+                     case true:
+                         list.Add(new FormattedLogValueRenderer(token));
+                         break;
+                     
+                     default:
+                         list.Add(new StaticSpanRenderer(token));
+                         break;
                  }
-                 
-                 list.Add(new StaticSpanRenderer(token));
              }
 
              if (profile.BaseMarkup != null)

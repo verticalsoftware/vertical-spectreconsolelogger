@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
 using Microsoft.Extensions.Logging;
 using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Options;
@@ -39,10 +42,13 @@ namespace Vertical.SpectreLogger
                 return;
 
             var buffer = _writeBufferFactory.GetInstance();
-            
-            
+
             var eventInfo = new LogEventInfo(_categoryName, 
-                logLevel, eventId, state, exception,
+                logLevel, 
+                eventId, 
+                state, 
+                exception,
+                state.AsFormattedLogValues(),
                 _provider.Scopes,
                 _options.FormattingProfiles[logLevel]);
             

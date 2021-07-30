@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
 
 namespace Vertical.SpectreLogger.Internal
 {
@@ -19,5 +21,10 @@ namespace Vertical.SpectreLogger.Internal
             configure(instance);
             return instance;
         }
+
+        internal static IDictionary<string, object?> AsFormattedLogValues<TState>(this TState state) =>
+            (state as IEnumerable<KeyValuePair<string, object>>)?.ToDictionary(kv => kv.Key, kv => (object?) kv.Value)
+            ??
+            (IDictionary<string, object?>) ImmutableDictionary<string, object?>.Empty;
     }
 }

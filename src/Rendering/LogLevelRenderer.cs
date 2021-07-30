@@ -1,3 +1,4 @@
+using Spectre.Console;
 using Vertical.SpectreLogger.Output;
 
 namespace Vertical.SpectreLogger.Rendering
@@ -11,7 +12,7 @@ namespace Vertical.SpectreLogger.Rendering
             var profile = eventInfo.FormattingProfile;
             var displayValue = profile.LogLevelDisplay;
 
-            buffer.Append(profile, displayValue, profile.LogLevelMarkup);
+            buffer.Write(displayValue.EscapeMarkup(), profile.LogLevelMarkup);
         }
     }
 }

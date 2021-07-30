@@ -1,5 +1,6 @@
 ﻿using System;
 using Vertical.SpectreLogger.Internal;
+using Vertical.SpectreLogger.MatchableTypes;
 
 namespace Vertical.SpectreLogger.Options
 {
@@ -120,6 +121,24 @@ namespace Vertical.SpectreLogger.Options
             where TOptions : class
         {
             return formattingProfile.RendererOptions.GetValueOrDefault(typeof(TOptions)) as TOptions;
+        }
+
+        public static string? FormatRenderValue(this FormattingProfile formattingProfile, object? obj)
+        {
+            var formatters = formattingProfile.ValueFormatters;
+            var valueType = obj?.GetType() ?? typeof(Null);
+            var formatter = formatters.GetValueOrDefault(valueType) ?? formatters.GetValueOrDefault(typeof(object));
+
+            return formatter?.Invoke(obj) ?? obj?.ToString();
+        }
+        
+        public static string? FormatRenderValue(this FormattingProfile formattingProfile, object? obj, out Type resolvedType)
+        {
+            resolvedType = obj?.GetType() ?? typeof(Null);
+            var formatters = formattingProfile.ValueFormatters;
+            var formatter = formatters.GetValueOrDefault(resolvedType) ?? formatters.GetValueOrDefault(typeof(object));
+
+            return formatter?.Invoke(obj) ?? obj?.ToString();
         }
     }
 }

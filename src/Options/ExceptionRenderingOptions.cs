@@ -8,6 +8,11 @@ namespace Vertical.SpectreLogger.Options
     public class ExceptionRenderingOptions
     {
         /// <summary>
+        /// Gets the number of character to indent stack frame output.
+        /// </summary>
+        public int StackFrameIndentChars { get; set; } = 2;
+        
+        /// <summary>
         /// Gets the maximum number of stack frames.
         /// </summary>
         public int MaxStackFrames { get; set; } = 5;

@@ -2,7 +2,6 @@ using System;
 using System.Text;
 using Spectre.Console;
 using Vertical.SpectreLogger.Memory;
-using Vertical.SpectreLogger.Options;
 
 namespace Vertical.SpectreLogger.Output
 {
@@ -26,51 +25,12 @@ namespace Vertical.SpectreLogger.Output
             _ansiConsole = ansiConsole;
             _stringBuilder = stringBuilderPool.Get();
         }
-        
-        /// <inheritdoc />
-        public void Append(FormattingProfile profile, string str)
-        {
-            // Indented write
-            foreach (var c in str)
-            {
-                switch (c)
-                {
-                    case '\r':
-                        break;
-                    
-                    case '\n':
-                        AppendLine(profile);
-                        break;
-                    
-                    case '[':
-                    case ']':
-                        _stringBuilder.Append(c, 2);
-                        break;
-                    
-                    default:
-                        _stringBuilder.Append(c);
-                        break;
-                }
-            }
-        }
 
         /// <inheritdoc />
-        public void AppendWhitespace(int count = 1)
-        {
-            _stringBuilder.Append(' ', count);
-        }
+        public void Append(string str) => _stringBuilder.Append(str);
 
         /// <inheritdoc />
-        public void AppendLine(FormattingProfile profile)
-        {
-            _stringBuilder.AppendLine();
-        }
-
-        /// <inheritdoc />
-        public void AppendUnescaped(string content)
-        {
-            _stringBuilder.Append(content);
-        }
+        public void Append(char c) => _stringBuilder.Append(c);
 
         /// <inheritdoc />
         public void Flush()
@@ -96,6 +56,9 @@ namespace Vertical.SpectreLogger.Output
             _stringBuilderPool.Return(_stringBuilder);
         }
 
-        internal string Content => _stringBuilder.ToString();
+        /// <summary>
+        /// Gets the current content in the internal string builder.
+        /// </summary>
+        public string Content => _stringBuilder.ToString();
     }
 }

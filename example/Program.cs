@@ -25,6 +25,7 @@ namespace SpectreLoggerExample
                             opt =>
                             {
                                 opt.SourcePathFormatter = Path.GetFileName;
+                                opt.StackFrameIndentChars = 2;
                             });
                     });
                 });

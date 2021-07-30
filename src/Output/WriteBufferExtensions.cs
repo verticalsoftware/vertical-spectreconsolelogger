@@ -1,31 +1,60 @@
-using Vertical.SpectreLogger.Options;
+using System;
+using System.Runtime.CompilerServices;
 
 namespace Vertical.SpectreLogger.Output
 {
     public static class WriteBufferExtensions
     {
-        public static void Append(this IWriteBuffer writeBuffer,
-            FormattingProfile profile,
-            string content,
-            string? markup = null)
+        public static void WriteMarkup(this IWriteBuffer buffer, string markup)
+        {
+            buffer.Append('[');
+            buffer.Append(markup);
+            buffer.Append(']');
+        }
+
+        public static void WriteMarkupClose(this IWriteBuffer buffer)
+        {
+            buffer.Append("[/]");
+        }
+        
+        public static void WriteLine(this IWriteBuffer buffer)
+        {
+            buffer.Write(Environment.NewLine);
+        }
+
+        public static void WriteWhitespace(this IWriteBuffer buffer, int count = 1)
+        {
+            while (--count >= 0)
+            {
+                buffer.Append(' ');
+            }
+        }
+        
+        public static void Write(this IWriteBuffer buffer, string content, string? markup = null)
         {
             if (markup != null)
             {
-                writeBuffer.AppendUnescaped($"[{markup}]");
+                buffer.WriteMarkup(markup);
             }
             
-            writeBuffer.Append(profile, content);
-
+            foreach (var c in content)
+            {
+                Write(buffer, c);
+            }
+            
             if (markup != null)
             {
-                writeBuffer.AppendUnescaped("[/]");
+                buffer.WriteMarkupClose();
             }
         }
 
-        public static void AppendMarkup(this IWriteBuffer writeBuffer, string markup) =>
-            writeBuffer.AppendUnescaped($"[{markup}]");
-
-        public static void AppendMarkupCloseTag(this IWriteBuffer writeBuffer) =>
-            writeBuffer.AppendUnescaped("[/]");
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Write(this IWriteBuffer buffer, char c, int count = 1)
+        {
+            while (--count >= 0)
+            {
+                buffer.Append(c);
+            }
+        }
     }
 }

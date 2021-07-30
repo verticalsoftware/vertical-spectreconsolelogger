@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using Spectre.Console;
 using Vertical.SpectreLogger.Output;
 
 namespace Vertical.SpectreLogger.Rendering
@@ -13,16 +14,13 @@ namespace Vertical.SpectreLogger.Rendering
 
         internal StaticSpanRenderer(string span)
         {
-            _span = span;
+            _span = span.EscapeMarkup();
         }
-
-        /// <inheritdoc />
-        public string Template => throw new NotImplementedException();
 
         /// <inheritdoc />
         public void Render(IWriteBuffer buffer, ref LogEventInfo eventInfo)
         {
-            buffer.Append(eventInfo.FormattingProfile, _span);
+            buffer.Write(_span);
         }
     }
 }

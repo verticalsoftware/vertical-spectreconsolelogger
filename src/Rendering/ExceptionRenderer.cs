@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Spectre.Console;
 using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Output;
@@ -16,12 +17,11 @@ namespace Vertical.SpectreLogger.Rendering
     {
         private static readonly string[] StackFrameSplitValues = {Environment.NewLine};
 
-        private const string NewLineFormat = "NewLine";
         private const string MyTemplate = "{Exception(:(?<options>[^}]+))?}";
 
-        private readonly string? _templateContext;
+        private readonly string _templateContext;
 
-        public ExceptionRenderer(string? templateContext = null)
+        public ExceptionRenderer(string templateContext)
         {
             _templateContext = templateContext;
         }
@@ -41,25 +41,25 @@ namespace Vertical.SpectreLogger.Rendering
                               .FormattingProfiles[profile.LogLevel]
                               .GetRenderingOptions<ExceptionRenderingOptions>()!;
             var format = Regex
-                .Match(profile.OutputTemplate!, MyTemplate)
+                .Match(_templateContext, MyTemplate)
                 .Groups["options"]
                 .Value;
 
             if (format.Contains("NewLine"))
             {
-                buffer.AppendLine(profile);
+                buffer.WriteLine();
             }
 
             if (options.StackFrameMarkup != null)
             {
-                buffer.AppendMarkup(options.StackFrameMarkup);
+                buffer.WriteMarkup(options.StackFrameMarkup);
             }
             
-            RenderInternal(buffer, profile, options, 0, new[]{exception});
+            RenderInternal(buffer, profile, options, 1, new[]{exception});
 
             if (options.StackFrameMarkup != null)
             {
-                buffer.AppendMarkupCloseTag();
+                buffer.WriteMarkupClose();
             }
         }
 
@@ -71,39 +71,34 @@ namespace Vertical.SpectreLogger.Rendering
         {
             foreach (var exception in exceptions)
             {
-                RenderInternal(buffer, profile, options, indent, exception);
+                RenderInternal(buffer, options, indent, exception);
 
                 if (options.UnwindAggregateExceptions && exception is AggregateException aggregateException)
                 {
                     RenderInternal(buffer, 
                         profile, 
                         options, 
-                        indent + 2, 
+                        indent + 1, 
                         aggregateException.InnerExceptions);
                 }
             }
         }
 
         private void RenderInternal(IWriteBuffer buffer, 
-            FormattingProfile profile, 
             ExceptionRenderingOptions options,
             int indent,
             Exception exception)
         {
             var type = exception.GetType();
-            var indentString = new string(' ', indent);
+            var exceptionName = options.ExceptionNameFormatter?.Invoke(type) ?? type.FullName!;
             
             // Render the exception name
-            buffer.Append(profile, 
-                options.ExceptionNameFormatter?.Invoke(type) ?? type.FullName!,
-                options.ExceptionNameMarkup);
+            buffer.Write(exceptionName.EscapeMarkup(), options.ExceptionNameMarkup);
             
-            buffer.Append(profile, ": ");
+            buffer.Write(": ");
             
             // Render the message
-            buffer.Append(profile,
-                exception.Message,
-                options.ExceptionMessageMarkup);
+            buffer.Write(exception.Message.EscapeMarkup(), options.ExceptionMessageMarkup);
 
             var stackFrames = exception
                 .StackTrace?
@@ -114,75 +109,72 @@ namespace Vertical.SpectreLogger.Rendering
 
             foreach (var stackFrame in stackFrames.Take(options.MaxStackFrames))
             {
-                buffer.AppendLine(profile);
-                buffer.Append(profile, indentString);
-                RenderStackFrame(buffer, profile, options, stackFrame);
+                buffer.WriteLine();
+                buffer.WriteWhitespace(options.StackFrameIndentChars * indent);
+                RenderStackFrame(buffer, options, stackFrame);
             }
         }
 
         private void RenderStackFrame(IWriteBuffer buffer, 
-            FormattingProfile profile, 
             ExceptionRenderingOptions options,
             string stackFrame)
         {
             var stackFrameInfo = StackFrameParser.Parse(stackFrame);
             var methodName = stackFrameInfo.MethodName.Replace('[', '<').Replace(']', '>');
-            
-            buffer.Append(profile, "  at ");
-            buffer.Append(profile, 
-                options.MethodNameFormatter?.Invoke(methodName) ?? methodName, 
-                options.MethodNameMarkup);
+            var formattedMethodName = options.MethodNameFormatter?.Invoke(methodName) ?? methodName;
 
-            RenderParameters(buffer, profile, options, stackFrameInfo);
+            buffer.Write("  at ");
+            buffer.Write(formattedMethodName.EscapeMarkup(), options.MethodNameMarkup);
+
+            RenderParameters(buffer, options, stackFrameInfo);
 
             if (!options.RenderSourcePaths)
                 return;
             
-            buffer.Append(profile, " in ");
+            buffer.Write(" in ");
 
-            buffer.Append(profile, 
-                options.SourcePathFormatter?.Invoke(stackFrameInfo.SourcePath) ?? stackFrameInfo.SourcePath,
-                options.SourcePathMarkup);
+            var path = options.SourcePathFormatter?.Invoke(stackFrameInfo.SourcePath) ?? stackFrameInfo.SourcePath;
+
+            buffer.Write(path.EscapeMarkup(), options.SourcePathMarkup);
             
-            buffer.Append(profile, ":line ");
-            buffer.Append(profile, stackFrameInfo.SourceLineNumber.ToString(), options.SourceLineNumberMarkup);
+            buffer.Write(":line ");
+            buffer.Write(stackFrameInfo.SourceLineNumber.ToString(), options.SourceLineNumberMarkup);
         }
 
         private static void RenderParameters(IWriteBuffer buffer, 
-            FormattingProfile profile, 
             ExceptionRenderingOptions options,
             StackFrameInfo stackFrameInfo)
         {
             if (!options.RenderParameterNames && !options.RenderParameterTypes)
                 return;
             
-            buffer.Append(profile, "(");
+            buffer.Write('(');
 
             var separator = string.Empty;
 
             foreach (var (type, name) in stackFrameInfo.Parameters)
             {
-                buffer.Append(profile, separator);
+                buffer.Write(separator);
                 
                 if (options.RenderParameterTypes)
                 {
-                    buffer.Append(profile, type, options.ParameterTypeMarkup);
+                    buffer.Write(type.EscapeMarkup(), options.ParameterTypeMarkup);
                 }
 
                 if (options.RenderParameterNames)
                 {
                     if (options.RenderParameterTypes)
                     {
-                        buffer.AppendWhitespace();    
+                        buffer.WriteWhitespace();    
                     }
                     
-                    buffer.Append(profile, name, options.ParameterNameMarkup);
+                    buffer.Write(name.EscapeMarkup(), options.ParameterNameMarkup);
                 }
 
                 separator = ", ";
             }
             
-            buffer.Append(profile, ")");
+            buffer.Write(')');
         }
     }
 }

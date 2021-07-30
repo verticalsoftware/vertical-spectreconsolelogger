@@ -17,6 +17,7 @@ namespace Vertical.SpectreLogger.Rendering
             EventId eventId,
             object? state,
             Exception? exception,
+            IDictionary<string, object?> formattedLogValues,
             IEnumerable<object?> scopes,
             FormattingProfile formattingProfile)
         {
@@ -25,6 +26,7 @@ namespace Vertical.SpectreLogger.Rendering
             EventId = eventId;
             State = state;
             Exception = exception;
+            FormattedLogValues = formattedLogValues;
             FormattingProfile = formattingProfile;
             Scopes = scopes.ToArray();
         }
@@ -53,6 +55,11 @@ namespace Vertical.SpectreLogger.Rendering
         /// Gets the exception.
         /// </summary>
         public Exception? Exception { get; }
+
+        /// <summary>
+        /// Gets the formatted log values.
+        /// </summary>
+        public IDictionary<string, object?> FormattedLogValues { get; }
 
         /// <summary>
         /// Gets the formatting profile.

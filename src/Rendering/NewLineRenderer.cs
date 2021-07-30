@@ -29,11 +29,11 @@ namespace Vertical.SpectreLogger.Rendering
         /// <inheritdoc />
         public void Render(IWriteBuffer buffer, ref LogEventInfo eventInfo)
         {
-            buffer.Append(eventInfo.FormattingProfile, Environment.NewLine);
+            buffer.WriteLine();
 
             if (_indent > 0)
             {
-                buffer.AppendWhitespace(_indent);
+                buffer.WriteWhitespace(_indent);
             }
         }
     }

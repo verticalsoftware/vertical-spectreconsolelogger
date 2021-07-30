@@ -1,4 +1,3 @@
-using System;
 using Vertical.SpectreLogger.Output;
 
 namespace Vertical.SpectreLogger.Rendering
@@ -16,12 +15,9 @@ namespace Vertical.SpectreLogger.Rendering
         }
 
         /// <inheritdoc />
-        public string Template => throw new NotImplementedException();
-
-        /// <inheritdoc />
         public void Render(IWriteBuffer buffer, ref LogEventInfo eventInfo)
         {
-            buffer.AppendUnescaped(_span);
+            buffer.Write(_span);
         }
     }
 }

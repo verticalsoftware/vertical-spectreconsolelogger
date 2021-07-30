@@ -9,28 +9,16 @@ namespace Vertical.SpectreLogger.Output
     public interface IWriteBuffer : IDisposable
     {
         /// <summary>
-        /// Appends content to the buffer.
+        /// Appends a string.
         /// </summary>
-        /// <param name="profile">Current formatting profile</param>
-        /// <param name="str">String content to append.</param>
-        void Append(FormattingProfile profile, string str);
+        /// <param name="str">Content to render.</param>
+        void Append(string str);
 
         /// <summary>
-        /// Appends whitespace content to the buffer.
+        /// Appends a single character.
         /// </summary>
-        /// <param name="count">The number of whitespace characters to append.</param>
-        void AppendWhitespace(int count = 1);
-
-        /// <summary>
-        /// Appends a newline to the buffer.
-        /// </summary>
-        void AppendLine(FormattingProfile profile);
-
-        /// <summary>
-        /// Appends markup to the buffer.
-        /// </summary>
-        /// <param name="content">Markup to append.</param>
-        void AppendUnescaped(string content);
+        /// <param name="c">Character to append</param>
+        void Append(char c);
 
         /// <summary>
         /// Flushes the content to the target.

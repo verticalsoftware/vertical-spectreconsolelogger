@@ -1,8 +1,6 @@
-using System.Collections.Generic;
 using System.Linq;
+using Spectre.Console;
 using Vertical.SpectreLogger.Internal;
-using Vertical.SpectreLogger.MatchableTypes;
-using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Output;
 
 namespace Vertical.SpectreLogger.Rendering
@@ -14,16 +12,15 @@ namespace Vertical.SpectreLogger.Rendering
         public void Render(IWriteBuffer buffer, ref LogEventInfo eventInfo)
         {
             var profile = eventInfo.FormattingProfile;
+            var logValues = eventInfo.FormattedLogValues;
 
-            if (eventInfo.State is not IEnumerable<KeyValuePair<string, object>> propertyCollection)
+            if (!logValues.Any())
             {
-                WriteValue(buffer, eventInfo.State, profile);
+                FormattingHelper.RenderLogValue(profile, buffer, eventInfo.State);
                 return;
             }
 
-            var properties = propertyCollection.ToDictionary(kv => kv.Key, kv => kv.Value);
-
-            if (!properties.TryGetValue("{OriginalFormat}", out var value) || value is not string template)
+            if (!logValues.TryGetValue("{OriginalFormat}", out var value) || value is not string template)
             {
                 // What to do now?
                 return;
@@ -34,37 +31,15 @@ namespace Vertical.SpectreLogger.Rendering
             {
                 switch (match)
                 {
-                    case { isTemplate: true } when properties.TryGetValue(match.token, out value):
-                        WriteValue(buffer, value, profile);
+                    case { isTemplate: true } when logValues.TryGetValue(match.token, out value):
+                        FormattingHelper.RenderLogValue(profile, buffer, value);
                         break;
                     
                     default:
-                        buffer.Append(profile, match.token);
+                        buffer.Write(match.token.EscapeMarkup());
                         break;
                 }
             }
-        }
-
-        private static void WriteValue(IWriteBuffer buffer, object? obj, FormattingProfile profile)
-        {
-            // Resolve the value to display
-            var type = obj?.GetType() ?? typeof(Null);
-            
-            var formatter = profile.ValueFormatters.GetValueOrDefault(type)
-                            ??
-                            profile.ValueFormatters.GetValueOrDefault(typeof(object));
-            
-            var formattedValue = formatter?.Invoke(obj) ?? obj?.ToString();
-
-            // Nothing to render
-            if (string.IsNullOrEmpty(formattedValue))
-                return;
-
-            var markup = profile.TypeStyles.GetValueOrDefault(type)
-                         ??
-                         profile.TypeStyles.GetValueOrDefault(typeof(object));
-            
-            buffer.Append(profile, formattedValue!, markup);
         }
     }
 }
