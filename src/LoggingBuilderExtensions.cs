@@ -20,11 +20,15 @@ namespace Vertical.SpectreLogger
         /// <param name="configureOptions">Action used to configure the logger options.</param>
         /// <returns><see cref="ILoggingBuilder"/></returns>
         public static ILoggingBuilder AddSpectreConsole(this ILoggingBuilder loggingBuilder,
-            Action<SpectreLoggerOptions> configureOptions)
+            Action<SpectreLoggerOptions>? configureOptions = null)
         {
             var services = loggingBuilder.Services;
-            
-            services.Configure(configureOptions);
+
+            if (configureOptions != null)
+            {
+                services.Configure(configureOptions);
+            }
+
             services.AddSingleton<ILoggerProvider, SpectreLoggerProvider>();
             services.AddSingleton<IStringBuilderPool>(new StringBuilderPool(5));
             services.AddSingleton<ITemplateRendererBuilder, TemplateRendererBuilder>();

@@ -12,6 +12,6 @@ namespace Vertical.SpectreLogger.Rendering
         /// </summary>
         /// <param name="buffer">Output buffer to write data to.</param>
         /// <param name="eventInfo">Event info.</param>
-        void Render(IWriteBuffer buffer, ref LogEventInfo eventInfo);
+        void Render(IWriteBuffer buffer, in LogEventInfo eventInfo);
     }
 }

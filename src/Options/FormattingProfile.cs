@@ -35,6 +35,12 @@ namespace Vertical.SpectreLogger.Options
         /// The key is the type name.
         /// </summary>
         public Dictionary<Type, string> TypeStyles { get; } = new();
+        
+        /// <summary>
+        /// Gets or sets the markup to apply before rendering a value where the type is
+        /// not found in <see cref="TypeStyles"/>.
+        /// </summary>
+        public string? DefaultTypeStyle { get; set; }
 
         /// <summary>
         /// Gets or sets the name to display as the log level.
@@ -45,7 +51,13 @@ namespace Vertical.SpectreLogger.Options
         /// Gets a dictionary of functions that convert object value types
         /// to specific string representations.
         /// </summary>
-        public Dictionary<Type, Func<object?, string?>> ValueFormatters { get; } = new();
+        public Dictionary<Type, Func<object?, string?>> TypeFormatters { get; } = new();
+
+        /// <summary>
+        /// Gets or sets the formatting function to use if one cannot be
+        /// found in <see cref="TypeFormatters"/>.
+        /// </summary>
+        public Func<object?, string?> DefaultTypeFormatter { get; } = obj => obj?.ToString(); 
 
         /// <summary>
         /// Gets a dictionary of option objects keyed by specific type.

@@ -7,7 +7,7 @@ namespace Vertical.SpectreLogger.Rendering
     public class LogLevelRenderer : ITemplateRenderer
     {
         /// <inheritdoc />
-        public void Render(IWriteBuffer buffer, ref LogEventInfo eventInfo)
+        public void Render(IWriteBuffer buffer, in LogEventInfo eventInfo)
         {
             var profile = eventInfo.FormattingProfile;
             var displayValue = profile.LogLevelDisplay;

@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using Vertical.SpectreLogger.Rendering;
 
 namespace Vertical.SpectreLogger.Output
 {
@@ -28,6 +29,11 @@ namespace Vertical.SpectreLogger.Output
             {
                 buffer.Append(' ');
             }
+        }
+
+        public static void Write(this IWriteBuffer buffer, in FormattedValue formattedValue)
+        {
+            buffer.Write(formattedValue.Value!, formattedValue.Markup);
         }
         
         public static void Write(this IWriteBuffer buffer, string content, string? markup = null)

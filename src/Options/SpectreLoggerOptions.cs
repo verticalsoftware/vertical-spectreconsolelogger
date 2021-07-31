@@ -6,7 +6,7 @@ namespace Vertical.SpectreLogger.Options
     /// <summary>
     /// Defines options for the logger.
     /// </summary>
-    public class SpectreLoggerOptions
+    public partial class SpectreLoggerOptions
     {
         internal static readonly SpectreLoggerOptions Default = new();
         
@@ -15,7 +15,7 @@ namespace Vertical.SpectreLogger.Options
         /// </summary>
         public SpectreLoggerOptions()
         {
-            SpectreLoggerDefaults.ConfigureDefaults(this);    
+            ConfigureDefaults(this);    
         }
         
         /// <summary>

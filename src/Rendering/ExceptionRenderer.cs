@@ -27,7 +27,7 @@ namespace Vertical.SpectreLogger.Rendering
         }
 
         /// <inheritdoc />
-        public void Render(IWriteBuffer buffer, ref LogEventInfo eventInfo)
+        public void Render(IWriteBuffer buffer, in LogEventInfo eventInfo)
         {
             var exception = eventInfo.Exception;
 
@@ -55,7 +55,7 @@ namespace Vertical.SpectreLogger.Rendering
                 buffer.WriteMarkup(options.StackFrameMarkup);
             }
             
-            RenderInternal(buffer, profile, options, 1, new[]{exception});
+            RenderInternal(buffer, options, 1, new[]{exception});
 
             if (options.StackFrameMarkup != null)
             {
@@ -64,7 +64,6 @@ namespace Vertical.SpectreLogger.Rendering
         }
 
         private void RenderInternal(IWriteBuffer buffer,
-            FormattingProfile profile,
             ExceptionRenderingOptions options,
             int indent,
             IEnumerable<Exception> exceptions)
@@ -76,7 +75,6 @@ namespace Vertical.SpectreLogger.Rendering
                 if (options.UnwindAggregateExceptions && exception is AggregateException aggregateException)
                 {
                     RenderInternal(buffer, 
-                        profile, 
                         options, 
                         indent + 1, 
                         aggregateException.InnerExceptions);

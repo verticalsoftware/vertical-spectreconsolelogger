@@ -12,7 +12,7 @@ namespace Vertical.SpectreLogger.Rendering
     public class CategoryNameRenderer : ITemplateRenderer
     {
         /// <inheritdoc />
-        public void Render(IWriteBuffer buffer, ref LogEventInfo eventInfo)
+        public void Render(IWriteBuffer buffer, in LogEventInfo eventInfo)
         {
             if (string.IsNullOrWhiteSpace(eventInfo.CategoryName))
                 return;
@@ -20,7 +20,7 @@ namespace Vertical.SpectreLogger.Rendering
             var categoryName = eventInfo.CategoryName;
 
             var profile = eventInfo.FormattingProfile;
-            var formatted = profile.ValueFormatters.GetValueOrDefault(typeof(CategoryName))?
+            var formatted = profile.TypeFormatters.GetValueOrDefault(typeof(CategoryName))?
                 .Invoke(categoryName) ?? categoryName;
 
             buffer.Write(formatted.EscapeMarkup());

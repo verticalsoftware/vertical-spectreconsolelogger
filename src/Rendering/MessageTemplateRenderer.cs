@@ -9,14 +9,14 @@ namespace Vertical.SpectreLogger.Rendering
     public class MessageTemplateRenderer : ITemplateRenderer
     {
         /// <inheritdoc />
-        public void Render(IWriteBuffer buffer, ref LogEventInfo eventInfo)
+        public void Render(IWriteBuffer buffer, in LogEventInfo eventInfo)
         {
             var profile = eventInfo.FormattingProfile;
             var logValues = eventInfo.FormattedLogValues;
 
             if (!logValues.Any())
             {
-                FormattingHelper.RenderLogValue(profile, buffer, eventInfo.State);
+                FormattingHelper.RenderFormattedValue(profile, buffer, eventInfo.State);
                 return;
             }
 
@@ -32,7 +32,7 @@ namespace Vertical.SpectreLogger.Rendering
                 switch (match)
                 {
                     case { isTemplate: true } when logValues.TryGetValue(match.token, out value):
-                        FormattingHelper.RenderLogValue(profile, buffer, value);
+                        FormattingHelper.RenderFormattedValue(profile, buffer, value);
                         break;
                     
                     default:

@@ -31,7 +31,7 @@ namespace Vertical.SpectreLogger.Rendering
          private static ITemplateRenderer[] BuildRendererCollection(FormattingProfile profile, 
              IEnumerable<TemplateDescriptor> descriptors)
          {
-             var template = profile.OutputTemplate ?? SpectreLoggerDefaults.OutputTemplate;
+             var template = profile.OutputTemplate ?? SpectreLoggerOptions.OutputTemplate;
              var list = new List<ITemplateRenderer>();
 
              if (profile.BaseMarkup != null)

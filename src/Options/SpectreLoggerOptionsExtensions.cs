@@ -22,7 +22,21 @@ namespace Vertical.SpectreLogger.Options
         public static SpectreLoggerOptions ConfigureProfiles(this SpectreLoggerOptions options,
             Action<FormattingProfile> configure)
         {
-            foreach (var logLevel in ConfigurableLogLevels)
+            return options.ConfigureProfiles(ConfigurableLogLevels, configure);
+        }
+
+        /// <summary>
+        /// Configures multiple log level profiles.
+        /// </summary>
+        /// <param name="options">Options</param>
+        /// <param name="logLevels">A sequence of log levels to configure.</param>
+        /// <param name="configure">An action that is given a profile for configuration.</param>
+        /// <returns><see cref="SpectreLoggerOptions"/></returns>
+        public static SpectreLoggerOptions ConfigureProfiles(this SpectreLoggerOptions options,
+            IEnumerable<LogLevel> logLevels,
+            Action<FormattingProfile> configure)
+        {
+            foreach (var logLevel in logLevels)
             {
                 options.ConfigureProfile(logLevel, configure);
             }

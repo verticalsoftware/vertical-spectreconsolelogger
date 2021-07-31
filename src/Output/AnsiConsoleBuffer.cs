@@ -18,8 +18,9 @@ namespace Vertical.SpectreLogger.Output
         /// Creates a new instance of this type.
         /// </summary>
         /// <param name="stringBuilderPool">String builder pool.</param>
+        /// <param name="bufferFactory"></param>
         /// <param name="ansiConsole">Ansi console target</param>
-        public AnsiConsoleBuffer(IStringBuilderPool stringBuilderPool, IAnsiConsole ansiConsole)
+        public AnsiConsoleBuffer(DefaultWriteBufferFactory bufferFactory, IAnsiConsole ansiConsole)
         {
             _stringBuilderPool = stringBuilderPool;
             _ansiConsole = ansiConsole;

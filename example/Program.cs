@@ -17,19 +17,9 @@ namespace SpectreLoggerExample
             {
                 builder.AddSpectreConsole(options =>
                 {
-                    options.MinimumLevel = LogLevel.Trace;
                     options.ConfigureProfiles(profile =>
-                    {
-                        profile.OutputTemplate = @"{LogLevel}: {CategoryName}{NewLine:5}{Message}{Exception:NewLine}";
-                        profile.ConfigureRendererOptions<ExceptionRenderingOptions>(
-                            opt =>
-                            {
-                                opt.SourcePathFormatter = Path.GetFileName;
-                                opt.StackFrameIndentChars = 2;
-                            });
-                    });
+                        profile.OutputTemplate = "{LogLevel} {CategoryName}{NewLine:4}{Message}{Exception:NewLine}");
                 });
-
                 builder.SetMinimumLevel(LogLevel.Trace);
             });
 

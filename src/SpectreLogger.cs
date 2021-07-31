@@ -54,7 +54,7 @@ namespace Vertical.SpectreLogger
             
             foreach (var templateFormatter in _rendererBuilder.GetRenderers(logLevel))
             {
-                templateFormatter.Render(buffer, ref eventInfo);
+                templateFormatter.Render(buffer, eventInfo);
             }
             
             buffer.Flush();

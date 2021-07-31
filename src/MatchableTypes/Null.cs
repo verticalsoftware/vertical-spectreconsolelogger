@@ -1,7 +1,7 @@
 namespace Vertical.SpectreLogger.MatchableTypes
 {
     /// <summary>
-    /// Defines a type that can represent a null value.
+    /// Defines a pseudo type that represents a null value.
     /// </summary>
     public static class Null
     {
