@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Vertical.SpectreLogger.Rendering;
 
@@ -8,15 +9,27 @@ namespace Vertical.SpectreLogger.Internal
     {
         internal static StackFrameInfo Parse(string stackFrame)
         {
-            const string pattern = @"at (?<method>[^(]+)\((?<params>[^)]+)\) in (?<path>([a-zA-Z]:)?[^:]+):line (?<lineno>\d+)";
+            const string pattern = @"at (?<method>[^(]+)\((?<params>[^)]+)\)( in (?<path>([a-zA-Z]:)?[^:]+):line (?<lineno>\d+))?";
 
             var matchGroups = Regex.Match(stackFrame, pattern).Groups;
 
-            return new StackFrameInfo(
-                matchGroups["method"].Value,
-                BuildParameters(matchGroups["params"].Value),
-                matchGroups["path"].Value,
-                int.Parse(matchGroups["lineno"].Value));
+            try
+            {
+                return new StackFrameInfo(
+                    matchGroups["method"].Value,
+                    BuildParameters(matchGroups["params"].Value),
+                    matchGroups["path"].Value,
+                    matchGroups["lineno"].Success ? int.Parse(matchGroups["lineno"].Value) : 0);
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(
+                    "Failed to parse the following stack frame:" + Environment.NewLine +
+                    stackFrame,
+                    exception);
+                
+                throw;
+            }
         }
 
         private static (string Type, string Name)[] BuildParameters(string value)

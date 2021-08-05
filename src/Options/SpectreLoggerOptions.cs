@@ -27,5 +27,10 @@ namespace Vertical.SpectreLogger.Options
         /// Gets or sets the formatting profiles.
         /// </summary>
         public Dictionary<LogLevel, FormattingProfile> FormattingProfiles { get; } = new();
+
+        /// <summary>
+        /// Gets or sets the maximum number of write buffers to keep pooled for log events.
+        /// </summary>
+        public int MaxPooledWriteBuffers { get; set; } = 6;
     }
 }

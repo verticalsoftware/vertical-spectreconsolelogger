@@ -23,6 +23,11 @@ namespace Vertical.SpectreLogger.Options
         public bool UnwindAggregateExceptions { get; set; } = true;
 
         /// <summary>
+        /// Gets whether to recursively display all base exceptions.
+        /// </summary>
+        public bool UnwindInnerExceptions { get; set; } = true;
+
+        /// <summary>
         /// Gets or sets a function that formats the exception type name.
         /// </summary>
         public Func<Type, string>? ExceptionNameFormatter { get; set; } = type => type.FullName!;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Vertical.SpectreLogger.Internal;
-using Vertical.SpectreLogger.MatchableTypes;
+using Vertical.SpectreLogger.PseudoTypes;
 
 namespace Vertical.SpectreLogger.Options
 {
@@ -63,6 +63,56 @@ namespace Vertical.SpectreLogger.Options
         }
 
         /// <summary>
+        /// Adds a style for a specific value.
+        /// </summary>
+        /// <param name="formattingProfile">Formatting profile</param>
+        /// <param name="value">The value the style is applied to</param>
+        /// <param name="markup">The markup to apply before rendering the value</param>
+        /// <typeparam name="T">The value type</typeparam>
+        /// <returns><see cref="FormattingProfile"/></returns>
+        public static FormattingProfile AddValueStyle<T>(this FormattingProfile formattingProfile,
+            T value,
+            string markup) where T : notnull
+        {
+            formattingProfile.ValueStyles[(typeof(T), (object)value)] = markup;
+            return formattingProfile;
+        }
+
+        /// <summary>
+        /// Adds a style for specific values.
+        /// </summary>
+        /// <param name="formattingProfile">Formatting profile</param>
+        /// <param name="values">The value the style is applied to</param>
+        /// <param name="markup">The markup to apply before rendering any of the provided values</param>
+        /// <returns><see cref="FormattingProfile"/></returns>
+        /// <exception cref="ArgumentException"><paramref name="values"/> contains a null value.</exception>
+        public static FormattingProfile AddValueStyles(this FormattingProfile formattingProfile,
+            IEnumerable<object> values,
+            string markup)
+        {
+            var valueStyles = formattingProfile.ValueStyles;
+            
+            foreach (var obj in values)
+            {
+                var type = obj?.GetType() ?? throw new ArgumentException("Null values are not allowed.", nameof(values));
+                valueStyles[(type, obj)] = markup;
+            }
+
+            return formattingProfile;
+        }
+        
+        /// <summary>
+        /// Clears all value styles.
+        /// </summary>
+        /// <param name="formattingProfile">Formatting profile</param>
+        /// <returns><see cref="FormattingProfile"/></returns>
+        public static FormattingProfile ClearValueStyles(this FormattingProfile formattingProfile)
+        {
+            formattingProfile.ValueStyles.Clear();
+            return formattingProfile;
+        }
+
+        /// <summary>
         /// Adds a function that formats the output of a specific value type.
         /// </summary>
         /// <param name="formattingProfile">Formatting profile.</param>
@@ -84,7 +134,7 @@ namespace Vertical.SpectreLogger.Options
         /// <param name="types">The value type to format.</param>
         /// <param name="formatter">A function that returns a string representation of the given value.</param>
         /// <returns><see cref="FormattingProfile"/></returns>
-        public static FormattingProfile AddValueFormatters(this FormattingProfile formattingProfile,
+        public static FormattingProfile AddTypeFormatters(this FormattingProfile formattingProfile,
             IEnumerable<Type> types,
             Func<object?, string?> formatter)
         {
@@ -104,7 +154,8 @@ namespace Vertical.SpectreLogger.Options
         /// <param name="formatter">A function that returns a string representation of the given value.</param>
         /// <returns><see cref="FormattingProfile"/></returns>
         public static FormattingProfile AddTypeFormatter<T>(this FormattingProfile formattingProfile,
-            Func<object?, string?> formatter) => formattingProfile.AddTypeFormatter(typeof(T), formatter);
+            Func<T?, string?> formatter) => formattingProfile.AddTypeFormatter(typeof(T), obj => formatter((T?)obj));
+        
 
         /// <summary>
         /// Clears all type value formatting functions.
@@ -136,7 +187,7 @@ namespace Vertical.SpectreLogger.Options
         /// <param name="configure">Action that configures the given options object.</param>
         /// <typeparam name="TOptions">Options type.</typeparam>
         /// <returns><see cref="FormattingProfile"/></returns>
-        public static FormattingProfile ConfigureRendererOptions<TOptions>(this FormattingProfile formattingProfile,
+        public static FormattingProfile ConfigureRenderer<TOptions>(this FormattingProfile formattingProfile,
             Action<TOptions> configure) where TOptions : class, new()
         {
             if (!formattingProfile.RendererOptions.TryGetValue(typeof(TOptions), out var optionsObj))

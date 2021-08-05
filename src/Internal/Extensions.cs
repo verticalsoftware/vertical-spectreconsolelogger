@@ -22,9 +22,30 @@ namespace Vertical.SpectreLogger.Internal
             return instance;
         }
 
-        internal static IDictionary<string, object?> AsFormattedLogValues<TState>(this TState state) =>
-            (state as IEnumerable<KeyValuePair<string, object>>)?.ToDictionary(kv => kv.Key, kv => (object?) kv.Value)
-            ??
-            (IDictionary<string, object?>) ImmutableDictionary<string, object?>.Empty;
+        internal static void AddState<TState>(this Dictionary<string, object?> properties, TState state)
+        {
+            switch (state)
+            {
+                case IEnumerable<KeyValuePair<string, object>> keyValuePairs:
+                    foreach (var entry in keyValuePairs)
+                    {
+                        properties[entry.Key] = entry.Value;
+                    }
+
+                    break;
+                
+                case KeyValuePair<string, object> keyValuePair:
+                    properties[keyValuePair.Key] = keyValuePair.Value;
+                    break;
+            }
+        }
+
+        internal static void AddScopes(this Dictionary<string, object?> properties, IEnumerable<object?> scopes)
+        {
+            foreach (var obj in scopes)
+            {
+                properties.AddState(obj);
+            }
+        }
     }
 }

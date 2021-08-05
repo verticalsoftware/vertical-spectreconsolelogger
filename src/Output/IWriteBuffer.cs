@@ -21,8 +21,18 @@ namespace Vertical.SpectreLogger.Output
         void Append(char c);
 
         /// <summary>
+        /// Clears the buffer of all content.
+        /// </summary>
+        void Clear();
+
+        /// <summary>
         /// Flushes the content to the target.
         /// </summary>
         void Flush();
+        
+        /// <summary>
+        /// Gets or sets the left-aligned margin to apply.
+        /// </summary>
+        int Margin { get; set; }
     }
 }

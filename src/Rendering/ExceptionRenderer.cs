@@ -17,13 +17,15 @@ namespace Vertical.SpectreLogger.Rendering
     {
         private static readonly string[] StackFrameSplitValues = {Environment.NewLine};
 
-        private const string MyTemplate = "{Exception(:(?<options>[^}]+))?}";
+        private const string MyTemplate = @"{Exception(:NewLine)?}";
 
-        private readonly string _templateContext;
+        private readonly bool _newLine;
 
         public ExceptionRenderer(string templateContext)
         {
-            _templateContext = templateContext;
+            var match = Regex.Match(templateContext, MyTemplate);
+
+            _newLine = match.Groups[1].Success;
         }
 
         /// <inheritdoc />
@@ -40,12 +42,8 @@ namespace Vertical.SpectreLogger.Rendering
                               .Default
                               .FormattingProfiles[profile.LogLevel]
                               .GetRenderingOptions<ExceptionRenderingOptions>()!;
-            var format = Regex
-                .Match(_templateContext, MyTemplate)
-                .Groups["options"]
-                .Value;
 
-            if (format.Contains("NewLine"))
+            if (_newLine)
             {
                 buffer.WriteLine();
             }
@@ -66,27 +64,47 @@ namespace Vertical.SpectreLogger.Rendering
         private void RenderInternal(IWriteBuffer buffer,
             ExceptionRenderingOptions options,
             int indent,
-            IEnumerable<Exception> exceptions)
+            IEnumerable<Exception> exceptions,
+            bool writeNewLine = false)
         {
             foreach (var exception in exceptions)
             {
-                RenderInternal(buffer, options, indent, exception);
+                RenderInternal(buffer, options, indent, exception, writeNewLine);
 
-                if (options.UnwindAggregateExceptions && exception is AggregateException aggregateException)
+                switch (exception)
                 {
-                    RenderInternal(buffer, 
-                        options, 
-                        indent + 1, 
-                        aggregateException.InnerExceptions);
+                    case AggregateException aggregateException when options.UnwindAggregateExceptions:
+                        RenderInternal(buffer, 
+                            options, 
+                            indent + 1, 
+                            aggregateException.InnerExceptions,
+                            true);
+                        break;
+                    
+                    case { InnerException: {} } when options.UnwindInnerExceptions:
+                        RenderInternal(buffer,
+                            options,
+                            indent,
+                            exception.InnerException,
+                            true);
+                        break;
                 }
+
+                writeNewLine = true;
             }
         }
 
         private void RenderInternal(IWriteBuffer buffer, 
             ExceptionRenderingOptions options,
             int indent,
-            Exception exception)
+            Exception exception,
+            bool writeNewLine)
         {
+            if (writeNewLine)
+            {
+                buffer.WriteLine();
+            }
+            
             var type = exception.GetType();
             var exceptionName = options.ExceptionNameFormatter?.Invoke(type) ?? type.FullName!;
             
@@ -106,7 +124,7 @@ namespace Vertical.SpectreLogger.Rendering
                 return;
 
             foreach (var stackFrame in stackFrames.Take(options.MaxStackFrames))
-            {
+            { 
                 buffer.WriteLine();
                 buffer.WriteWhitespace(options.StackFrameIndentChars * indent);
                 RenderStackFrame(buffer, options, stackFrame);
@@ -128,15 +146,18 @@ namespace Vertical.SpectreLogger.Rendering
 
             if (!options.RenderSourcePaths)
                 return;
-            
-            buffer.Write(" in ");
 
-            var path = options.SourcePathFormatter?.Invoke(stackFrameInfo.SourcePath) ?? stackFrameInfo.SourcePath;
+            if (stackFrameInfo.SourcePath.Length != 0)
+            {
+                buffer.Write(" in ");
 
-            buffer.Write(path.EscapeMarkup(), options.SourcePathMarkup);
+                var path = options.SourcePathFormatter?.Invoke(stackFrameInfo.SourcePath) ?? stackFrameInfo.SourcePath;
+
+                buffer.Write(path.EscapeMarkup(), options.SourcePathMarkup);
             
-            buffer.Write(":line ");
-            buffer.Write(stackFrameInfo.SourceLineNumber.ToString(), options.SourceLineNumberMarkup);
+                buffer.Write(":line ");
+                buffer.Write(stackFrameInfo.SourceLineNumber.ToString(), options.SourceLineNumberMarkup);
+            }
         }
 
         private static void RenderParameters(IWriteBuffer buffer, 

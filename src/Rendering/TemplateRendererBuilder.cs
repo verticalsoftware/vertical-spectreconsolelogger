@@ -34,15 +34,15 @@ namespace Vertical.SpectreLogger.Rendering
              var template = profile.OutputTemplate ?? SpectreLoggerOptions.OutputTemplate;
              var list = new List<ITemplateRenderer>();
 
-             if (profile.BaseMarkup != null)
+             if (profile.BaseEventStyle != null)
              {
                  // Preface all rendering with this markup
-                 list.Add(new UnescapedSpanRenderer($"[{profile.BaseMarkup}]"));
+                 list.Add(new UnescapedSpanRenderer($"[{profile.BaseEventStyle}]"));
              }
 
              foreach (var (token, isTemplate) in TemplateParser.Parse(template, preserveFormat: true))
              {
-                 TemplateDescriptor? selector = null;
+                 TemplateDescriptor? selector;
 
                  switch (isTemplate)
                  {
@@ -53,7 +53,7 @@ namespace Vertical.SpectreLogger.Rendering
                          break;
                      
                      case true:
-                         list.Add(new FormattedLogValueRenderer(token));
+                         list.Add(new FormattedLogPropertyRenderer(token));
                          break;
                      
                      default:
@@ -62,18 +62,18 @@ namespace Vertical.SpectreLogger.Rendering
                  }
              }
 
-             if (profile.BaseMarkup != null)
+             if (profile.BaseEventStyle != null)
              {
                  list.Add(new UnescapedSpanRenderer("[/]"));
              }
              
-             list.Add(new NewLineRenderer());
+             list.Add(new EndEventRenderer());
 
              return list.ToArray();
          }
 
          /// <inheritdoc />
-         public IEnumerable<ITemplateRenderer> GetRenderers(LogLevel logLevel)
+         public ITemplateRenderer[] GetRenderers(LogLevel logLevel)
          {
              return _rendererDictionary.TryGetValue(logLevel, out var renderers)
                  ? renderers

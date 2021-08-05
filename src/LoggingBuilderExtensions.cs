@@ -4,7 +4,6 @@ using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
-using Vertical.SpectreLogger.Memory;
 using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Output;
 using Vertical.SpectreLogger.Rendering;
@@ -30,12 +29,11 @@ namespace Vertical.SpectreLogger
             }
 
             services.AddSingleton<ILoggerProvider, SpectreLoggerProvider>();
-            services.AddSingleton<IStringBuilderPool>(new StringBuilderPool(5));
             services.AddSingleton<ITemplateRendererBuilder, TemplateRendererBuilder>();
             services.AddSingleton<IWriteBufferFactory, DefaultWriteBufferFactory>();
             services.AddSingleton(AnsiConsole.Console);
 
-            loggingBuilder.AddSpectreConsoleRenderersFromAssembly(typeof(LoggingBuilderExtensions).Assembly);
+            loggingBuilder.AddSpectreConsoleRenderers(typeof(LoggingBuilderExtensions).Assembly);
 
             return loggingBuilder;
         }
@@ -47,10 +45,10 @@ namespace Vertical.SpectreLogger
         /// <param name="loggingBuilder">Logging builder.</param>
         /// <param name="assembly">Assembly</param>
         /// <returns><see cref="ILoggingBuilder"/></returns>
-        public static ILoggingBuilder AddSpectreConsoleRenderersFromAssembly(this ILoggingBuilder loggingBuilder,
-            Assembly assembly)
+        public static ILoggingBuilder AddSpectreConsoleRenderers(this ILoggingBuilder loggingBuilder,
+            Assembly? assembly = null)
         {
-            var rendererTypes = assembly
+            var rendererTypes = (assembly ?? Assembly.GetCallingAssembly())
                 .GetTypes()
                 .Where(t => t.IsPublic && t.IsClass && typeof(ITemplateRenderer).IsAssignableFrom(t));
 

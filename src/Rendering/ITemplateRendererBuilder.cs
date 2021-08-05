@@ -11,6 +11,7 @@ namespace Vertical.SpectreLogger.Rendering
         /// <summary>
         /// Gets the formatters for a provided log level.
         /// </summary>
-        IEnumerable<ITemplateRenderer> GetRenderers(LogLevel logLevel);
+        // ReSharper disable once ReturnTypeCanBeEnumerable.Global
+        ITemplateRenderer[] GetRenderers(LogLevel logLevel);
     }
 }

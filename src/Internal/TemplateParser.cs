@@ -7,7 +7,7 @@ namespace Vertical.SpectreLogger.Internal
     {
         internal static IEnumerable<(string token, bool isTemplate)> Parse(string str, bool preserveFormat = true)
         {
-            var match = Regex.Match(str, @"(?<!\{)\{([a-zA-Z0-9:_]+)\}");
+            var match = Regex.Match(str, @"(?<!\{)\{([^}]+)\}");
             var index = 0;
             var group = preserveFormat ? 0 : 1;
 

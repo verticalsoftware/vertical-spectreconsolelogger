@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
 using Microsoft.Extensions.Logging;
 using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Options;
@@ -41,20 +39,27 @@ namespace Vertical.SpectreLogger
             if (!IsEnabled(logLevel))
                 return;
 
-            var buffer = _writeBufferFactory.GetInstance();
+            using var buffer = _writeBufferFactory.GetInstance();
+            var properties = new Dictionary<string, object?>();
+            
+            properties.AddState(state);
+            properties.AddScopes(_provider.Scopes);
 
             var eventInfo = new LogEventInfo(_categoryName, 
                 logLevel, 
                 eventId, 
                 state, 
                 exception,
-                state.AsFormattedLogValues(),
+                properties,
                 _provider.Scopes,
                 _options.FormattingProfiles[logLevel]);
-            
-            foreach (var templateFormatter in _rendererBuilder.GetRenderers(logLevel))
+
+            var renderers = _rendererBuilder.GetRenderers(logLevel);
+            var length = renderers.Length;
+
+            for (var c = 0; c < length; c++)
             {
-                templateFormatter.Render(buffer, eventInfo);
+                renderers[c].Render(buffer, eventInfo);
             }
             
             buffer.Flush();

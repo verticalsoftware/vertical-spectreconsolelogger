@@ -1,4 +1,3 @@
-using System;
 using System.Text.RegularExpressions;
 using Vertical.SpectreLogger.Output;
 
@@ -10,8 +9,9 @@ namespace Vertical.SpectreLogger.Rendering
     [Template(MyTemplate)]
     public class NewLineRenderer : ITemplateRenderer
     {
-        private const string MyTemplate = @"{NewLine(:(\d+))?}";
+        private const string MyTemplate = @"{NewLine(:(\d+)(!)?)?}";
         private readonly int _indent;
+        private readonly bool _setMargin;
 
         public NewLineRenderer(string? templateContext = null)
         {
@@ -24,6 +24,8 @@ namespace Vertical.SpectreLogger.Rendering
             {
                 _indent = i;
             }
+
+            _setMargin = match.Groups[3].Value == "!";
         }
 
         /// <inheritdoc />
@@ -34,6 +36,11 @@ namespace Vertical.SpectreLogger.Rendering
             if (_indent > 0)
             {
                 buffer.WriteWhitespace(_indent);
+            }
+
+            if (_setMargin)
+            {
+                buffer.Margin = _indent;
             }
         }
     }

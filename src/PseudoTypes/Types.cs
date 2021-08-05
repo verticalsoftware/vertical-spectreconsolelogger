@@ -2,10 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Vertical.SpectreLogger.MatchableTypes
+namespace Vertical.SpectreLogger.PseudoTypes
 {
     public static class Types
     {
+        /// <summary>
+        /// Defines DateTime, DateTimeOffset, and TimeSpan.
+        /// </summary>
+        public static IEnumerable<Type> TemporalTypes { get; } = new[]
+        {
+            typeof(DateTime),
+            typeof(DateTimeOffset),
+            typeof(TimeSpan)
+        };
+        
         /// <summary>
         /// Defines signed and unsigned integer types.
         /// </summary>

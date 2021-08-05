@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Options;
 
 namespace Vertical.SpectreLogger.Rendering
@@ -70,5 +71,13 @@ namespace Vertical.SpectreLogger.Rendering
         /// Gets the scopes.
         /// </summary>
         public object?[] Scopes { get; }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            var message = FormattedLogValues.GetValueOrDefault("{OriginalFormat}")?.ToString()
+                          ?? "(LogEventData)";
+            return $"{LogLevel}: {message}";
+        }
     }
 }

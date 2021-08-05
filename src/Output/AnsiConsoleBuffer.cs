@@ -1,37 +1,57 @@
 using System;
 using System.Text;
 using Spectre.Console;
-using Vertical.SpectreLogger.Memory;
 
 namespace Vertical.SpectreLogger.Output
 {
     /// <summary>
     /// Default <see cref="IWriteBuffer"/> that outputs to the console.
     /// </summary>
-    public class AnsiConsoleBuffer : IWriteBuffer
+    internal class AnsiConsoleBuffer : IWriteBuffer
     {
-        private readonly IStringBuilderPool _stringBuilderPool;
+        private readonly DefaultWriteBufferFactory _factory;
         private readonly IAnsiConsole _ansiConsole;
-        private readonly StringBuilder _stringBuilder;
+        private readonly StringBuilder _stringBuilder = new(1024);
 
         /// <summary>
         /// Creates a new instance of this type.
         /// </summary>
-        /// <param name="stringBuilderPool">String builder pool.</param>
-        /// <param name="bufferFactory"></param>
+        /// <param name="factory"></param>
         /// <param name="ansiConsole">Ansi console target</param>
-        public AnsiConsoleBuffer(DefaultWriteBufferFactory bufferFactory, IAnsiConsole ansiConsole)
+        public AnsiConsoleBuffer(DefaultWriteBufferFactory factory, IAnsiConsole ansiConsole)
         {
-            _stringBuilderPool = stringBuilderPool;
+            _factory = factory;
             _ansiConsole = ansiConsole;
-            _stringBuilder = stringBuilderPool.Get();
         }
 
         /// <inheritdoc />
-        public void Append(string str) => _stringBuilder.Append(str);
+        public void Append(string str)
+        {
+            if (Margin == 0)
+            {
+                _stringBuilder.Append(str);
+                return;
+            }
+
+            foreach (var c in str)
+            {
+                Append(c);
+            }
+        }
 
         /// <inheritdoc />
-        public void Append(char c) => _stringBuilder.Append(c);
+        public void Append(char c)
+        {
+            _stringBuilder.Append(c);
+            
+            if (c == '\n' && Margin > 0)
+            {
+                _stringBuilder.Append(' ', Margin);
+            }
+        }
+
+        /// <inheritdoc />
+        public void Clear() => _stringBuilder.Clear();
 
         /// <inheritdoc />
         public void Flush()
@@ -52,9 +72,14 @@ namespace Vertical.SpectreLogger.Output
         }
 
         /// <inheritdoc />
+        public int Margin { get; set; }
+
+        /// <inheritdoc />
         public void Dispose()
         {
-            _stringBuilderPool.Return(_stringBuilder);
+            Clear();
+            Margin = 0;
+            _factory.BufferDisposed(this);
         }
 
         /// <summary>

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
 using Vertical.SpectreLogger;
 using Vertical.SpectreLogger.Options;
+using Vertical.SpectreLogger.PseudoTypes;
 
 namespace SpectreLoggerExample
 {
@@ -13,50 +13,70 @@ namespace SpectreLoggerExample
     {
         static void Main(string[] args)
         {
+            AnsiConsole.Clear();
+
             var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder.AddSpectreConsole(options =>
                 {
-                    options.ConfigureProfiles(profile =>
-                        profile.OutputTemplate = "{LogLevel} {CategoryName}{NewLine:4}{Message}{Exception:NewLine}");
+                    options.MinimumLevel = LogLevel.Trace;
+                    options.ConfigureProfiles(profile => profile.AddTypeFormatter<NullValue>(_ => "(null)"));
+                    
                 });
                 builder.SetMinimumLevel(LogLevel.Trace);
             });
 
-            var logger = loggerFactory.CreateLogger<Program>();
+            var logger = loggerFactory.CreateLogger("System.Runtime.CompilerServices.Native");
 
-            logger.LogCritical("This is a {level} message", "Critical");
-            logger.LogError("This is a {level} message", "Error");
-            logger.LogWarning("This is a {level} message", "Warning");
-            logger.LogInformation("This is a {level} message", "Information");
-            logger.LogDebug("This is a {level} message", "Debug");
-            logger.LogTrace("This is a {level} message", "Trace");
+            var colors = typeof(Color)
+                .GetProperties()
+                .Where(prop => prop.PropertyType == typeof(Color))
+                .OrderBy(p => p.Name)
+                .Select(prop => (name: prop.Name, color: (Color) prop.GetValue(null)!));
 
-            if (args.Any(a => a == "colors"))
+            foreach (var (name, color) in colors)
             {
-                foreach (var property in typeof(Color).GetProperties().Where(p => p.PropertyType == typeof(Color)))
-                {
-                    var instance = (Color) property.GetValue(null)!;
-                    AnsiConsole.MarkupLine($"[{instance.ToMarkup()}]Color = {property.Name}[/]");
-                }
+                AnsiConsole.MarkupLine($"[{color.ToMarkup()}]{name} = #{color.ToHex()} (R={color.R},G={color.G},B={color.B})[/]");
             }
+
+            Exception exception = default;
 
             try
             {
-                ThrowIt(new string[] { }, out var rv);
+                try
+                {
+                    var _ = new Dictionary<string, string>()["nope"];
+                }
+                catch (KeyNotFoundException ex)
+                {
+                    throw new InvalidOperationException("Dictionary access failed", ex);
+                }
             }
             catch (Exception ex)
             {
-                if (args.Any(a => a == "exception"))
-                {
-                    logger.LogError(ex, "So this just happened");
-                }
+                exception = ex;
             }
-        }
 
-        private static T ThrowIt<T>(IEnumerable<T> items, out KeyValuePair<string, T> returnValue)
-        {
-            throw new InvalidOperationException();
+            var logLevels = new[] {LogLevel.Trace, LogLevel.Debug, LogLevel.Information, LogLevel.Warning, LogLevel.Error, LogLevel.Critical};
+
+            foreach (var logLevel in logLevels)
+            {
+                logger.Log(logLevel,
+                    exception,
+                    // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
+                    "This is a formatted message for the {level} log level. Note how the following values are rendered:" + Environment.NewLine 
+                    + "Numbers:   {x}, {y} {z}" + Environment.NewLine
+                    + "Boolean:   {bool_true}, {bool_false}" + Environment.NewLine 
+                    + "Date/time: {date}" + Environment.NewLine
+                    + "Strings:   {string}" + Environment.NewLine
+                    + "Null:      {value}",
+                    logLevel.ToString(),
+                    10, 20, 30f,
+                    true, false,
+                    DateTimeOffset.UtcNow,
+                    "test-string",
+                    null);
+            }
         }
     }
 }
