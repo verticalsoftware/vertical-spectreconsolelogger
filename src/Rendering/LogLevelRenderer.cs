@@ -32,8 +32,7 @@ namespace Vertical.SpectreLogger.Rendering
             {
                 var profile = eventInfo.FormattingProfile;
                 var rendererOptions = profile.GetRenderingOptions<LogLevelRenderingOptions>();
-                var profileFormat = rendererOptions?.Formatter?.Invoke(eventInfo.LogLevel)
-                                ?? profile.LogLevelDisplay;
+                var profileFormat = rendererOptions?.Formatter?.Invoke(eventInfo.LogLevel) ?? eventInfo.LogLevel.ToString();
                 var compositeFormat = FormattingHelper.GetCompositeFormat(profileFormat, null, _format);
                 var markup = rendererOptions?.Style;
 

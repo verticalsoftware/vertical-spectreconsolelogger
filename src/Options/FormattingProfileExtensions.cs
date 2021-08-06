@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.PseudoTypes;
 
@@ -165,18 +166,6 @@ namespace Vertical.SpectreLogger.Options
         public static FormattingProfile ClearValueFormatters(this FormattingProfile formattingProfile)
         {
             formattingProfile.TypeFormatters.Clear();
-            return formattingProfile;
-        }
-
-        /// <summary>
-        /// Renders log level name using the value obtained by calling the ToString() method on the
-        /// log level value.
-        /// </summary>
-        /// <param name="formattingProfile">Formatting profile</param>
-        /// <returns><see cref="FormattingProfile"/></returns>
-        public static FormattingProfile RenderVerboseLogLevelNames(this FormattingProfile formattingProfile)
-        {
-            formattingProfile.LogLevelDisplay = formattingProfile.LogLevel.ToString();
             return formattingProfile;
         }
         

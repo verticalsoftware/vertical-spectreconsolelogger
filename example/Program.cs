@@ -91,18 +91,12 @@ namespace SpectreLoggerExample
 
         private static void DoExample()
         {
-            var loggerFactory = LoggerFactory.Create(builder =>
-            {
-                builder.AddSpectreConsole(options =>
-                {
-                    options.MinimumLevel = LogLevel.Trace;
-                    options.ConfigureProfiles(profile => profile.OutputTemplate = "[{LogLevel}/{CategoryName}]: {Message}{Exception:NewLine}");
-                });
-            });
+            var logger = LoggerFactory.Create(builder => builder
+                .AddSpectreConsole(options => options
+                    .ConfigureProfiles(profile => profile.AddTypeStyle<DateTimeOffset>(Color.Purple.ToMarkup()))
+                )).CreateLogger("Program");
 
-            var logger = loggerFactory.CreateLogger("Vertical.SpectreConsole.Example.Program");
-            
-            logger.LogInformation("Hello Spectre logger");
+            logger.LogInformation("Hello SpectreConsole logger - today is {Date}", DateTimeOffset.Now);
         }
     }
 }

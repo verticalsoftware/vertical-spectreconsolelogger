@@ -44,11 +44,6 @@ namespace Vertical.SpectreLogger.Options
         public Dictionary<(Type, object), string> ValueStyles { get; } = new();
 
         /// <summary>
-        /// Gets or sets the name to display as the log level.
-        /// </summary>
-        public string LogLevelDisplay { get; set; } = "None";
-
-        /// <summary>
         /// Gets a dictionary of functions that convert object value types
         /// to specific string representations.
         /// </summary>
