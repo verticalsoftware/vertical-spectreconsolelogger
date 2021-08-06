@@ -1,5 +1,5 @@
 using System;
-using Vertical.SpectreLogger.Options;
+using System.Drawing;
 
 namespace Vertical.SpectreLogger.Output
 {
@@ -29,6 +29,12 @@ namespace Vertical.SpectreLogger.Output
         /// Flushes the content to the target.
         /// </summary>
         void Flush();
+        
+        /// <summary>
+        /// Gets whether the last operation on the write buffer inserted
+        /// a new line character with margin positioning.
+        /// </summary>
+        bool AtMargin { get; }
         
         /// <summary>
         /// Gets or sets the left-aligned margin to apply.

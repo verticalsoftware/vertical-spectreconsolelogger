@@ -11,7 +11,7 @@ namespace Vertical.SpectreLogger.Options
         /// <summary>
         /// Defines the default output template.
         /// </summary>
-        public const string OutputTemplate = "{LogLevel,-5} : {Margin:+8}{Message}{Exception:NewLine}";
+        public const string OutputTemplate = "{LogLevel,-5} : {Margin:+8}{Message}{NewLine?}{Exception}";
 
         private static void ConfigureDefaults(SpectreLoggerOptions options)
         {

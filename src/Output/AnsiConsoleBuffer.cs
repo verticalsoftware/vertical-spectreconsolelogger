@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Text;
 using Spectre.Console;
 
@@ -27,12 +28,6 @@ namespace Vertical.SpectreLogger.Output
         /// <inheritdoc />
         public void Append(string str)
         {
-            if (Margin == 0)
-            {
-                _stringBuilder.Append(str);
-                return;
-            }
-
             foreach (var c in str)
             {
                 Append(c);
@@ -43,11 +38,13 @@ namespace Vertical.SpectreLogger.Output
         public void Append(char c)
         {
             _stringBuilder.Append(c);
-            
+
             if (c == '\n' && Margin > 0)
             {
                 _stringBuilder.Append(' ', Margin);
             }
+
+            AtMargin = c == '\n';
         }
 
         /// <inheritdoc />
@@ -70,6 +67,10 @@ namespace Vertical.SpectreLogger.Output
                 throw;
             }
         }
+
+        /// <inheritdoc />
+        public bool AtMargin { get; private set; }
+
 
         /// <inheritdoc />
         public int Margin { get; set; }

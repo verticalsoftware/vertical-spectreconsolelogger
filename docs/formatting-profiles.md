@@ -2,7 +2,7 @@
 
 ## Overview
 
-Formatting profiles control precisely how events are rendered _for a specific_ log level. This means that events can appear totally different depending on their severity. Formatting profiles are configured within logging setup using delegates. Out-of-box, calling `AddSpectreConsole()` will configure default formatting profiles using a basic set of styles and formatting. Any changes made to the profile overwrite the default configuration.
+Formatting profiles control precisely how events are rendered _for a specific_ log level. This means that events can appear differently depending on their severity. Formatting profiles are configured within logging setup using delegates. Out-of-box, calling `AddSpectreConsole()` will configure default formatting profiles using a basic set of styles and formatting. Any changes made to the profile overwrite the default configuration.
 
 Profiles are configured by setting properties or using extension methods on the `FormattingProfile` type. Configuration settings and customization can be applied to a single profile using `ConfigureProfile`, or to multiple profiles using `ConfigureProfiles`.
 
@@ -34,6 +34,8 @@ var loggerFactory = LoggerFactory.Create(builder =>
 
 ## Property summary
 
+Below is a summary of the properties of the `FormattingProfile` type:
+
 |Property|Description|
 |---|---|
 |LogLevel|(Read-only) - gets the log level the formatting profile is controlling.|
@@ -45,52 +47,37 @@ var loggerFactory = LoggerFactory.Create(builder =>
 |DefaultTypeFormatter|A function that provides a string represents of values for rendering when the type is not found in `TypeFormatters`.
 |ValueStyles|Controls the markup that is applied to specific values.|
 
-## Property detail
+## Styling overview
 
 > 💡 Note
-> 
-> In all of the examples below, for brevity the `options` variable is an instance of the `SpectreLoggerOptions` class. This class type is what is provided to the delegate in the `AddSpectreConsole()` method.
+>
+> Any 'Style' property is simply a string with valid Spectre Console markup (e.g. "red1", "white on red1", etc.). It is not necessary to enclose markup in square brackets because the logger implementation does that for you. Furthermore, style tags are automatically closed when their scope ends.
+>
+> Square brackets that are found in other string properties of options objects are escaped.
 
-### OutputTemplate
+Rendering components in the logging implementation use Spectre Console markup strings to decorate the text being rendered. String values found in the various `*Style` properties are enclosed in square brackets and written to the output buffer. The text being decorated is then written to the buffer, and finally the proper closing tag ([/]) is written.
 
-An output template is simply a string with field names enclosed in handlebars. For example, consider the following template string:
+Markup styling can be applied to many distinct parts of the logging event and is detailed in the sections below.
 
+## Property detail
+
+### The output template
+
+The `OutputTemplate` property is a string that controls the structure of each log event. It contains an ordered series of placeholders enclosed in curly braces (handlebars) and other static text. During event rendering, the placeholders are replaced with the output of the specific renderer. Other static text that does not map to a renderer is copied verbatim to the output in the exact order it is found in the string. Here is a simple example:
+
+```csharp
+// Configuring the template
+profile.OutputTemplate = "[{LogLevel}/{CategoryName}]: {Message}";
+
+// Elsewhere...
+logger.LogInformation("Hello Spectre logger");
 ```
-[{LogLevel}/{CategoryName}]: {Message}{Exception:NewLine}
-```
-
-This instructs the logger to render the log level in brackets, a colon, the message, and the exception (if present) on a new line similar to what is illustrated below:
 
 ![basic](snips/basic.png)
 
-Each field name between handlebars in the output template corresponds to a specific rendering component. See [built-in renderers](renderers.md) for more detailed explanations on each renderer type.
+In addition to several [out-of-box renderers](renderers.md), applications can easily extend the logger with their own [custom renderer](custom-renderer.md) implementations.
 
-### BaseEventStyle
+### Base event style
 
-When set, this string is formatted as a Spectre Console markup string (enclosed in brackets) and written to the buffer before the template is rendered. After the template is rendered the closing tag is written. This value can be used to establish the default style of the event text.
+The `BaseEventStyle` property is a markup tag that is written before the output template is rendered and closed at the completion of the event. This is the markup the event will fall back to when no other styling is introduced.
 
-### TypeStyles
-
-`TypeStyles` is a dictionary of markup style strings that are associated to a `Type`. Before the `MessageTemplateRenderer` writes a substituted log value found in a structured log message, it obtains the type of the value and performs a lookup in this dictionary. If the entry exists, the value is written to the buffer as Spectre Console markup, the log value is written, and the markup tag is closed. If the type key is not found, the value is written without any markup.
-
-The easiest way to set markup for a specific type is to use one of the `AddTypeStyle` extension methods. For example:
-
-```csharp
-// The following example will render all DateTimeOffset values in purple for all log level events.
-var loggerFactory = LoggerFactory.Create(builder =>
-{
-    builder.AddSpectreConsole(options =>
-    {
-        options.ConfigureProfiles(profile =>
-        {
-            profile.AddTypeStyle<DateTimeOffset>(Color.Purple.ToMarkup());
-        });
-    });
-});
-
-var logger = loggerFactory.CreateLogger("Program");
-
-logger.LogInformation("Hello Spectre logger - today is {Date}", DateTimeOffset.Now);
-```
-
-![markup-date](snips/markup-date.png)

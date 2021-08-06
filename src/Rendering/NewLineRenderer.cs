@@ -9,7 +9,8 @@ namespace Vertical.SpectreLogger.Rendering
     [Template(MyTemplate)]
     public class NewLineRenderer : ITemplateRenderer
     {
-        private const string MyTemplate = @"{NewLine(:(\d+)(!)?)?}";
+        private const string MyTemplate = @"{NewLine(\?)?(?::(\d+)(!)?)?}";
+        private readonly bool _conditional;
         private readonly int _indent;
         private readonly bool _setMargin;
 
@@ -20,17 +21,17 @@ namespace Vertical.SpectreLogger.Rendering
             
             var match = Regex.Match(templateContext, MyTemplate);
 
-            if (int.TryParse(match.Groups[2].Value, out var i))
-            {
-                _indent = i;
-            }
-
+            _conditional = match.Groups[1].Success;
+            _indent = match.Groups[2].Success ? int.Parse(match.Groups[3].Value) : 0;
             _setMargin = match.Groups[3].Value == "!";
         }
 
         /// <inheritdoc />
         public void Render(IWriteBuffer buffer, in LogEventInfo eventInfo)
         {
+            if (_conditional && buffer.AtMargin)
+                return;
+            
             buffer.WriteLine();
 
             if (_indent > 0)

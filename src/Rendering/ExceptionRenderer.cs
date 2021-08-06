@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Spectre.Console;
 using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Options;
@@ -17,16 +16,7 @@ namespace Vertical.SpectreLogger.Rendering
     {
         private static readonly string[] StackFrameSplitValues = {Environment.NewLine};
 
-        private const string MyTemplate = @"{Exception(:NewLine)?}";
-
-        private readonly bool _newLine;
-
-        public ExceptionRenderer(string templateContext)
-        {
-            var match = Regex.Match(templateContext, MyTemplate);
-
-            _newLine = match.Groups[1].Success;
-        }
+        private const string MyTemplate = @"{Exception}";
 
         /// <inheritdoc />
         public void Render(IWriteBuffer buffer, in LogEventInfo eventInfo)
@@ -42,11 +32,6 @@ namespace Vertical.SpectreLogger.Rendering
                               .Default
                               .FormattingProfiles[profile.LogLevel]
                               .GetRenderingOptions<ExceptionRenderingOptions>()!;
-
-            if (_newLine)
-            {
-                buffer.WriteLine();
-            }
 
             if (options.StackFrameMarkup != null)
             {

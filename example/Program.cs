@@ -93,10 +93,23 @@ namespace SpectreLoggerExample
         {
             var logger = LoggerFactory.Create(builder => builder
                 .AddSpectreConsole(options => options
-                    .ConfigureProfiles(profile => profile.AddTypeStyle<DateTimeOffset>(Color.Purple.ToMarkup()))
-                )).CreateLogger("Program");
+                    .ConfigureProfile(LogLevel.Trace, profile => profile.BaseEventStyle = "grey35")
+                    .ConfigureProfile(LogLevel.Debug, profile => profile.BaseEventStyle = "grey54")
+                    .ConfigureProfile(LogLevel.Information, profile => profile.BaseEventStyle = "grey93")
+                    .ConfigureProfile(LogLevel.Warning, profile => profile.BaseEventStyle = "yellow")
+                    .ConfigureProfile(LogLevel.Error, profile => profile.BaseEventStyle = "red")
+                    .ConfigureProfile(LogLevel.Critical, profile => profile.BaseEventStyle = "white on red")
+                    .MinimumLevel = LogLevel.Trace
+                )
+                .SetMinimumLevel(LogLevel.Trace))
+                .CreateLogger("Program");
 
-            logger.LogInformation("Hello SpectreConsole logger - today is {Date}", DateTimeOffset.Now);
+            logger.LogTrace("I am a {level} event", LogLevel.Trace);
+            logger.LogDebug("I am a {level} event", LogLevel.Debug);
+            logger.LogInformation("I am a {level} event", LogLevel.Information);
+            logger.LogWarning("I am a {level} event", LogLevel.Warning);
+            logger.LogError("I am a {level} event", LogLevel.Error);
+            logger.LogCritical("I am a {level} event", LogLevel.Critical);
         }
     }
 }
