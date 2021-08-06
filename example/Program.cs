@@ -91,9 +91,58 @@ namespace SpectreLoggerExample
 
         private static void DoExample()
         {
+            var logger = LoggerFactory.Create(builder => builder.AddSpectreConsole(options =>
+                {
+                    options.ConfigureProfiles(profile => profile
+                        .AddTypeFormatter<int>(i => i < 1000 
+                            ? "less than a second" 
+                            : i < 60000 
+                                ? "less than a minute" 
+                                : "over a minute"));
+                }))
+                .CreateLogger("Program");
+
+            logger.LogInformation("It took {fast} to do this, but {slow} to do that", 
+                500,
+                60000);
+        }
+        
+        private static void DoExample4()
+        {
+            var logger = LoggerFactory.Create(builder => builder.AddSpectreConsole(options =>
+                {
+                    options.ConfigureProfiles(profile => profile
+                        .ClearValueStyles()
+                        .AddValueStyle(true, Color.Green.ToMarkup())
+                        .AddValueStyle(false, Color.Orange1.ToMarkup()));
+                }))
+                .CreateLogger("Program");
+
+            logger.LogInformation("This is {true}, but this is {false}", true, false);
+        }
+
+        private static void DoExample3()
+        {
+            var logger = LoggerFactory.Create(builder => builder.AddSpectreConsole(options =>
+                {
+                    options.ConfigureProfiles(profile => profile
+                        .ClearTypeStyles()
+                        .AddTypeStyle<int>(Color.Magenta1.ToMarkup())
+                        .AddTypeStyle<bool>(Color.Green.ToMarkup())
+                        .DefaultTypeStyle = Color.Orange1.ToMarkup());
+                }))
+                .CreateLogger("Program");
+
+            logger.LogInformation("Here is a bool: {bool}, here is an int: {int}, and here is a string: {string}",
+                true,
+                int.MaxValue,
+                "Hello Spectre Logger");
+        }
+
+        private static void DoExample2()
+        {
             var logger = LoggerFactory.Create(builder => builder
                 .AddSpectreConsole(options => options
-                    .ConfigureProfile(LogLevel.Trace, profile => profile.BaseEventStyle = "grey35")
                     .ConfigureProfile(LogLevel.Debug, profile => profile.BaseEventStyle = "grey54")
                     .ConfigureProfile(LogLevel.Information, profile => profile.BaseEventStyle = "grey93")
                     .ConfigureProfile(LogLevel.Warning, profile => profile.BaseEventStyle = "yellow")
