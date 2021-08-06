@@ -31,6 +31,10 @@ namespace Vertical.SpectreLogger.Rendering
                 ? int.Parse(match.Groups[3].Value)
                 : null;
         }
+
+        public class Options : ValueRenderingOptions<string>
+        {
+        }
         
         /// <inheritdoc />
         public void Render(IWriteBuffer buffer, in LogEventInfo eventInfo)
@@ -60,7 +64,7 @@ namespace Vertical.SpectreLogger.Rendering
             }
 
             var profile = eventInfo.FormattingProfile;
-            var rendererOptions = profile.GetRenderingOptions<CategoryNameRenderingOptions>();
+            var rendererOptions = profile.GetRenderingOptions<Options>();
             var profileFormat = rendererOptions?.Formatter?.Invoke(categoryName) ?? categoryName;
             var compositeFormat = FormattingHelper.GetCompositeFormat(profileFormat, _alignment, null);
             var markup = rendererOptions?.Style;

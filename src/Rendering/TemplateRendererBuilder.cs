@@ -53,7 +53,7 @@ namespace Vertical.SpectreLogger.Rendering
                          break;
                      
                      case true:
-                         list.Add(new FormattedLogPropertyRenderer(token));
+                         list.Add(new FormattedLogValueRenderer(token));
                          break;
                      
                      default:

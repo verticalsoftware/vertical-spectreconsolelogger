@@ -9,7 +9,7 @@ namespace Vertical.SpectreLogger.Internal
     {
         internal static StackFrameInfo Parse(string stackFrame)
         {
-            const string pattern = @"at (?<method>[^(]+)\((?<params>[^)]+)\)( in (?<path>([a-zA-Z]:)?[^:]+):line (?<lineno>\d+))?";
+            const string pattern = @"at (?<method>[^(]+)\((?<params>[^)]+)?\)( in (?<path>([a-zA-Z]:)?[^:]+):line (?<lineno>\d+))?";
 
             var matchGroups = Regex.Match(stackFrame, pattern).Groups;
 

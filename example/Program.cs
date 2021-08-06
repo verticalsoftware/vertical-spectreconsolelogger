@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -7,6 +8,7 @@ using Spectre.Console;
 using Vertical.SpectreLogger;
 using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.PseudoTypes;
+using Vertical.SpectreLogger.Rendering;
 
 namespace SpectreLoggerExample
 {
@@ -88,8 +90,77 @@ namespace SpectreLoggerExample
                     null);
             }
         }
-
+        
         private static void DoExample()
+        {
+            var logger = LoggerFactory.Create(builder => builder.AddSpectreConsole(options =>
+                {
+                    options.ConfigureProfiles(profile =>
+                    {
+                        profile.OutputTemplate = "{Message}{Exception:NewLine?}";
+                        profile.ConfigureRenderer<ExceptionRenderer.Options>(exOptions =>
+                        {
+                            exOptions.ExceptionMessageStyle = Color.Grey93.ToMarkup();
+                            exOptions.ExceptionNameFormatter = type => type.FullName!;
+                            exOptions.ExceptionNameStyle = Color.LightGoldenrod1.ToMarkup();
+                            exOptions.SourceLineNumberStyle = Color.Magenta1.ToMarkup(); 
+                            exOptions.MaxStackFrames = 5;
+                            exOptions.MethodNameStyle = Color.DarkOrange3_1.ToMarkup();
+                            exOptions.ParameterNameStyle = Color.LightSeaGreen.ToMarkup();
+                            exOptions.ParameterTypeStyle = Color.DodgerBlue1.ToMarkup();
+                            exOptions.RenderParameterNames = true;
+                            exOptions.RenderSourceLineNumbers = true;
+                            exOptions.RenderParameterTypes = true;
+                            exOptions.RenderSourcePaths = true;
+                            exOptions.SourcePathFormatter = Path.GetFileName;
+                            exOptions.SourcePathStyle = Color.Grey50.ToMarkup();
+                            exOptions.StackFrameStyle = Color.Grey50.ToMarkup();
+                            exOptions.UnwindAggregateExceptions = true;
+                            exOptions.UnwindInnerExceptions = true;
+                        });
+                    });
+                }))
+                .CreateLogger("Vertical.SpectreLogger.Console.Example");
+
+            try
+            {
+                new Dictionary<string, string> {["key"] = string.Empty}.Add("key", string.Empty);
+            }
+            catch (Exception exception)
+            {
+                logger.LogError(exception, "An exception was caught in the example");
+            }
+        }
+
+        private static void DoExample7()
+        {
+            var logger = LoggerFactory.Create(builder => builder.AddSpectreConsole(options =>
+                {
+                    options.ConfigureProfile(LogLevel.Information, profile =>
+                        profile
+                            .ConfigureRenderer<EventIdRenderer.Options>(opt => opt.Style = "green")
+                            .OutputTemplate = "[{EventId:Name}]: {Message}");
+                }))
+                .CreateLogger("Example");
+
+            logger.LogInformation(new EventId(10, "Example"), "Showing the event name only");
+        }
+        
+        private static void DoExample6()
+        {
+            var logger = LoggerFactory.Create(builder => builder.AddSpectreConsole(options =>
+                {
+                    options.ConfigureProfile(LogLevel.Information, profile =>
+                        profile
+                            .ConfigureRenderer<CategoryNameRenderer.Options>(opt => opt.Style = "black on yellow")
+                            .OutputTemplate = "[{CategoryName,-25:S2}]: {Message}");
+                }))
+                .CreateLogger("Vertical.SpectreConsole.Example.CategoryName");
+
+            logger.LogInformation("Look to left for the category");
+        }
+
+        private static void DoExample5()
         {
             var logger = LoggerFactory.Create(builder => builder.AddSpectreConsole(options =>
                 {

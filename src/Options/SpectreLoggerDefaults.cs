@@ -1,8 +1,7 @@
-using System;
-using System.Linq;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
 using Vertical.SpectreLogger.PseudoTypes;
+using Vertical.SpectreLogger.Rendering;
 
 namespace Vertical.SpectreLogger.Options
 {
@@ -95,26 +94,28 @@ namespace Vertical.SpectreLogger.Options
             
             options.ConfigureProfiles(profile =>
             {
-                profile.ConfigureRenderer<CategoryNameRenderingOptions>(opt => opt.Style = profile.BaseEventStyle!);
-                profile.AddTypeFormatter<EventId>(id => id.Id != 0 || !string.IsNullOrWhiteSpace(id.Name)
-                    ? id.ToString()
-                    : null);
+                profile.ConfigureRenderer<CategoryNameRenderer.Options>(opt => opt.Style = profile.BaseEventStyle!);
                 profile.AddTypeFormatter<object>(obj => obj?.ToString());
                 
-                profile.ConfigureRenderer<ExceptionRenderingOptions>(opt =>
+                profile.ConfigureRenderer<ExceptionRenderer.Options>(opt =>
                 {
-                    opt.ExceptionMessageMarkup = Color.Grey93.ToMarkup();
+                    opt.ExceptionMessageStyle = Color.Grey93.ToMarkup();
                     opt.ExceptionNameFormatter = type => type.FullName!;
-                    opt.ExceptionNameMarkup = Color.Grey93.ToMarkup();
-                    opt.SourceLineNumberMarkup = Color.Magenta1.ToMarkup(); 
+                    opt.ExceptionNameStyle = Color.Grey93.ToMarkup();
+                    opt.SourceLineNumberStyle = Color.Magenta1.ToMarkup(); 
                     opt.MaxStackFrames = 5;
-                    opt.MethodNameMarkup = Color.DarkOrange3_1.ToMarkup();
-                    opt.ParameterNameMarkup = Color.Grey93.ToMarkup();
-                    opt.ParameterTypeMarkup = Color.DodgerBlue1.ToMarkup();
+                    opt.MethodNameStyle = Color.DarkOrange3_1.ToMarkup();
+                    opt.ParameterNameStyle = Color.Grey93.ToMarkup();
+                    opt.ParameterTypeStyle = Color.DodgerBlue1.ToMarkup();
+                    opt.RenderParameterNames = true;
+                    opt.RenderSourceLineNumbers = true;
+                    opt.RenderParameterTypes = true;
+                    opt.RenderSourcePaths = true;
                     opt.SourcePathFormatter = path => path;
-                    opt.SourcePathMarkup = Color.Grey50.ToMarkup();
-                    opt.StackFrameMarkup = Color.Grey50.ToMarkup();
+                    opt.SourcePathStyle = Color.Grey50.ToMarkup();
+                    opt.StackFrameStyle = Color.Grey50.ToMarkup();
                     opt.UnwindAggregateExceptions = true;
+                    opt.UnwindInnerExceptions = true;
                 });
             });
         }

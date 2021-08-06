@@ -4,13 +4,13 @@ using Vertical.SpectreLogger.Output;
 
 namespace Vertical.SpectreLogger.Rendering
 {
-    internal class FormattedLogPropertyRenderer : ITemplateRenderer
+    internal class FormattedLogValueRenderer : ITemplateRenderer
     {
         private readonly string _key;
         private readonly string _alignment;
         private readonly string _format;
 
-        internal FormattedLogPropertyRenderer(string templateContext)
+        internal FormattedLogValueRenderer(string templateContext)
         {
             var match = Regex.Match(templateContext, @"{(\w+)(,-?[0-9]+)?(:\w+)?}");
 

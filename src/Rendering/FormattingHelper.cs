@@ -69,7 +69,7 @@ namespace Vertical.SpectreLogger.Rendering
         /// <param name="alignment">Alignment</param>
         /// <param name="format">Format</param>
         /// <returns></returns>
-        public static string GetCompositeFormat(object value, string? alignment, string? format)
+        public static string GetCompositeFormat(object value, string? alignment = null, string? format = null)
         {
             return alignment == null && format == null
                 ? value.ToString()!

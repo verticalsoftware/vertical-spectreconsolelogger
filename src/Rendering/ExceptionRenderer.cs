@@ -13,7 +13,7 @@ namespace Vertical.SpectreLogger.Rendering
     /// Renders exceptions.
     /// </summary>
     [Template(MyTemplate)]
-    public class ExceptionRenderer : ITemplateRenderer
+    public partial class ExceptionRenderer : ITemplateRenderer
     {
         private static readonly string[] StackFrameSplitValues = {Environment.NewLine};
 
@@ -41,27 +41,27 @@ namespace Vertical.SpectreLogger.Rendering
                 buffer.WriteLine();
 
             var profile = eventInfo.FormattingProfile;
-            var options = profile.GetRenderingOptions<ExceptionRenderingOptions>()
+            var options = profile.GetRenderingOptions<Options>()
                           ?? SpectreLoggerOptions
                               .Default
                               .FormattingProfiles[profile.LogLevel]
-                              .GetRenderingOptions<ExceptionRenderingOptions>()!;
+                              .GetRenderingOptions<Options>()!;
 
-            if (options.StackFrameMarkup != null)
+            if (options.StackFrameStyle != null)
             {
-                buffer.WriteMarkup(options.StackFrameMarkup);
+                buffer.WriteMarkup(options.StackFrameStyle);
             }
             
             RenderInternal(buffer, options, 1, new[]{exception});
 
-            if (options.StackFrameMarkup != null)
+            if (options.StackFrameStyle != null)
             {
                 buffer.WriteMarkupClose();
             }
         }
 
         private void RenderInternal(IWriteBuffer buffer,
-            ExceptionRenderingOptions options,
+            Options options,
             int indent,
             IEnumerable<Exception> exceptions,
             bool writeNewLine = false)
@@ -94,7 +94,7 @@ namespace Vertical.SpectreLogger.Rendering
         }
 
         private void RenderInternal(IWriteBuffer buffer, 
-            ExceptionRenderingOptions options,
+            Options options,
             int indent,
             Exception exception,
             bool writeNewLine)
@@ -108,12 +108,12 @@ namespace Vertical.SpectreLogger.Rendering
             var exceptionName = options.ExceptionNameFormatter?.Invoke(type) ?? type.FullName!;
             
             // Render the exception name
-            buffer.Write(exceptionName.EscapeMarkup(), options.ExceptionNameMarkup);
+            buffer.Write(exceptionName.EscapeMarkup(), options.ExceptionNameStyle);
             
             buffer.Write(": ");
             
             // Render the message
-            buffer.Write(exception.Message.EscapeMarkup(), options.ExceptionMessageMarkup);
+            buffer.Write(exception.Message.EscapeMarkup(), options.ExceptionMessageStyle);
 
             var stackFrames = exception
                 .StackTrace?
@@ -128,10 +128,17 @@ namespace Vertical.SpectreLogger.Rendering
                 buffer.WriteWhitespace(options.StackFrameIndentChars * indent);
                 RenderStackFrame(buffer, options, stackFrame);
             }
+
+            if (stackFrames.Length > options.MaxStackFrames && options.ShowHiddenStackFrameCount)
+            {
+                buffer.WriteLine();
+                buffer.WriteWhitespace(options.StackFrameIndentChars * indent);
+                buffer.Write($"+{stackFrames.Length - options.MaxStackFrames} more...");
+            }
         }
 
-        private void RenderStackFrame(IWriteBuffer buffer, 
-            ExceptionRenderingOptions options,
+        private static void RenderStackFrame(IWriteBuffer buffer, 
+            Options options,
             string stackFrame)
         {
             var stackFrameInfo = StackFrameParser.Parse(stackFrame);
@@ -139,7 +146,7 @@ namespace Vertical.SpectreLogger.Rendering
             var formattedMethodName = options.MethodNameFormatter?.Invoke(methodName) ?? methodName;
 
             buffer.Write("  at ");
-            buffer.Write(formattedMethodName.EscapeMarkup(), options.MethodNameMarkup);
+            buffer.Write(formattedMethodName.EscapeMarkup(), options.MethodNameStyle);
 
             RenderParameters(buffer, options, stackFrameInfo);
 
@@ -152,15 +159,18 @@ namespace Vertical.SpectreLogger.Rendering
 
                 var path = options.SourcePathFormatter?.Invoke(stackFrameInfo.SourcePath) ?? stackFrameInfo.SourcePath;
 
-                buffer.Write(path.EscapeMarkup(), options.SourcePathMarkup);
+                buffer.Write(path.EscapeMarkup(), options.SourcePathStyle);
+            }
             
+            if (options.RenderSourceLineNumbers && stackFrameInfo.SourceLineNumber > 0)
+            {
                 buffer.Write(":line ");
-                buffer.Write(stackFrameInfo.SourceLineNumber.ToString(), options.SourceLineNumberMarkup);
+                buffer.Write(stackFrameInfo.SourceLineNumber.ToString(), options.SourceLineNumberStyle);
             }
         }
 
         private static void RenderParameters(IWriteBuffer buffer, 
-            ExceptionRenderingOptions options,
+            Options options,
             StackFrameInfo stackFrameInfo)
         {
             if (!options.RenderParameterNames && !options.RenderParameterTypes)
@@ -176,7 +186,7 @@ namespace Vertical.SpectreLogger.Rendering
                 
                 if (options.RenderParameterTypes)
                 {
-                    buffer.Write(type.EscapeMarkup(), options.ParameterTypeMarkup);
+                    buffer.Write(type.EscapeMarkup(), options.ParameterTypeStyle);
                 }
 
                 if (options.RenderParameterNames)
@@ -186,7 +196,7 @@ namespace Vertical.SpectreLogger.Rendering
                         buffer.WriteWhitespace();    
                     }
                     
-                    buffer.Write(name.EscapeMarkup(), options.ParameterNameMarkup);
+                    buffer.Write(name.EscapeMarkup(), options.ParameterNameStyle);
                 }
 
                 separator = ", ";

@@ -10,7 +10,7 @@ namespace Vertical.SpectreLogger.Options
         /// <summary>
         /// Gets or sets a function that formats a value.
         /// </summary>
-        public Func<T, string?>? Formatter { get; set; } = obj => obj.ToString();
+        public Func<T, string?>? Formatter { get; set; }
         
         /// <summary>
         /// Gets or sets markup that is applied to the output before rendering a value.
