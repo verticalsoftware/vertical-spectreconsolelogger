@@ -33,7 +33,8 @@ namespace Vertical.SpectreLogger.Output
         /// <param name="ansiConsole">Ansi console</param>
         public DefaultWriteBufferFactory(IOptions<SpectreLoggerOptions> optionsProvider, IAnsiConsole ansiConsole)
         {
-            _bufferPool = new DefaultObjectPool<IWriteBuffer>(new PoolPolicy(() => new AnsiConsoleBuffer(this, ansiConsole)), 
+            _bufferPool = new DefaultObjectPool<IWriteBuffer>(
+                new PoolPolicy(() => new AnsiConsoleBuffer(this, ansiConsole)),
                 optionsProvider.Value.MaxPooledWriteBuffers);
         }
 

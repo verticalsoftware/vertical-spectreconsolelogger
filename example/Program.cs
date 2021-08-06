@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Spectre.Console;
 using Vertical.SpectreLogger;
 using Vertical.SpectreLogger.Options;
@@ -14,6 +15,16 @@ namespace SpectreLoggerExample
         static void Main(string[] args)
         {
             AnsiConsole.Clear();
+            
+            Console.WriteLine();
+            Console.WriteLine();
+            
+            DoExample();
+            
+            Console.WriteLine();
+            Console.WriteLine();
+            
+            return;
 
             var loggerFactory = LoggerFactory.Create(builder =>
             {
@@ -21,7 +32,6 @@ namespace SpectreLoggerExample
                 {
                     options.MinimumLevel = LogLevel.Trace;
                     options.ConfigureProfiles(profile => profile.AddTypeFormatter<NullValue>(_ => "(null)"));
-                    
                 });
                 builder.SetMinimumLevel(LogLevel.Trace);
             });
@@ -77,6 +87,22 @@ namespace SpectreLoggerExample
                     "test-string",
                     null);
             }
+        }
+
+        private static void DoExample()
+        {
+            var loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddSpectreConsole(options =>
+                {
+                    options.MinimumLevel = LogLevel.Trace;
+                    options.ConfigureProfiles(profile => profile.OutputTemplate = "[{LogLevel}/{CategoryName}]: {Message}{Exception:NewLine}");
+                });
+            });
+
+            var logger = loggerFactory.CreateLogger("Vertical.SpectreConsole.Example.Program");
+            
+            logger.LogInformation("Hello Spectre logger");
         }
     }
 }

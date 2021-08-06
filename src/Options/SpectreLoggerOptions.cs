@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using Microsoft.Extensions.Logging;
 
 namespace Vertical.SpectreLogger.Options
@@ -26,11 +29,25 @@ namespace Vertical.SpectreLogger.Options
         /// <summary>
         /// Gets or sets the formatting profiles.
         /// </summary>
-        public Dictionary<LogLevel, FormattingProfile> FormattingProfiles { get; } = new();
+        public IReadOnlyDictionary<LogLevel, FormattingProfile> FormattingProfiles { get; } =
+            new ReadOnlyDictionary<LogLevel, FormattingProfile>(new[]
+            {
+                LogLevel.Trace,
+                LogLevel.Debug,
+                LogLevel.Information,
+                LogLevel.Warning,
+                LogLevel.Error,
+                LogLevel.Critical
+            }.ToDictionary(level => level, _ => new FormattingProfile()));
+
+        /// <summary>
+        /// Gets or sets a dictionary of log level filters.
+        /// </summary>
+        public List<LogEventFilter> Filters { get; } = new();
 
         /// <summary>
         /// Gets or sets the maximum number of write buffers to keep pooled for log events.
         /// </summary>
-        public int MaxPooledWriteBuffers { get; set; } = 6;
+        public int MaxPooledWriteBuffers { get; set; } = 5;
     }
 }

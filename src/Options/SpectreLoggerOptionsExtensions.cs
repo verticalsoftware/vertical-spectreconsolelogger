@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using Vertical.SpectreLogger.Internal;
+using Vertical.SpectreLogger.Rendering;
 
 namespace Vertical.SpectreLogger.Options
 {
@@ -54,15 +57,69 @@ namespace Vertical.SpectreLogger.Options
             LogLevel logLevel,
             Action<FormattingProfile> configure)
         {
-            if (!options.FormattingProfiles.TryGetValue(logLevel, out var profile))
+            if (logLevel == LogLevel.None)
             {
-                options.FormattingProfiles.Add(logLevel, profile = new FormattingProfile());
+                throw new ArgumentException("There is no formatting profile for LogLevel.None", nameof(logLevel));
             }
-
-            configure(profile);
+            
+            configure(options.FormattingProfiles[logLevel]);
             return options;
         }
-        
-        
+
+        /// <summary>
+        /// Adds a filter to the configuration.
+        /// </summary>
+        /// <param name="options">Options</param>
+        /// <param name="filter">The filter to evaluate.</param>
+        /// <returns><see cref="SpectreLoggerOptions"/></returns>
+        public static SpectreLoggerOptions AddFilter(this SpectreLoggerOptions options, LogEventFilter filter)
+        {
+            options.Filters.Add(filter);
+            return options;
+        }
+
+        /// <summary>
+        /// Adds a filter that suppresses events of specific categories where the log level is below the given
+        /// value. 
+        /// </summary>
+        /// <param name="options">Options</param>
+        /// <param name="categoryName">The category name that is matched</param>
+        /// <param name="minimumLevel">The minimum level event to render.</param>
+        /// <returns><see cref="SpectreLoggerOptions"/></returns>
+        public static SpectreLoggerOptions AddFilter(this SpectreLoggerOptions options,
+            string categoryName,
+            LogLevel minimumLevel)
+        {
+            return options.AddFilter((in LogEventInfo e) => e.LogLevel < minimumLevel 
+                                                            && Regex.IsMatch(e.CategoryName, categoryName));
+        }
+
+        /// <summary>
+        /// Adds a filter that suppresses events of loggers where the category name matches a type name.
+        /// </summary>
+        /// <param name="options">Options</param>
+        /// <param name="minimumLevel">The minimum level event to render.</param>
+        /// <typeparam name="T">The logger type</typeparam>
+        /// <returns><see cref="SpectreLoggerOptions"/></returns>
+        public static SpectreLoggerOptions AddFilter<T>(this SpectreLoggerOptions options,
+            LogLevel minimumLevel)
+        {
+            return options.AddFilter($"^{typeof(T).FullName}$", minimumLevel);
+        }
+
+        /// <summary>
+        /// Adds a filter that suppresses events of a specific event id where the log level is below the given
+        /// value.
+        /// </summary>
+        /// <param name="options">Options</param>
+        /// <param name="eventId">Event id to match.</param>
+        /// <param name="minimumLevel">The minimum level event to render.</param>
+        /// <returns><see cref="SpectreLoggerOptions"/></returns>
+        public static SpectreLoggerOptions AddFilter(this SpectreLoggerOptions options,
+            EventId eventId,
+            LogLevel minimumLevel)
+        {
+            return options.AddFilter((in LogEventInfo e) => e.LogLevel < minimumLevel && eventId.Equals(eventId));
+        }
     }
 }

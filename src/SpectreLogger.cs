@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Extensions.Logging;
 using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Options;
@@ -38,8 +39,7 @@ namespace Vertical.SpectreLogger
         {
             if (!IsEnabled(logLevel))
                 return;
-
-            using var buffer = _writeBufferFactory.GetInstance();
+            
             var properties = new Dictionary<string, object?>();
             
             properties.AddState(state);
@@ -54,6 +54,12 @@ namespace Vertical.SpectreLogger
                 _provider.Scopes,
                 _options.FormattingProfiles[logLevel]);
 
+            if (IsFiltered(eventInfo))
+                return;
+
+            using var buffer = _writeBufferFactory.GetInstance();
+            
+
             var renderers = _rendererBuilder.GetRenderers(logLevel);
             var length = renderers.Length;
 
@@ -64,7 +70,21 @@ namespace Vertical.SpectreLogger
             
             buffer.Flush();
         }
-        
+
+        private bool IsFiltered(in LogEventInfo eventInfo)
+        {
+            var length = _options.Filters.Count;
+            var filters = _options.Filters;
+
+            for (var c = 0; c < length; c++)
+            {
+                if (filters[c](eventInfo))
+                    return true;
+            }
+
+            return false;
+        }
+
         /// <inheritdoc />
         public bool IsEnabled(LogLevel logLevel) => logLevel != LogLevel.None && logLevel >= _options.MinimumLevel;
 

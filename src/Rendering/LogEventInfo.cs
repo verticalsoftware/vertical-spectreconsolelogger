@@ -30,7 +30,13 @@ namespace Vertical.SpectreLogger.Rendering
             FormattedLogValues = formattedLogValues;
             FormattingProfile = formattingProfile;
             Scopes = scopes.ToArray();
+            Timestamp = DateTimeOffset.Now;
         }
+        
+        /// <summary>
+        /// Gets the current event timestamp.
+        /// </summary>
+        public DateTimeOffset Timestamp { get; }
 
         /// <summary>
         /// Gets the logger name.

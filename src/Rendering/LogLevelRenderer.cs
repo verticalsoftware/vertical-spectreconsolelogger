@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
+using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Output;
 
 namespace Vertical.SpectreLogger.Rendering
@@ -30,10 +31,11 @@ namespace Vertical.SpectreLogger.Rendering
             if (!_cachedFormats.TryGetValue(eventInfo.LogLevel, out var formattedValue))
             {
                 var profile = eventInfo.FormattingProfile;
-                var profileFormat = FormattingHelper.GetProfileFormat(profile, eventInfo.LogLevel)
+                var rendererOptions = profile.GetRenderingOptions<LogLevelRenderingOptions>();
+                var profileFormat = rendererOptions?.Formatter?.Invoke(eventInfo.LogLevel)
                                 ?? profile.LogLevelDisplay;
                 var compositeFormat = FormattingHelper.GetCompositeFormat(profileFormat, null, _format);
-                var markup = FormattingHelper.GetProfileMarkupOrDefault(profile, eventInfo.LogLevel);
+                var markup = rendererOptions?.Style;
 
                 formattedValue = new FormattedValue(compositeFormat.EscapeMarkup(), markup);
 

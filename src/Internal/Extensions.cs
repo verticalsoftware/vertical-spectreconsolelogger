@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
 
 namespace Vertical.SpectreLogger.Internal
 {
@@ -16,11 +13,6 @@ namespace Vertical.SpectreLogger.Internal
                 : defaultIfNotFound;
         }
 
-        internal static T Configure<T>(this T instance, Action<T> configure)
-        {
-            configure(instance);
-            return instance;
-        }
 
         internal static void AddState<TState>(this Dictionary<string, object?> properties, TState state)
         {
