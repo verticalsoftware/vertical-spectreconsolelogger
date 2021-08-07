@@ -605,3 +605,7 @@ __pycache__/
 
 .build/test
 .build/packages
+
+# Apple bullshit
+
+.DS_Store

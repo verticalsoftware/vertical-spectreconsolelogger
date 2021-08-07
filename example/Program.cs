@@ -37,7 +37,7 @@ namespace SpectreLoggerExample
                         .ConfigureRenderer<FormattedLogValueRenderer.Options>(opt => opt
                             .ClearTypeStyles()
                             .DefaultTypeStyle = Color.Green.ToMarkup())
-                        .OutputTemplate = "{LogLevel,-5} : {Margin:+8}{Scope}{Message}{Exception:NewLine?}");
+                        .OutputTemplate = "{LogLevel,-5} : {Margin:+8}{Message}{Exception:NewLine?}");
                 });
                 builder.SetMinimumLevel(LogLevel.Trace);
             });
@@ -96,8 +96,85 @@ namespace SpectreLoggerExample
                     null);
             }
         }
-
+        
         private static void DoExample()
+        {
+            var logger = LoggerFactory.Create(builder => builder.AddSpectreConsole(options =>
+                {
+                    options.ConfigureProfiles(profile =>
+                    {
+                        // This is the default, but showing here for clarity
+                        profile.OutputTemplate = "{LogLevel,-5} : {Margin:+8}{Message}{Exception:NewLine?}";
+                        
+                        // Let's set custom styles
+                        profile
+                            .ClearTypeStyles()
+                            .ClearValueStyles()
+                            .AddTypeStyle(Types.NumericTypes, Color.Magenta1.ToMarkup())
+                            .AddTypeStyle(Types.TemporalTypes, Color.RoyalBlue1.ToMarkup())
+                            .AddTypeStyle(Types.CharacterTypes, Color.Pink1.ToMarkup())
+                            .AddValueStyle(true, Color.Green.ToMarkup())
+                            .AddValueStyle(false, Color.Orange1.ToMarkup())
+                            .AddTypeStyle<NullValue>(Color.Red1.ToMarkup())
+                            .AddTypeFormatter<NullValue>(_ => "(null)")
+                            .DefaultTypeStyle = Color.Cyan1.ToMarkup();
+                    });
+                }))
+                .CreateLogger("Vertical.SpectreConsoleLogger.Example");
+
+            logger.LogInformation(
+                "This is a formatted message for the {level} log level. Note how the following values are rendered:" + Environment.NewLine 
+                + "Numbers:   {x}, {y} {z}" + Environment.NewLine
+                + "Boolean:   {bool_true}, {bool_false}" + Environment.NewLine 
+                + "Date/time: {date}" + Environment.NewLine
+                + "Strings:   {string}" + Environment.NewLine
+                + "Null:      {value}",
+                LogLevel.Information,
+                10, 20, 30f,
+                true, false,
+                DateTimeOffset.UtcNow,
+                "test-string",
+                null);
+        }
+        
+        private static void DoExample11()
+        {
+            var logger = LoggerFactory.Create(builder => builder.AddSpectreConsole(options =>
+                {
+                    options.ConfigureProfile(LogLevel.Information, profile =>
+                    {
+                        profile.OutputTemplate =
+                            "{LogLevel,-5}: {CategoryName}{Margin:+7}{NewLine}{Message}"
+                            + "{Margin:+2}{Exception:NewLine?}"
+                            + "{Margin:-2}{NewLine}But then bump back by two...";
+                        
+                        profile.ConfigureRenderer<LogLevelRenderer.Options>(opt => opt.Style = "green");
+                        profile.ConfigureRenderer<CategoryNameRenderer.Options>(opt => opt.Style = "orange1");
+                        profile.ConfigureRenderer<ExceptionRenderer.Options>(opt =>
+                        {
+                            opt.SourcePathFormatter = Path.GetFileName;
+                            opt.RenderParameterNames = false;
+                        });
+                    });
+                }))
+                .CreateLogger("Vertical.SpectreConsoleLogger.Example");
+
+            try
+            {
+                new Dictionary<int,int>{[1]=1}.Add(1,1);
+            }
+            catch (Exception exception)
+            {
+                logger.LogInformation(
+                    exception,
+                    "This is an example of multi-line output.\n" 
+                    + "Notice how the text aligns on all new lines.\n" 
+                    + "This can make your logging output pretty\n"
+                    + "Let's bump the indent on this exception by 2:");    
+            }
+        }
+
+        private static void DoExample10()
         {
             var logger = LoggerFactory.Create(builder => builder.AddSpectreConsole(options =>
                 {

@@ -39,5 +39,8 @@ namespace Vertical.SpectreLogger.Rendering
                 buffer.Margin = _indent;
             }
         }
+
+        /// <inheritdoc />
+        public override string ToString() => $"NewLine{(_conditional ? "?" : "")} (indent={_indent}, setMargin={_setMargin})";
     }
 }

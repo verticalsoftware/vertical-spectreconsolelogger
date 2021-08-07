@@ -140,7 +140,9 @@ namespace Vertical.SpectreLogger.Rendering
         public static string? MarkupValue(MultiTypeRenderingOptions? options, object? value, Type type)
         {
             return
-                options?.TypeStyles?.GetValueOrDefault(type)
+                options?.ValueStyles.GetValueOrDefault((type, value!))
+                ??
+                options?.TypeStyles.GetValueOrDefault(type)
                 ??
                 options?.DefaultTypeStyle;
         }

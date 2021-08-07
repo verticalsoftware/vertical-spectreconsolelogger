@@ -8,14 +8,14 @@ Renders the exception if set in the current log event. Configuration and styling
 Template: {Exception[:NewLine[?]]}
 ```
 
+### Options
+
 |Template Option|Description|
 |---|---|
 |`[:NewLine]`|Writes a newline character to the output before writing the exception.|
-|`[?]`|Writes the new line only if the current insert position within the internal write buffer is not at the current left margin position.|
+|`[?]`|Writes the new line only if the current insert position within the internal write buffer is not at the current margin position.|
 
-### Options
-
-The following properties are available on the `ExceptionRenderer.Options` type:
+Rendering is further controlled by configuring the `ExceptionRenderer.Options` type, which has the following properties:
 
 |Property|Description|
 |---|---|
@@ -81,5 +81,7 @@ catch (Exception exception)
     logger.LogError(exception, "An exception was caught in the example");
 }
 ```
+
+Output:
 
 ![output](snips/exception.png)

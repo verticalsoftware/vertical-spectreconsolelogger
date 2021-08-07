@@ -15,6 +15,13 @@ Template: {CategoryName[,width][:format]}
 |`[,width]`|Used to align the output within a fixed width. Negative values align the text to the left; positive values align the text to the right.|
 |`[:format]`|The character `S` followed by the number of segments of the category name to be rendered starting with the right-most part. If omitted, the complete category name is rendered.|
 
+Rendering is further controlled by configuring the `CategoryNameRenderer.Options` type that has the following properties:
+
+|Property|Description|
+|---|---|
+|`Formatter`|A function that receives the category name and returns the string that should be displayed. If not set, the original name is used.|
+|`Style`|Markup that is enclosed in a tag and written before the category name is rendered. The tag is closed afterwards.|
+
 ### Example
 
 ```csharp
@@ -30,5 +37,7 @@ var logger = LoggerFactory.Create(builder => builder.AddSpectreConsole(options =
 
 logger.LogInformation("Look to left for the category");
 ```
+
+Output:
 
 ![output](snips/category-renderer.png)

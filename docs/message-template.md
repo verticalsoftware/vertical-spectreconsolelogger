@@ -1,20 +1,16 @@
-# Formatted Log Value renderer
+﻿# Message template renderer
 
 ### Overview
 
-Renders the exception if set in the current log event. Configuration and styling is controlled by the `ExceptionRenderer.Options` type.
+Renders the log event message with structured log value substitutions.
 
 ```
-Template: {<key>[,width][:format]}
+Template: {Message}
 ```
 
-|Template Option|Description|
-|---|---|
-|`<key>`|The key of the log property to render. This could be a template in the message format or one of the following scopes: a `KeyValuePair<string, object>`, a `ValueTuple<string, object>`, a `Tuple<string, object>`, or found in an `IEnumerable<T>` collection of any of these types.|
-|`[,width]`|Used to align the output within a fixed width. Negative values align the text to the left; positive values align the text to the right.|
-|`[:format]`|A composite formatting code supported by `string.Format` and the value type.
+### Options
 
-Rendering is further controlled by the `FormattedLogValuesRenderer.Options` type. The following properties are available:
+Rendering is further controlled by the `MessageTemplateRenderer.Options` type. The following properties are available:
 
 |Property|Description|
 |---|---|
@@ -40,32 +36,3 @@ Instead of accessing the dictionaries directly, alternatively use the extension 
 |`ClearTypeStyles()`|Clears all type styles|
 |`ClearValueStyles()`|Clears all value styles|
 
-
-### Example
-
-In the following example, a scope is started that contains a key/value pair. It is then mapped in the output template.
-
-```csharp
-var logger = LoggerFactory.Create(builder => builder.AddSpectreConsole(options =>
-{
-    options.ConfigureProfiles(profile =>
-    {
-        profile.OutputTemplate = "[{LogLevel,-5}]: {MethodName} {Message}";
-        profile.ConfigureRenderer<FormattedLogValueRenderer.Options>(renderer =>
-        {
-            renderer.ClearTypeStyles();
-            renderer.DefaultTypeStyle = Color.Green.ToMarkup();
-            renderer.DefaultTypeFormatter = method => $"{method}()";
-        }); 
-    });
-}))
-.CreateLogger("Example");
-
-using var scope = logger.BeginScope(new KeyValuePair<string, object>("MethodName", nameof(DoExample)));
-
-logger.LogInformation("Displaying a specific scope value");
-```
-
-Output:
-
-![output](snips/formatted-log-values.png)

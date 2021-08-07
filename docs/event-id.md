@@ -8,14 +8,12 @@ Renders the event id assigned to the log event. Formatting and styling options a
 Template: {EventId[,width][:format]}
 ```
 
-#### Template options
+### Options
 
 |Option|Description|
 |---|---|
 |`[,width]`|Used to align the output within a fixed width. Negative values align the text to the left; positive values align the text to the right.|
 |`[:format]`|Determines what sub-part of the event id to render. Can be either `Id` or `Name` to render the event id or name, respectively. If omitted, the `.ToString()` value is used.|
-
-#### Additional configuration
 
 Rendering is further controlled by the `EventIdRenderer.Options` type:
 
@@ -39,5 +37,7 @@ var logger = LoggerFactory.Create(builder => builder.AddSpectreConsole(options =
 
 logger.LogInformation(new EventId(10, "Example"), "Showing the event name only");
 ```
+
+Output:
 
 ![output](snips/event-id.png)

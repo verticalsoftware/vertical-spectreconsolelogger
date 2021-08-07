@@ -1,3 +1,4 @@
+using System;
 using System.Text.RegularExpressions;
 using Vertical.SpectreLogger.Output;
 
@@ -9,7 +10,7 @@ namespace Vertical.SpectreLogger.Rendering
     [Template(MyTemplate)]
     public class MarginControlRenderer : ITemplateRenderer
     {
-        private const string MyTemplate = @"{Margin:([+-])(\d+)}";
+        private const string MyTemplate = @"{Margin:([+-])?(\d+)}";
         
         private readonly int _offset;
 
@@ -22,7 +23,10 @@ namespace Vertical.SpectreLogger.Rendering
         /// <inheritdoc />
         public void Render(IWriteBuffer buffer, in LogEventInfo eventInfo)
         {
-            buffer.Margin += _offset;
+            buffer.Margin = Math.Max(0, buffer.Margin + _offset);
         }
+
+        /// <inheritdoc />
+        public override string ToString() => $"Margin control={_offset}";
     }
 }

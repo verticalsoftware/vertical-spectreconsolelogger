@@ -22,5 +22,8 @@ namespace Vertical.SpectreLogger.Rendering
         {
             buffer.Write(_span);
         }
+
+        /// <inheritdoc />
+        public override string ToString() => $"Static span=\"{_span}\"";
     }
 }

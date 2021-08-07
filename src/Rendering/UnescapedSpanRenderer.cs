@@ -19,5 +19,8 @@ namespace Vertical.SpectreLogger.Rendering
         {
             buffer.Write(_span);
         }
+
+        /// <inheritdoc />
+        public override string ToString() => $"UnescapedSpan=\"{_span}\"";
     }
 }
