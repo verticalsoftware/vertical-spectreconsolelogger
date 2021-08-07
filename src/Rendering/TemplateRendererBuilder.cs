@@ -39,28 +39,21 @@ namespace Vertical.SpectreLogger.Rendering
                  // Preface all rendering with this markup
                  list.Add(new UnescapedSpanRenderer($"[{profile.BaseEventStyle}]"));
              }
-
-             foreach (var (token, isTemplate) in TemplateParser.Parse(template, preserveFormat: true))
+             
+             TemplateParser.GetTokens(template, (match, token) =>
              {
-                 TemplateDescriptor? selector;
-
-                 switch (isTemplate)
+                 switch (match)
                  {
-                     // ReSharper disable once PossibleMultipleEnumeration
-                     case true when (selector = descriptors.LastOrDefault(sel => sel.Select(token))) != null:
-                         var renderer = selector.Create(token);
-                         list.Add(renderer);
-                         break;
-                     
-                     case true:
-                         list.Add(new FormattedLogValueRenderer(token));
+                     case { }:
+                         var renderer = TryGetRendererInstance(descriptors, match.Value) ;
+                         list.Add(renderer ?? new FormattedLogValueRenderer(match.Value));
                          break;
                      
                      default:
                          list.Add(new StaticSpanRenderer(token));
                          break;
                  }
-             }
+             });
 
              if (profile.BaseEventStyle != null)
              {
@@ -70,6 +63,17 @@ namespace Vertical.SpectreLogger.Rendering
              list.Add(new EndEventRenderer());
 
              return list.ToArray();
+         }
+
+         private static ITemplateRenderer? TryGetRendererInstance(IEnumerable<TemplateDescriptor> descriptors, string matchValue)
+         {
+             foreach (var descriptor in descriptors)
+             {
+                 if (descriptor.TryCreateRenderer(matchValue, out var renderer))
+                     return renderer!;
+             }
+
+             return null;
          }
 
          /// <inheritdoc />

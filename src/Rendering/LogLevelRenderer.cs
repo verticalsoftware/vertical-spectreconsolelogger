@@ -11,18 +11,17 @@ namespace Vertical.SpectreLogger.Rendering
     public class LogLevelRenderer : ITemplateRenderer
     {
         private const string MyTemplate = @"{LogLevel(,-?\d+)?}";
+
+        public class Options : TypeRenderingOptions<LogLevel>
+        {
+        }
         
         private readonly ConcurrentDictionary<LogLevel, FormattedValue> _cachedFormats = new();
-        private readonly string? _format;
+        private readonly string? _width;
 
-        public LogLevelRenderer(string templateContext)
+        public LogLevelRenderer(Match matchContext)
         {
-            var match = Regex.Match(templateContext, MyTemplate);
-
-            if (match.Groups[1].Success)
-            {
-                _format = match.Groups[1].Value;
-            }
+            _width = matchContext.Groups[1].Value;
         }
         
         /// <inheritdoc />
@@ -31,9 +30,9 @@ namespace Vertical.SpectreLogger.Rendering
             if (!_cachedFormats.TryGetValue(eventInfo.LogLevel, out var formattedValue))
             {
                 var profile = eventInfo.FormattingProfile;
-                var rendererOptions = profile.GetRenderingOptions<LogLevelRenderingOptions>();
+                var rendererOptions = profile.GetRendererOptions<Options>();
                 var profileFormat = rendererOptions?.Formatter?.Invoke(eventInfo.LogLevel) ?? eventInfo.LogLevel.ToString();
-                var compositeFormat = FormattingHelper.GetCompositeFormat(profileFormat, null, _format);
+                var compositeFormat = FormattingHelper.GetCompositeFormat(profileFormat, null, _width);
                 var markup = rendererOptions?.Style;
 
                 formattedValue = new FormattedValue(compositeFormat.EscapeMarkup(), markup);

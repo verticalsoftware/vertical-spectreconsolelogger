@@ -2,15 +2,16 @@
 
 ### Overview
 
+Renders the exception if set in the current log event. Configuration and styling is controlled by the `ExceptionRenderer.Options` type.
+
 ```
 Template: {Exception[:NewLine[?]]}
 ```
 
-Renders the exception if set in the current log event. Configuration and styling is controlled by the `ExceptionRenderer.Options` type.
-
-|Option|Description|
+|Template Option|Description|
 |---|---|
-|`[:NewLine[?]]`|Writes a newline character to the output before writing the exception. If the `?` character is appended, a new line will only be written if the current position of the writer is not already at the left-side margin.|
+|`[:NewLine]`|Writes a newline character to the output before writing the exception.|
+|`[?]`|Writes the new line only if the current insert position within the internal write buffer is not at the current left margin position.|
 
 ### Options
 

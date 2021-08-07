@@ -19,14 +19,14 @@ The logger will construct the following pipeline from the output template:
 
 Everytime the logger encounters a log event, it invokes the pipeline in this order. This document explains each renderer.
 
-## Out-of-box renderer summary
+## Out-of-box renderers
 
 |Renderer|Template|Description|
 |---|---|---|
-|`CategoryNameRenderer`|{CategoryName}|Outputs the category name assigned to the logger|
-|`EventIdRenderer`|{EventId}|Outputs the event id|
-|`ExceptionRenderer`|{Exception}|Outputs the exception if set|
-|`FormattedLogValueRenderer`|{&lt;key&gt;}|Outputs a structured log or scope value|
+|[CategoryNameRenderer](category-name.md)|`{CategoryName}`|Outputs the category name assigned to the logger|
+|[EventIdRenderer](event-id.md)|`{EventId}`|Outputs the event id|
+|[ExceptionRenderer](exceptions.md)|`{Exception}`|Outputs the exception if set|
+|[FormattedLogValueRenderer](formatted-log-values.md)|`{<key>}`|Outputs a structured log or scope value|
 |`LogLevelRenderer`|{LogLevel}|Outputs the log level|
 |`MarginRenderer`|{Margin}|Sets the margin position for multi-line output|
 |`MessageTemplateRenderer`|{Message}|Outputs the log event message with structured value replacements|

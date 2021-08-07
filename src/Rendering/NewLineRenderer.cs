@@ -14,16 +14,11 @@ namespace Vertical.SpectreLogger.Rendering
         private readonly int _indent;
         private readonly bool _setMargin;
 
-        public NewLineRenderer(string? templateContext = null)
+        public NewLineRenderer(Match matchContext)
         {
-            if (templateContext == null)
-                return;
-            
-            var match = Regex.Match(templateContext, MyTemplate);
-
-            _conditional = match.Groups[1].Success;
-            _indent = match.Groups[2].Success ? int.Parse(match.Groups[3].Value) : 0;
-            _setMargin = match.Groups[3].Value == "!";
+            _conditional = matchContext.Groups[1].Success;
+            _indent = matchContext.Groups[2].Success ? int.Parse(matchContext.Groups[3].Value) : 0;
+            _setMargin = matchContext.Groups[3].Value == "!";
         }
 
         /// <inheritdoc />

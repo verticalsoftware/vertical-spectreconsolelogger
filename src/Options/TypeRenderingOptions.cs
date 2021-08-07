@@ -5,7 +5,7 @@ namespace Vertical.SpectreLogger.Options
     /// <summary>
     /// Defines common options for a renderer.
     /// </summary>
-    public abstract class ValueRenderingOptions<T> where T : notnull
+    public abstract class TypeRenderingOptions<T> where T : notnull
     {
         /// <summary>
         /// Gets or sets a function that formats a value.

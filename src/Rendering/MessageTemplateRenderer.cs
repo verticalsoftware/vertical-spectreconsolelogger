@@ -1,17 +1,24 @@
 using System.Linq;
 using Spectre.Console;
 using Vertical.SpectreLogger.Internal;
+using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Output;
+using Vertical.SpectreLogger.PseudoTypes;
 
 namespace Vertical.SpectreLogger.Rendering
 {
     [Template("{Message}")]
     public class MessageTemplateRenderer : ITemplateRenderer
     {
+        public class Options : MultiTypeRenderingOptions
+        {
+        }
+        
         /// <inheritdoc />
         public void Render(IWriteBuffer buffer, in LogEventInfo eventInfo)
         {
             var profile = eventInfo.FormattingProfile;
+            var options = profile.GetRendererOptions<Options>();
             var logValues = eventInfo.FormattedLogValues;
 
             if (!logValues.Any())
@@ -27,19 +34,30 @@ namespace Vertical.SpectreLogger.Rendering
             }
 
             // Render each part of the template
-            foreach (var match in TemplateParser.Parse(template, preserveFormat: false))
+            TemplateParser.GetTokens(template, (match, token) =>
             {
-                switch (match)
+                if (match != null)
                 {
-                    case { isTemplate: true } when logValues.TryGetValue(match.token, out value):
-                        FormattingHelper.RenderFormattedValue(profile, buffer, value);
-                        break;
+                    if (!logValues.TryGetValue(token, out var logValue))
+                        return;
+
+                    var type = logValue?.GetType() ?? typeof(NullValue);
+                    var width = match.Groups[2].Value;
+                    var format = match.Groups[3].Value;
+                    var formattedValue = FormattingHelper.FormatValue(options, logValue, type, width, format);
+
+                    if (formattedValue == null)
+                        return;
+
+                    var markup = FormattingHelper.MarkupValue(options, logValue, type);
                     
-                    default:
-                        buffer.Write(match.token.EscapeMarkup());
-                        break;
+                    buffer.Write(formattedValue, markup);
+                    
+                    return;
                 }
-            }
+                
+                buffer.Write(token.EscapeMarkup());
+            });
         }
     }
 }

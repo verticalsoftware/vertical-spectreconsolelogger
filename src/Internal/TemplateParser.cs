@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Vertical.SpectreLogger.Internal
@@ -29,6 +31,35 @@ namespace Vertical.SpectreLogger.Internal
             {
                 yield return (str.Substring(index, str.Length - index), false);
             }
+        }
+        
+        internal static void GetTokens(string str, Action<Match?, string> callback)
+        {
+            var match = Regex.Match(str, @"(?<!\{)\{([^}]+)\}");
+            var index = 0;
+
+            for (; match.Success; match = match.NextMatch())
+            {
+                if (match.Index > index)
+                {
+                    callback(null, str.Substring(index, match.Index - index));
+                }
+
+                var templateId = match.Groups[1].Value;
+                callback(match, templateId);
+
+                index = match.Index + match.Length;
+            }
+
+            if (index < str.Length)
+            {
+                callback(null, str.Substring(index, str.Length - index));
+            }
+        }
+        
+        internal static IEnumerable<Match> ParseMatches(string str)
+        {
+            return Regex.Matches(str, @"(?<!\{)\{([^}]+)\}").Cast<Match>();
         }
     }
 }

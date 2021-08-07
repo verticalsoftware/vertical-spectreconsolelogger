@@ -3,11 +3,23 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.PseudoTypes;
+using Vertical.SpectreLogger.Rendering;
 
 namespace Vertical.SpectreLogger.Options
 {
     public static class FormattingProfileExtensions
     {
+        /// <summary>
+        /// Gets the display name to render for the log level name.
+        /// </summary>
+        /// <param name="formattingProfile">Formatting profile.</param>
+        /// <param name="name">Name to display</param>
+        /// <returns><see cref="FormattingProfile"/></returns>
+        public static FormattingProfile SetLogLevelDisplayName(this FormattingProfile formattingProfile, string name)
+        {
+            return formattingProfile.ConfigureRenderer<LogLevelRenderer.Options>(opt => opt.Formatter = _ => name);
+        }
+        
         /// <summary>
         /// Adds markup that styles the rendering of specific object types.
         /// </summary>
@@ -16,7 +28,10 @@ namespace Vertical.SpectreLogger.Options
         /// <param name="markup">Markup</param>
         /// <returns><see cref="FormattingProfile"/></returns>
         public static FormattingProfile AddTypeStyle<T>(this FormattingProfile formattingProfile,
-            string markup) => formattingProfile.AddTypeStyle(typeof(T), markup);
+            string markup)
+        {
+            return formattingProfile.ConfigureMultiTypeRenderers(opt => opt.AddTypeStyle<T>(markup));
+        }
         
         /// <summary>
         /// Adds markup that styles the rendering of specific object types.
@@ -29,8 +44,7 @@ namespace Vertical.SpectreLogger.Options
             Type type, 
             string markup)
         {
-            formattingProfile.TypeStyles[type] = markup;
-            return formattingProfile;
+            return formattingProfile.ConfigureMultiTypeRenderers(opt => opt.AddTypeStyle(type, markup));
         }
 
         /// <summary>
@@ -44,12 +58,7 @@ namespace Vertical.SpectreLogger.Options
             IEnumerable<Type> types,
             string markup)
         {
-            foreach (var type in types)
-            {
-                formattingProfile.AddTypeStyle(type, markup);
-            }
-
-            return formattingProfile;
+            return formattingProfile.ConfigureMultiTypeRenderers(opt => opt.AddTypeStyle(types, markup));
         }
 
         /// <summary>
@@ -59,8 +68,7 @@ namespace Vertical.SpectreLogger.Options
         /// <returns><see cref="FormattingProfile"/></returns>
         public static FormattingProfile ClearTypeStyles(this FormattingProfile formattingProfile)
         {
-            formattingProfile.TypeStyles.Clear();
-            return formattingProfile;
+            return formattingProfile.ConfigureMultiTypeRenderers(opt => opt.ClearTypeStyles());
         }
 
         /// <summary>
@@ -75,8 +83,7 @@ namespace Vertical.SpectreLogger.Options
             T value,
             string markup) where T : notnull
         {
-            formattingProfile.ValueStyles[(typeof(T), (object)value)] = markup;
-            return formattingProfile;
+            return formattingProfile.ConfigureMultiTypeRenderers(opt => opt.AddValueStyle(value, markup));
         }
 
         /// <summary>
@@ -91,15 +98,7 @@ namespace Vertical.SpectreLogger.Options
             IEnumerable<object> values,
             string markup)
         {
-            var valueStyles = formattingProfile.ValueStyles;
-            
-            foreach (var obj in values)
-            {
-                var type = obj?.GetType() ?? throw new ArgumentException("Null values are not allowed.", nameof(values));
-                valueStyles[(type, obj)] = markup;
-            }
-
-            return formattingProfile;
+            return formattingProfile.ConfigureMultiTypeRenderers(opt => opt.AddValueStyles(values, markup));
         }
         
         /// <summary>
@@ -109,8 +108,7 @@ namespace Vertical.SpectreLogger.Options
         /// <returns><see cref="FormattingProfile"/></returns>
         public static FormattingProfile ClearValueStyles(this FormattingProfile formattingProfile)
         {
-            formattingProfile.ValueStyles.Clear();
-            return formattingProfile;
+            return formattingProfile.ConfigureMultiTypeRenderers(opt => opt.ClearValueStyles());
         }
 
         /// <summary>
@@ -124,8 +122,7 @@ namespace Vertical.SpectreLogger.Options
             Type type,
             Func<object?, string?> formatter)
         {
-            formattingProfile.TypeFormatters[type] = formatter;
-            return formattingProfile;
+            return formattingProfile.ConfigureMultiTypeRenderers(opt => opt.AddTypeFormatter(type, formatter));
         }
 
         /// <summary>
@@ -139,12 +136,7 @@ namespace Vertical.SpectreLogger.Options
             IEnumerable<Type> types,
             Func<object?, string?> formatter)
         {
-            foreach (var type in types)
-            {
-                formattingProfile.AddTypeFormatter(type, formatter);
-            }
-
-            return formattingProfile;
+            return formattingProfile.ConfigureMultiTypeRenderers(opt => opt.AddTypeFormatters(types, formatter));
         }
 
         /// <summary>
@@ -155,7 +147,10 @@ namespace Vertical.SpectreLogger.Options
         /// <param name="formatter">A function that returns a string representation of the given value.</param>
         /// <returns><see cref="FormattingProfile"/></returns>
         public static FormattingProfile AddTypeFormatter<T>(this FormattingProfile formattingProfile,
-            Func<T?, string?> formatter) => formattingProfile.AddTypeFormatter(typeof(T), obj => formatter((T?)obj));
+            Func<T?, string?> formatter)
+        {
+            return formattingProfile.ConfigureMultiTypeRenderers(opt => opt.AddTypeFormatter(formatter));
+        }
         
 
         /// <summary>
@@ -165,8 +160,7 @@ namespace Vertical.SpectreLogger.Options
         /// <returns><see cref="FormattingProfile"/></returns>
         public static FormattingProfile ClearValueFormatters(this FormattingProfile formattingProfile)
         {
-            formattingProfile.TypeFormatters.Clear();
-            return formattingProfile;
+            return formattingProfile.ConfigureMultiTypeRenderers(opt => opt.ClearValueFormatters());
         }
         
         /// <summary>
@@ -196,10 +190,18 @@ namespace Vertical.SpectreLogger.Options
         /// <param name="formattingProfile">Formatting profile.</param>
         /// <typeparam name="TOptions">Options type</typeparam>
         /// <returns>The options instance or null if never configured.</returns>
-        public static TOptions? GetRenderingOptions<TOptions>(this FormattingProfile formattingProfile)
+        public static TOptions? GetRendererOptions<TOptions>(this FormattingProfile formattingProfile)
             where TOptions : class
         {
             return formattingProfile.RendererOptions.GetValueOrDefault(typeof(TOptions)) as TOptions;
+        }
+
+        private static FormattingProfile ConfigureMultiTypeRenderers(this FormattingProfile formattingProfile,
+            Action<MultiTypeRenderingOptions> configure)
+        {
+            formattingProfile.ConfigureRenderer<FormattedLogValueRenderer.Options>(configure);
+            formattingProfile.ConfigureRenderer<MessageTemplateRenderer.Options>(configure);
+            return formattingProfile;
         }
     }
 }

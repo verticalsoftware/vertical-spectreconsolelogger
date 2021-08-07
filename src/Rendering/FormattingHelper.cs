@@ -1,3 +1,5 @@
+using System;
+using Spectre.Console;
 using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Output;
@@ -109,6 +111,38 @@ namespace Vertical.SpectreLogger.Rendering
             var markup = GetProfileMarkupOrDefault(profile, obj);
 
             return new FormattedValue(value, markup);
+        }
+
+        public static string? FormatValue(MultiTypeRenderingOptions? options,
+            object? value,
+            Type type,
+            string? width = null,
+            string? format = null)
+        {
+            var compositeFormat = $"{width}{format}";
+            
+            if (!string.IsNullOrWhiteSpace(compositeFormat))
+            {
+                var formatString = $"{{0{width}{format}}}";
+                return string.Format(formatString, value);
+            }
+            
+            var formatted =
+                options?.TypeFormatters?.GetValueOrDefault(type)?.Invoke(value)
+                ??
+                options?.DefaultTypeFormatter?.Invoke(value)
+                ??
+                value?.ToString();
+
+            return formatted?.EscapeMarkup();
+        }
+
+        public static string? MarkupValue(MultiTypeRenderingOptions? options, object? value, Type type)
+        {
+            return
+                options?.TypeStyles?.GetValueOrDefault(type)
+                ??
+                options?.DefaultTypeStyle;
         }
     }
 }

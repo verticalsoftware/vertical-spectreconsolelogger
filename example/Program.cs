@@ -33,7 +33,11 @@ namespace SpectreLoggerExample
                 builder.AddSpectreConsole(options =>
                 {
                     options.MinimumLevel = LogLevel.Trace;
-                    options.ConfigureProfiles(profile => profile.AddTypeFormatter<NullValue>(_ => "(null)"));
+                    options.ConfigureProfiles(profile => profile
+                        .ConfigureRenderer<FormattedLogValueRenderer.Options>(opt => opt
+                            .ClearTypeStyles()
+                            .DefaultTypeStyle = Color.Green.ToMarkup())
+                        .OutputTemplate = "{LogLevel,-5} : {Margin:+8}{Scope}{Message}{Exception:NewLine?}");
                 });
                 builder.SetMinimumLevel(LogLevel.Trace);
             });
@@ -48,7 +52,7 @@ namespace SpectreLoggerExample
 
             foreach (var (name, color) in colors)
             {
-                AnsiConsole.MarkupLine($"[{color.ToMarkup()}]{name} = #{color.ToHex()} (R={color.R},G={color.G},B={color.B})[/]");
+                //AnsiConsole.MarkupLine($"[{color.ToMarkup()}]{name} = #{color.ToHex()} (R={color.R},G={color.G},B={color.B})[/]");
             }
 
             Exception exception = default;
@@ -73,6 +77,8 @@ namespace SpectreLoggerExample
 
             foreach (var logLevel in logLevels)
             {
+                using var scope = logger.BeginScope(new[] {new KeyValuePair<string, object>("Scope", "(Scope Value) ")});
+                
                 logger.Log(logLevel,
                     exception,
                     // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
@@ -90,8 +96,49 @@ namespace SpectreLoggerExample
                     null);
             }
         }
-        
+
         private static void DoExample()
+        {
+            var logger = LoggerFactory.Create(builder => builder.AddSpectreConsole(options =>
+                {
+                    options.ConfigureProfile(LogLevel.Information, profile =>
+                    {
+                        profile.OutputTemplate = "[{LogLevel,-5}]: {Message}";
+                        profile.ConfigureRenderer<LogLevelRenderer.Options>(opt =>
+                        {
+                            opt.Formatter = _ => "INFO";
+                            opt.Style = "black on green";
+                        });
+                    });
+                }))
+                .CreateLogger("Example");
+
+            logger.LogInformation("Displaying the log level");
+        }
+
+        private static void DoExample9()
+        {
+            var logger = LoggerFactory.Create(builder => builder.AddSpectreConsole(options =>
+                {
+                    options.ConfigureProfiles(profile =>
+                    {
+                        profile.OutputTemplate = "[{LogLevel,-5}]: {MethodName} {Message}";
+                        profile.ConfigureRenderer<FormattedLogValueRenderer.Options>(renderer =>
+                        {
+                            renderer.ClearTypeStyles();
+                            renderer.DefaultTypeStyle = Color.Green.ToMarkup();
+                            renderer.DefaultTypeFormatter = method => $"{method}()";
+                        }); 
+                    });
+                }))
+                .CreateLogger("Example");
+
+            using var scope = logger.BeginScope(("MethodName", (object)"DoExample"));
+            
+            logger.LogInformation("Displaying a specific scope value");
+        }
+        
+        private static void DoExample8()
         {
             var logger = LoggerFactory.Create(builder => builder.AddSpectreConsole(options =>
                 {

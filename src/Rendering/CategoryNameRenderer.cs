@@ -20,19 +20,15 @@ namespace Vertical.SpectreLogger.Rendering
         private readonly int? _segments;
         private readonly ConcurrentDictionary<string, FormattedValue> _cachedEntries = new();
 
-        private delegate FormattedValue CreateEntry(in LogEventInfo eventInfo);
-        
-        public CategoryNameRenderer(string templateContext)
+        public CategoryNameRenderer(Match matchContext)
         {
-            var match = Regex.Match(templateContext, MyTemplate);
-
-            _alignment = match.Groups[1].Value;
-            _segments = match.Groups[2].Success && match.Groups[3].Success
-                ? int.Parse(match.Groups[3].Value)
+            _alignment = matchContext.Groups[1].Value;
+            _segments = matchContext.Groups[3].Success
+                ? int.Parse(matchContext.Groups[3].Value)
                 : null;
         }
 
-        public class Options : ValueRenderingOptions<string>
+        public class Options : TypeRenderingOptions<string>
         {
         }
         
@@ -64,7 +60,7 @@ namespace Vertical.SpectreLogger.Rendering
             }
 
             var profile = eventInfo.FormattingProfile;
-            var rendererOptions = profile.GetRenderingOptions<Options>();
+            var rendererOptions = profile.GetRendererOptions<Options>();
             var profileFormat = rendererOptions?.Formatter?.Invoke(categoryName) ?? categoryName;
             var compositeFormat = FormattingHelper.GetCompositeFormat(profileFormat, _alignment, null);
             var markup = rendererOptions?.Style;

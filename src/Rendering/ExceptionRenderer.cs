@@ -22,11 +22,10 @@ namespace Vertical.SpectreLogger.Rendering
         private readonly bool _newLine;
         private readonly bool _newLineConditional;
 
-        public ExceptionRenderer(string templateContext)
+        public ExceptionRenderer(Match matchContext)
         {
-            var match = Regex.Match(templateContext, MyTemplate);
-            _newLine = match.Groups[1].Success;
-            _newLineConditional = match.Groups[2].Success;
+            _newLine = matchContext.Groups[1].Success;
+            _newLineConditional = matchContext.Groups[2].Success;
         }
 
         /// <inheritdoc />
@@ -41,11 +40,11 @@ namespace Vertical.SpectreLogger.Rendering
                 buffer.WriteLine();
 
             var profile = eventInfo.FormattingProfile;
-            var options = profile.GetRenderingOptions<Options>()
+            var options = profile.GetRendererOptions<Options>()
                           ?? SpectreLoggerOptions
                               .Default
                               .FormattingProfiles[profile.LogLevel]
-                              .GetRenderingOptions<Options>()!;
+                              .GetRendererOptions<Options>()!;
 
             if (options.StackFrameStyle != null)
             {

@@ -13,12 +13,10 @@ namespace Vertical.SpectreLogger.Rendering
         
         private readonly int _offset;
 
-        public MarginControlRenderer(string templateContext)
+        public MarginControlRenderer(Match matchContext)
         {
-            var match = Regex.Match(templateContext, MyTemplate);
-
-            var multiplier = match.Groups[1].Value == "-" ? -1 : 1;
-            _offset = int.Parse(match.Groups[2].Value) * multiplier;
+            var multiplier = matchContext.Groups[1].Value == "-" ? -1 : 1;
+            _offset = int.Parse(matchContext.Groups[2].Value) * multiplier;
         }
         
         /// <inheritdoc />

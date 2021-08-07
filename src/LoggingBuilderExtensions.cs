@@ -50,7 +50,8 @@ namespace Vertical.SpectreLogger
         {
             var rendererTypes = (assembly ?? Assembly.GetCallingAssembly())
                 .GetTypes()
-                .Where(t => t.IsPublic && t.IsClass && typeof(ITemplateRenderer).IsAssignableFrom(t));
+                .Where(t => t.IsPublic && t.IsClass && typeof(ITemplateRenderer).IsAssignableFrom(t))
+                .Where(t => t.GetConstructors().Any());
 
             foreach (var type in rendererTypes)
             {

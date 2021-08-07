@@ -10,7 +10,7 @@ namespace Vertical.SpectreLogger.Rendering
     {
         private readonly Type _type;
         private readonly string _template;
-        private readonly Func<string, ITemplateRenderer> _factory;
+        private readonly Func<Match, ITemplateRenderer> _factory;
 
         internal TemplateDescriptor(Type type)
         {
@@ -19,28 +19,35 @@ namespace Vertical.SpectreLogger.Rendering
             _factory = CreateFactoryExpression(type);
         }
 
+        internal bool TryCreateRenderer(string templateContext, out ITemplateRenderer? renderer)
+        {
+            var match = Regex.Match(templateContext, _template);
+            renderer = match.Success ? _factory(match) : null;
+            return match.Success;
+        }
+
         internal bool Select(string templateContext)
         {
             return Regex.IsMatch(templateContext, _template);
         }
 
-        internal ITemplateRenderer Create(string templateContext)
+        internal ITemplateRenderer Create(Match templateContext)
         {
             return _factory(templateContext);
         }
-
-        private static Func<string, ITemplateRenderer> CreateFactoryExpression(Type type)
+        
+        private static Func<Match, ITemplateRenderer> CreateFactoryExpression(Type type)
         {
             var constructors = type.GetConstructors();
 
             var constructorWithContextParam = constructors.FirstOrDefault(ctor =>
-                ctor.GetParameters().Count(p => p.ParameterType == typeof(string)) == 1);
+                ctor.GetParameters().Count(p => p.ParameterType == typeof(Match)) == 1);
 
             if (constructorWithContextParam != null)
             {
-                var templateParameter = Expression.Parameter(typeof(string));
+                var templateParameter = Expression.Parameter(typeof(Match));
                 var ctorExpression = Expression.New(constructorWithContextParam, templateParameter);
-                var lambda = Expression.Lambda<Func<string, ITemplateRenderer>>(ctorExpression,
+                var lambda = Expression.Lambda<Func<Match, ITemplateRenderer>>(ctorExpression,
                     templateParameter);
                 return lambda.Compile();
             }

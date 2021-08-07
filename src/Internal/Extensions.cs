@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Vertical.SpectreLogger.Internal
@@ -23,11 +24,32 @@ namespace Vertical.SpectreLogger.Internal
                     {
                         properties[entry.Key] = entry.Value;
                     }
-
+                    break;
+                
+                case IEnumerable<ValueTuple<string, object>> valueTuples:
+                    foreach (var (key, value) in valueTuples)
+                    {
+                        properties[key] = value;
+                    }
+                    break;
+                
+                case IEnumerable<Tuple<string, object>> tuples:
+                    foreach (var (key, value) in tuples)
+                    {
+                        properties[key] = value;
+                    }
                     break;
                 
                 case KeyValuePair<string, object> keyValuePair:
                     properties[keyValuePair.Key] = keyValuePair.Value;
+                    break;
+                
+                case ValueTuple<string, object>(var key, var value):
+                    properties[key] = value;
+                    break;
+                
+                case Tuple<string, object>(var key, var value):
+                    properties[key] = value;
                     break;
             }
         }
