@@ -26,28 +26,9 @@ Everytime the logger encounters a log event, it invokes the pipeline in this ord
 |[CategoryNameRenderer](category-name.md)|`{CategoryName}`|Outputs the category name assigned to the logger|
 |[EventIdRenderer](event-id.md)|`{EventId}`|Outputs the event id|
 |[ExceptionRenderer](exceptions.md)|`{Exception}`|Outputs the exception if set|
-|[FormattedLogValueRenderer](formatted-log-values.md)|`{<key>}`|Outputs a structured log or scope value|
-|`LogLevelRenderer`|{LogLevel}|Outputs the log level|
-|`MarginRenderer`|{Margin}|Sets the margin position for multi-line output|
-|`MessageTemplateRenderer`|{Message}|Outputs the log event message with structured value replacements|
-|`NewLineRenderer`|{NewLine}|Outputs a new line|
-|`TimestampRenderer`|{Timestamp}|Outputs the log event timestamp|
-
-> 💡 Note
->
-> Renderers and any alignment/formatting options are case-sensitive when parsed within the output template.
-
-## Renderer list
-
-### Category Name
-
-```
-Template: {CategoryName[,width][:format]}
-```
-
-Renders the category name assigned to the logger when it was created. Typically, this is the full name of a class. Formatting and styling options are defined using the `CategoryNameRenderingOptions` type.
-
-|Option|Description|
-|---|---|
-|`[,width]`|Used to align the output within a fixed width. Negative values align the text to the left; positive values align the text to the right.|
-|`[:format]`|The character `S` followed by the number of segments of the category name to be rendered starting with the right-most part.|
+|[LogLevelRenderer](log-level.md)|{LogLevel}|Outputs the log level|
+|[MarginRenderer](margin-control.md)|{Margin}|Sets the margin position for multi-line output|
+|[MessageTemplateRenderer](message-template.md)|{Message}|Outputs the log event message with structured value replacements|
+|[NewLineRenderer](new-line.md)|{NewLine}|Outputs a new line|
+|[ScopeValueRenderer](scope-values.md)|`{<key>}`|Outputs a structured log or scope value|
+|[TimestampRenderer](timestamp.md)|{Timestamp}|Outputs the log event timestamp|

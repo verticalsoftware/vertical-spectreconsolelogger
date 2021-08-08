@@ -21,12 +21,6 @@ namespace Vertical.SpectreLogger.Rendering
             var options = profile.GetRendererOptions<Options>();
             var logValues = eventInfo.FormattedLogValues;
 
-            if (!logValues.Any())
-            {
-                FormattingHelper.RenderFormattedValue(profile, buffer, eventInfo.State);
-                return;
-            }
-
             if (!logValues.TryGetValue("{OriginalFormat}", out var value) || value is not string template)
             {
                 // What to do now?
@@ -34,25 +28,21 @@ namespace Vertical.SpectreLogger.Rendering
             }
 
             // Render each part of the template
-            TemplateParser.GetTokens(template, (match, token) =>
+            TemplateParser.EnumerateTokens(template, (match, token) =>
             {
-                if (match != null)
+                if (match != null && logValues.TryGetValue(token, out var logValue))
                 {
-                    if (!logValues.TryGetValue(token, out var logValue))
-                        return;
-
                     var type = logValue?.GetType() ?? typeof(NullValue);
                     var width = match.Groups[2].Value;
                     var format = match.Groups[3].Value;
                     var formattedValue = FormattingHelper.FormatValue(options, logValue, type, width, format);
 
-                    if (formattedValue == null)
+                    if (formattedValue == null) 
                         return;
-
+                    
                     var markup = FormattingHelper.MarkupValue(options, logValue, type);
-                    
                     buffer.Write(formattedValue, markup);
-                    
+
                     return;
                 }
                 

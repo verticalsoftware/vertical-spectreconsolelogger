@@ -19,6 +19,18 @@ namespace Vertical.SpectreLogger.Options
         {
             return formattingProfile.ConfigureRenderer<LogLevelRenderer.Options>(opt => opt.Formatter = _ => name);
         }
+
+        /// <summary>
+        /// Sets the default type style.
+        /// </summary>
+        /// <param name="formattingProfile">Formatting profile.</param>
+        /// <param name="markup">Markup style</param>
+        /// <returns><see cref="FormattingProfile"/></returns>
+        public static FormattingProfile SetDefaultTypeStyle(this FormattingProfile formattingProfile, 
+            string markup)
+        {
+            return formattingProfile.ConfigureMultiTypeRenderers(options => options.DefaultTypeStyle = markup);
+        } 
         
         /// <summary>
         /// Adds markup that styles the rendering of specific object types.
@@ -199,7 +211,7 @@ namespace Vertical.SpectreLogger.Options
         private static FormattingProfile ConfigureMultiTypeRenderers(this FormattingProfile formattingProfile,
             Action<MultiTypeRenderingOptions> configure)
         {
-            formattingProfile.ConfigureRenderer<FormattedLogValueRenderer.Options>(configure);
+            formattingProfile.ConfigureRenderer<ScopeValueRenderer.Options>(configure);
             formattingProfile.ConfigureRenderer<MessageTemplateRenderer.Options>(configure);
             return formattingProfile;
         }

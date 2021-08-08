@@ -2,13 +2,17 @@
 
 ### Overview
 
-Renders the log event message with structured log value substitutions.
+Renders the log event message with structured log values substituted in the output.
 
 ```
 Template: {Message}
 ```
 
 ### Options
+
+> 💡 Note
+>
+> Renderer names and options within the template are case-sensitive.
 
 Rendering is further controlled by the `MessageTemplateRenderer.Options` type. The following properties are available:
 
@@ -36,3 +40,44 @@ Instead of accessing the dictionaries directly, alternatively use the extension 
 |`ClearTypeStyles()`|Clears all type styles|
 |`ClearValueStyles()`|Clears all value styles|
 
+### Example
+
+```csharp
+var loggerFactory = LoggerFactory.Create(builder =>
+{
+    builder.AddSpectreConsole(options =>
+    {
+        options.MinimumLevel = LogLevel.Trace;
+        options.ConfigureProfiles(profile => profile
+            .AddTypeStyle<NullValue>(Color.Orange3.ToMarkup())
+            .AddTypeFormatter<NullValue>(_ => "(null)")
+            .OutputTemplate = "{LogLevel,-5} : {Margin:8}{Message}{Exception:NewLine?}");
+    });
+    builder.SetMinimumLevel(LogLevel.Trace);
+});
+
+var logLevels = new[] {LogLevel.Trace, LogLevel.Debug, LogLevel.Information, LogLevel.Warning, LogLevel.Error, LogLevel.Critical};
+
+foreach (var logLevel in logLevels)
+{
+    Console.WriteLine();
+
+    logger.Log(logLevel,
+        "This is a formatted message for the {level} log level. Note how the following values are rendered:" + Environment.NewLine 
+        + "Numbers:   {x}, {y} {z}" + Environment.NewLine
+        + "Boolean:   {bool_true}, {bool_false}" + Environment.NewLine 
+        + "Date/time: {date}" + Environment.NewLine
+        + "Strings:   {string}" + Environment.NewLine
+        + "Null:      {value}",
+        logLevel.ToString(),
+        10, 20, 30f,
+        true, false,
+        DateTimeOffset.UtcNow,
+        "test-string",
+        null);
+}
+```
+
+Output
+
+![output](snips/message-template.png)

@@ -5,18 +5,24 @@
 Adjusts the margin that is applied when the logger encounters newline characters.
 
 ```
-Template: {Margin:<offset>}
+Template: {Margin:[-]<value>[!]}
 ```
 
 ### Options
 
+> 💡 Note
+>
+> Renderer names and options within the template are case-sensitive.
+
 |Template Options|Description|
 |---|---|
-|`<offset>`|A positive or negative integer by which the current margin is offset.|
+|`-`|Offsets the margin to the left by `<margin>` spaces. If omitted and the `!` option is not used, the margin is offset to right.
+|`<value>`|The number of spaces to offset the current margin, or the exact value to set the margin to (when the `!` option is used)|
+|`!`|Sets the margin to the given value without offsetting.|
 
 ### Remarks
 
-This renderer does not output anything, but it does control the virtual margin of the write buffer. Anytime the write buffer encounters the new line character `\n`, it will insert whitespace before any other content is written. Any adjustments to the margin are automatically reset at the end of a log event.
+This renderer does not output anything, but it does control the margin of the write buffer. Anytime the write buffer encounters the new line character `\n`, it will insert whitespace before any other content is written. Any adjustments to the margin are automatically reset at the end of a log event.
 
 ### Example
 

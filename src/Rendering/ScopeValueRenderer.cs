@@ -5,7 +5,8 @@ using Vertical.SpectreLogger.PseudoTypes;
 
 namespace Vertical.SpectreLogger.Rendering
 {
-    public class FormattedLogValueRenderer : ITemplateRenderer
+    [Template(@"{Scope:(\w+)(,-?\d+)?(:[^}]+)?}")]
+    public class ScopeValueRenderer : ITemplateRenderer
     {
         private readonly string _key;
         private readonly string _width;
@@ -15,14 +16,11 @@ namespace Vertical.SpectreLogger.Rendering
         {
         }
 
-        internal FormattedLogValueRenderer(string token)
+        public ScopeValueRenderer(Match matchContext)
         {
-            // Rematch
-            var match = Regex.Match(token, @"{(\w+)(,-?[0-9]+)?(:\w+)?}");
-
-            _key = match.Groups[1].Value;
-            _width = match.Groups[2].Value;
-            _format = match.Groups[3].Value;
+            _key = matchContext.Groups[1].Value;
+            _width = matchContext.Groups[2].Value;
+            _format = matchContext.Groups[3].Value;
         }
         
         /// <inheritdoc />

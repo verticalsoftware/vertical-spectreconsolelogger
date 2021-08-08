@@ -33,7 +33,7 @@ namespace Vertical.SpectreLogger.Internal
             }
         }
         
-        internal static void GetTokens(string str, Action<Match?, string> callback)
+        internal static void EnumerateTokens(string str, Action<Match?, string> callback)
         {
             var match = Regex.Match(str, @"(?<!\{)\{([^}]+)\}");
             var index = 0;

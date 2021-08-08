@@ -40,13 +40,12 @@ namespace Vertical.SpectreLogger.Rendering
                  list.Add(new UnescapedSpanRenderer($"[{profile.BaseEventStyle}]"));
              }
              
-             TemplateParser.GetTokens(template, (match, token) =>
+             TemplateParser.EnumerateTokens(template, (match, token) =>
              {
                  switch (match)
                  {
-                     case { }:
-                         var renderer = TryGetRendererInstance(descriptors, match.Value) ;
-                         list.Add(renderer ?? new FormattedLogValueRenderer(match.Value));
+                     case { } when TryGetRendererInstance(descriptors, match.Value, out var renderer):
+                         list.Add(renderer!);
                          break;
                      
                      default:
@@ -65,15 +64,20 @@ namespace Vertical.SpectreLogger.Rendering
              return list.ToArray();
          }
 
-         private static ITemplateRenderer? TryGetRendererInstance(IEnumerable<TemplateDescriptor> descriptors, string matchValue)
+         private static bool TryGetRendererInstance(IEnumerable<TemplateDescriptor> descriptors,
+             string matchValue,
+             out ITemplateRenderer? templateRenderer)
          {
              foreach (var descriptor in descriptors)
              {
-                 if (descriptor.TryCreateRenderer(matchValue, out var renderer))
-                     return renderer!;
+                 if (descriptor.TryCreateRenderer(matchValue, out templateRenderer))
+                 {
+                     return true;
+                 }
              }
 
-             return null;
+             templateRenderer = null;
+             return false;
          }
 
          /// <inheritdoc />

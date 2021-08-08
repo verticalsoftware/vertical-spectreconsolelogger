@@ -13,6 +13,7 @@ namespace Vertical.SpectreLogger.Output
         private readonly DefaultWriteBufferFactory _factory;
         private readonly IAnsiConsole _ansiConsole;
         private readonly StringBuilder _stringBuilder = new(1024);
+        private int _margin;
 
         /// <summary>
         /// Creates a new instance of this type.
@@ -73,7 +74,11 @@ namespace Vertical.SpectreLogger.Output
 
 
         /// <inheritdoc />
-        public int Margin { get; set; }
+        public int Margin
+        {
+            get => _margin;
+            set => _margin = Math.Max(0, value);
+        }
 
         /// <inheritdoc />
         public void Dispose()

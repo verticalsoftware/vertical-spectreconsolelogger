@@ -10,23 +10,28 @@ namespace Vertical.SpectreLogger.Rendering
     [Template(MyTemplate)]
     public class MarginControlRenderer : ITemplateRenderer
     {
-        private const string MyTemplate = @"{Margin:([+-])?(\d+)}";
+        private const string MyTemplate = @"{Margin:(-?\d+)(!)?}";
+
+        private enum SetMode { Assign, OffsetIncrement, OffsetDecrement };
         
-        private readonly int _offset;
+        private readonly int _value;
+        private readonly bool _assign;
 
         public MarginControlRenderer(Match matchContext)
         {
-            var multiplier = matchContext.Groups[1].Value == "-" ? -1 : 1;
-            _offset = int.Parse(matchContext.Groups[2].Value) * multiplier;
+            _value = int.Parse(matchContext.Groups[1].Value);
+            _assign = matchContext.Groups[2].Success;
         }
         
         /// <inheritdoc />
         public void Render(IWriteBuffer buffer, in LogEventInfo eventInfo)
         {
-            buffer.Margin = Math.Max(0, buffer.Margin + _offset);
+            buffer.Margin = _assign
+                ? _value
+                : buffer.Margin + _value;
         }
 
         /// <inheritdoc />
-        public override string ToString() => $"Margin control={_offset}";
+        public override string ToString() => $"Margin control={_value}";
     }
 }

@@ -17,15 +17,19 @@ namespace Vertical.SpectreLogger.Rendering
     {
         private static readonly string[] StackFrameSplitValues = {Environment.NewLine};
 
-        private const string MyTemplate = @"{Exception(:NewLine(\?)?)?}";
+        private const string MyTemplate = @"{Exception(:NewLine(\?)?(?::(-?\d+)(!)?)?)?}";
 
         private readonly bool _newLine;
         private readonly bool _newLineConditional;
+        private readonly int? _margin;
+        private readonly bool _assign;
 
         public ExceptionRenderer(Match matchContext)
         {
             _newLine = matchContext.Groups[1].Success;
             _newLineConditional = matchContext.Groups[2].Success;
+            _margin = matchContext.Groups[3].Success ? int.Parse(matchContext.Groups[3].Value) : null;
+            _assign = matchContext.Groups[4].Success;
         }
 
         /// <inheritdoc />
@@ -35,9 +39,17 @@ namespace Vertical.SpectreLogger.Rendering
 
             if (exception == null)
                 return;
-            
-            if (_newLine && (!_newLineConditional || !buffer.AtMargin))
+
+            if (_newLine && (!buffer.AtMargin || !_newLineConditional))
+            {
                 buffer.WriteLine();
+                if (_margin.HasValue)
+                {
+                    buffer.Margin = _assign
+                        ? _margin.Value
+                        : buffer.Margin + _margin.Value;
+                }
+            }
 
             var profile = eventInfo.FormattingProfile;
             var options = profile.GetRendererOptions<Options>()

@@ -16,33 +16,20 @@ namespace SpectreLoggerExample
     {
         static void Main(string[] args)
         {
-            AnsiConsole.Clear();
-            
-            Console.WriteLine();
-            Console.WriteLine();
-            
-            DoExample();
-            
-            Console.WriteLine();
-            Console.WriteLine();
-            
-            return;
-
             var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder.AddSpectreConsole(options =>
                 {
                     options.MinimumLevel = LogLevel.Trace;
                     options.ConfigureProfiles(profile => profile
-                        .ConfigureRenderer<FormattedLogValueRenderer.Options>(opt => opt
-                            .ClearTypeStyles()
-                            .DefaultTypeStyle = Color.Green.ToMarkup())
-                        .OutputTemplate = "{LogLevel,-5} : {Margin:+8}{Message}{Exception:NewLine?}");
+                        .AddTypeStyle<NullValue>(Color.Orange3.ToMarkup())
+                        .AddTypeFormatter<NullValue>(_ => "(null)")
+                        .OutputTemplate = "{LogLevel,-5} : {Margin:8}{Message}{Exception:NewLine?}");
                 });
                 builder.SetMinimumLevel(LogLevel.Trace);
             });
 
-            var logger = loggerFactory.CreateLogger("System.Runtime.CompilerServices.Native");
+            var logger = loggerFactory.CreateLogger<Program>();
 
             var colors = typeof(Color)
                 .GetProperties()
@@ -55,33 +42,13 @@ namespace SpectreLoggerExample
                 //AnsiConsole.MarkupLine($"[{color.ToMarkup()}]{name} = #{color.ToHex()} (R={color.R},G={color.G},B={color.B})[/]");
             }
 
-            Exception exception = default;
-
-            try
-            {
-                try
-                {
-                    var _ = new Dictionary<string, string>()["nope"];
-                }
-                catch (KeyNotFoundException ex)
-                {
-                    throw new InvalidOperationException("Dictionary access failed", ex);
-                }
-            }
-            catch (Exception ex)
-            {
-                exception = ex;
-            }
-
             var logLevels = new[] {LogLevel.Trace, LogLevel.Debug, LogLevel.Information, LogLevel.Warning, LogLevel.Error, LogLevel.Critical};
 
             foreach (var logLevel in logLevels)
             {
-                using var scope = logger.BeginScope(new[] {new KeyValuePair<string, object>("Scope", "(Scope Value) ")});
-                
+                Console.WriteLine();
+
                 logger.Log(logLevel,
-                    exception,
-                    // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
                     "This is a formatted message for the {level} log level. Note how the following values are rendered:" + Environment.NewLine 
                     + "Numbers:   {x}, {y} {z}" + Environment.NewLine
                     + "Boolean:   {bool_true}, {bool_false}" + Environment.NewLine 
@@ -95,9 +62,27 @@ namespace SpectreLoggerExample
                     "test-string",
                     null);
             }
+
+            Console.WriteLine();
+        }
+
+        private static void DoExample()
+        {
+            var logger = LoggerFactory.Create(builder => builder.AddSpectreConsole(options =>
+                {
+                    options.ConfigureProfile(LogLevel.Information, profile =>
+                    {
+                        profile.OutputTemplate = "[{Timestamp:dd-MM-yyyy HH:mm:ss}]: {Message}";
+                        profile.ConfigureRenderer<TimestampRenderer.Options>(opt =>
+                            opt.Style = Color.Pink3.ToMarkup());
+                    });
+                }))
+                .CreateLogger("Example");
+
+            logger.LogInformation("Displaying the timestamp");
         }
         
-        private static void DoExample()
+        private static void DoExample12()
         {
             var logger = LoggerFactory.Create(builder => builder.AddSpectreConsole(options =>
                 {
@@ -117,7 +102,7 @@ namespace SpectreLoggerExample
                             .AddValueStyle(false, Color.Orange1.ToMarkup())
                             .AddTypeStyle<NullValue>(Color.Red1.ToMarkup())
                             .AddTypeFormatter<NullValue>(_ => "(null)")
-                            .DefaultTypeStyle = Color.Cyan1.ToMarkup();
+                            .SetDefaultTypeStyle(Color.Cyan1.ToMarkup());
                     });
                 }))
                 .CreateLogger("Vertical.SpectreConsoleLogger.Example");
@@ -199,8 +184,8 @@ namespace SpectreLoggerExample
                 {
                     options.ConfigureProfiles(profile =>
                     {
-                        profile.OutputTemplate = "[{LogLevel,-5}]: {MethodName} {Message}";
-                        profile.ConfigureRenderer<FormattedLogValueRenderer.Options>(renderer =>
+                        profile.OutputTemplate = "[{LogLevel,-5}]: {Scope:MethodName} {Message}";
+                        profile.ConfigureRenderer<ScopeValueRenderer.Options>(renderer =>
                         {
                             renderer.ClearTypeStyles();
                             renderer.DefaultTypeStyle = Color.Green.ToMarkup();
@@ -316,7 +301,7 @@ namespace SpectreLoggerExample
             logger.LogInformation("This is {true}, but this is {false}", true, false);
         }
 
-        private static void DoExample3()
+        private static void DoExample3() 
         {
             var logger = LoggerFactory.Create(builder => builder.AddSpectreConsole(options =>
                 {
@@ -324,7 +309,7 @@ namespace SpectreLoggerExample
                         .ClearTypeStyles()
                         .AddTypeStyle<int>(Color.Magenta1.ToMarkup())
                         .AddTypeStyle<bool>(Color.Green.ToMarkup())
-                        .DefaultTypeStyle = Color.Orange1.ToMarkup());
+                        .SetDefaultTypeStyle(Color.Orange1.ToMarkup()));
                 }))
                 .CreateLogger("Program");
 

@@ -10,6 +10,10 @@ Template: {CategoryName[,width][:format]}
 
 ### Options
 
+> 💡 Note
+>
+> Renderer names and options within the template are case-sensitive.
+
 |Option|Description|
 |---|---|
 |`[,width]`|Used to align the output within a fixed width. Negative values align the text to the left; positive values align the text to the right.|

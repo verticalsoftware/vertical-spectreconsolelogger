@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Output;
 
@@ -12,6 +13,10 @@ namespace Vertical.SpectreLogger.Rendering
         private readonly string _alignment;
         private readonly string _format;
 
+        public class Options : TypeRenderingOptions<DateTimeOffset>
+        {
+        }
+
         public TimestampRenderer(Match matchContext)
         {
             _alignment = matchContext.Groups[1].Value;
@@ -21,11 +26,12 @@ namespace Vertical.SpectreLogger.Rendering
         /// <inheritdoc />
         public void Render(IWriteBuffer buffer, in LogEventInfo eventInfo)
         {
-            var options = eventInfo.FormattingProfile.GetRendererOptions<TimestampRenderingOptions>();
+            var options = eventInfo.FormattingProfile.GetRendererOptions<Options>();
+            var value = eventInfo.Timestamp;
             var formattedValue =
-                options?.Formatter?.Invoke(eventInfo.Timestamp)
+                options?.Formatter?.Invoke(value)
                 ??
-                FormattingHelper.GetCompositeFormat(eventInfo.Timestamp, _alignment, _format);
+                FormattingHelper.GetCompositeFormat(value, _alignment, _format);
             
             buffer.Write(formattedValue, options?.Style);
         }

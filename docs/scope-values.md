@@ -1,20 +1,26 @@
-# Formatted Log Value renderer
+# Scope Value renderer
 
 ### Overview
 
 Renders the exception if set in the current log event. Configuration and styling is controlled by the `ExceptionRenderer.Options` type.
 
 ```
-Template: {<key>[,width][:format]}
+Template: {Scope:<key>[,width][:format]}
 ```
+
+### Options
+
+> 💡 Note
+>
+> Renderer names and options within the template are case-sensitive.
 
 |Template Option|Description|
 |---|---|
-|`<key>`|The key of the log property to render. This could be a template in the message format or one of the following scopes: a `KeyValuePair<string, object>`, a `ValueTuple<string, object>`, a `Tuple<string, object>`, or found in an `IEnumerable<T>` collection of any of these types.|
+|`<key>`|The key of the scope property to render. The renderer will recognize the following scope types: `KeyValuePair<string, object>`, a `ValueTuple<string, object>`, `Tuple<string, object>`, or found in an `IEnumerable<T>` collection of any of these types.|
 |`[,width]`|Used to align the output within a fixed width. Negative values align the text to the left; positive values align the text to the right.|
 |`[:format]`|A composite formatting code supported by `string.Format` and the value type.
 
-Rendering is further controlled by the `FormattedLogValuesRenderer.Options` type. The following properties are available:
+Rendering is further controlled by the `ScopeValueRenderer.Options` type. The following properties are available:
 
 |Property|Description|
 |---|---|
@@ -50,8 +56,8 @@ var logger = LoggerFactory.Create(builder => builder.AddSpectreConsole(options =
 {
     options.ConfigureProfiles(profile =>
     {
-        profile.OutputTemplate = "[{LogLevel,-5}]: {MethodName} {Message}";
-        profile.ConfigureRenderer<FormattedLogValueRenderer.Options>(renderer =>
+        profile.OutputTemplate = "[{LogLevel,-5}]: {Scope:MethodName} {Message}";
+        profile.ConfigureRenderer<ScopeValueRenderer.Options>(renderer =>
         {
             renderer.ClearTypeStyles();
             renderer.DefaultTypeStyle = Color.Green.ToMarkup();

@@ -2,18 +2,25 @@
 
 ### Overview
 
-Renders the exception if set in the current log event. Configuration and styling is controlled by the `ExceptionRenderer.Options` type.
+Renders the exception if set in the current log event, optionally starting a new line and adjusting the margin.
 
 ```
-Template: {Exception[:NewLine[?]]}
+Template: {Exception[:Newline[?][:[-]<margin>[!]]]]}
 ```
 
 ### Options
 
+> 💡 Note
+>
+> Renderer names and options within the template are case-sensitive.
+
 |Template Option|Description|
 |---|---|
 |`[:NewLine]`|Writes a newline character to the output before writing the exception.|
-|`[?]`|Writes the new line only if the current insert position within the internal write buffer is not at the current margin position.|
+|`?`|Inserts a newline character only if the write buffer is not already positioned on a new line at the currently set margin.|
+|`-`|Offsets the margin to the left by `<margin>` spaces. If omitted and the `!` option is not used, the margin is offset to right.
+|`<margin>`|The number of spaces to offset the current margin, or the exact value to set the margin to (when the `!` option is used)|
+|`!`|Sets the margin to the given value without offsetting.|
 
 Rendering is further controlled by configuring the `ExceptionRenderer.Options` type, which has the following properties:
 
