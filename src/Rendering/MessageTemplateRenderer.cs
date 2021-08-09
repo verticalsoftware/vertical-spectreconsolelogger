@@ -5,6 +5,7 @@ using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Output;
 using Vertical.SpectreLogger.PseudoTypes;
+using Vertical.SpectreLogger.Templates;
 
 namespace Vertical.SpectreLogger.Rendering
 {
@@ -53,7 +54,7 @@ namespace Vertical.SpectreLogger.Rendering
             }
 
             // Render each part of the template
-            TemplateParser.EnumerateTokens(template, (match, token) =>
+            ParseUtilities.EnumerateTokens(template, (match, token) =>
             {
                 if (match != null && logValues.TryGetValue(token, out var logValue))
                 {

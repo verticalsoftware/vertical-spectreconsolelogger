@@ -1,35 +1,39 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Spectre.Console;
 using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Output;
+using Vertical.SpectreLogger.Templates;
 
 namespace Vertical.SpectreLogger.Rendering
 {
     /// <summary>
     /// Renders exceptions.
     /// </summary>
-    [Template(MyTemplate)]
+    [TemplateParser(nameof(MyParser))]
     public partial class ExceptionRenderer : ITemplateRenderer
     {
         private static readonly string[] StackFrameSplitValues = {Environment.NewLine};
 
-        private const string MyTemplate = @"{Exception(?<"
-                                          + NewLineOptions.NewLineCaptureGroup
-                                          + @">:NewLine(?<" + NewLineOptions.ConditionalCaptureGroup
-                                          + @">\?)?(?::(?<" + MarginControlOptions.MarginControlCaptureGroup
-                                          + @">-?\d+)(?<"
-                                          + MarginControlOptions.MarginSetCaptureGroup
-                                          + ">!)?)?)?}";
-        
+        public static readonly TemplateParser MyParser = new()
+        {
+            RendererKey = "Exception",
+            NewLineControl = true,
+            MarginControl = true
+        };
 
-        private readonly NewLineOptions _newLineOptions;
+        private readonly TemplateContext _templateContext;
 
-        public ExceptionRenderer(Match matchContext) => _newLineOptions = 
-            new NewLineOptions(matchContext);
+        /// <summary>
+        /// Creates a new instance of this type.
+        /// </summary>
+        /// <param name="templateContext">Template context.</param>
+        public ExceptionRenderer(TemplateContext templateContext)
+        {
+            _templateContext = templateContext;
+        }
 
         /// <inheritdoc />
         public void Render(IWriteBuffer buffer, in LogEventInfo eventInfo)
@@ -39,7 +43,7 @@ namespace Vertical.SpectreLogger.Rendering
             if (exception == null)
                 return;
 
-            buffer.WriteLine(_newLineOptions);
+            buffer.WriteLine(_templateContext);
             
             var profile = eventInfo.FormattingProfile;
             var options = profile.GetRendererOptions<Options>()
@@ -61,7 +65,7 @@ namespace Vertical.SpectreLogger.Rendering
             }
         }
 
-        private void RenderInternal(IWriteBuffer buffer,
+        private static void RenderInternal(IWriteBuffer buffer,
             Options options,
             int indent,
             IEnumerable<Exception> exceptions,
@@ -94,7 +98,7 @@ namespace Vertical.SpectreLogger.Rendering
             }
         }
 
-        private void RenderInternal(IWriteBuffer buffer, 
+        private static void RenderInternal(IWriteBuffer buffer, 
             Options options,
             int indent,
             Exception exception,

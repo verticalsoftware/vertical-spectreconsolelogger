@@ -11,7 +11,7 @@ namespace Vertical.SpectreLogger.Tests
         [Theory, MemberData(nameof(Theories))]
         public void ParseYieldsExpected(string input, IEnumerable<(string, bool)> expected)
         {
-            TemplateParser.Parse(input).ShouldBe(expected);
+            ParseUtilities.Parse(input).ShouldBe(expected);
         }
 
         public static IEnumerable<object[]> Theories = new[]

@@ -2,6 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Rendering;
+using Vertical.SpectreLogger.Templates;
 
 namespace Vertical.SpectreLogger.Output
 {
@@ -24,19 +25,25 @@ namespace Vertical.SpectreLogger.Output
             buffer.Write(Environment.NewLine);
         }
 
-        public static void WriteLine(this IWriteBuffer buffer, NewLineOptions options)
+        public static void WriteLine(this IWriteBuffer buffer, TemplateContext context)
         {
-            if (!options.WriteNewLine)
-                return;
-
-            if (options.Margin.HasValue)
+            // Adjust margin
+            buffer.Margin = context.MarginControlMode switch
             {
-                buffer.Margin = options.SetMargin
-                    ? options.Margin.Value
-                    : buffer.Margin + options.Margin.Value;
+                MarginControlMode.Set => context.MarginAdjustment,
+                MarginControlMode.Offset => buffer.Margin + context.MarginAdjustment,
+                _ => buffer.Margin
+            };
+            
+            // write line
+            // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+            switch (context.NewLineMode)
+            {
+                case NewLineMode.Insert:
+                case NewLineMode.InsertAtMargin when !buffer.AtMargin:
+                    buffer.WriteLine();
+                    break;
             }
-
-            buffer.WriteLine();
         }
 
         public static void WriteWhitespace(this IWriteBuffer buffer, int count = 1)

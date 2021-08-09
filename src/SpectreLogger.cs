@@ -16,12 +16,12 @@ namespace Vertical.SpectreLogger
         private readonly SpectreLoggerOptions _options;
         private readonly IWriteBufferFactory _writeBufferFactory;
         private readonly string _categoryName;
-        private readonly ITemplateRendererBuilder _rendererBuilder;
+        private readonly IRendererBuilder _rendererBuilder;
 
         public SpectreLogger(SpectreLoggerProvider provider,
             SpectreLoggerOptions options, 
             IWriteBufferFactory writeBufferFactory,
-            ITemplateRendererBuilder rendererBuilder,
+            IRendererBuilder rendererBuilder,
             string categoryName)
         {
             _provider = provider;
@@ -59,8 +59,6 @@ namespace Vertical.SpectreLogger
                 return;
 
             using var buffer = _writeBufferFactory.GetInstance();
-            
-
             var renderers = _rendererBuilder.GetRenderers(logLevel);
             var length = renderers.Length;
 

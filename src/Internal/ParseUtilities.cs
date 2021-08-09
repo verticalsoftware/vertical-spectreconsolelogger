@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace Vertical.SpectreLogger.Internal
 {
-    internal static class TemplateParser
+    internal static class ParseUtilities
     {
         internal static IEnumerable<(string token, bool isTemplate)> Parse(string str, bool preserveFormat = true)
         {

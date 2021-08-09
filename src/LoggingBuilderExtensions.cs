@@ -30,7 +30,7 @@ namespace Vertical.SpectreLogger
             }
 
             services.AddSingleton<ILoggerProvider, SpectreLoggerProvider>();
-            services.AddSingleton<ITemplateRendererBuilder, TemplateRendererBuilder>();
+            services.AddSingleton<IRendererBuilder, RendererBuilder>();
             services.AddSingleton<IWriteBufferFactory, DefaultWriteBufferFactory>();
             services.AddSingleton(AnsiConsole.Console);
 
@@ -77,7 +77,7 @@ namespace Vertical.SpectreLogger
         private static ILoggingBuilder AddSpectreConsoleRenderer(this ILoggingBuilder loggingBuilder,
             Type rendererType)
         {
-            loggingBuilder.Services.AddSingleton(new TemplateDescriptor(rendererType));
+            loggingBuilder.Services.AddSingleton(new RendererDescriptor(rendererType));
             return loggingBuilder;
         }
     }

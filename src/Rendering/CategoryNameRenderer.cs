@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using Spectre.Console;
 using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Output;
+using Vertical.SpectreLogger.Templates;
 
 namespace Vertical.SpectreLogger.Rendering
 {
@@ -18,6 +19,10 @@ namespace Vertical.SpectreLogger.Rendering
         private readonly int? _segments;
         private readonly ConcurrentDictionary<string, FormattedValue> _cachedEntries = new();
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
+        /// <param name="matchContext">Match context.</param>
         public CategoryNameRenderer(Match matchContext)
         {
             _alignment = matchContext.Groups[1].Value;

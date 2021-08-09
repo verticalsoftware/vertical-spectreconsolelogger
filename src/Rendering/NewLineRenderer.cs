@@ -1,6 +1,7 @@
 using System;
 using System.Text.RegularExpressions;
 using Vertical.SpectreLogger.Output;
+using Vertical.SpectreLogger.Templates;
 
 namespace Vertical.SpectreLogger.Rendering
 {

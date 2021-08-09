@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Vertical.SpectreLogger.Rendering
+namespace Vertical.SpectreLogger.Templates
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class TemplateAttribute : Attribute

@@ -8,19 +8,19 @@ using Vertical.SpectreLogger.Options;
 
 namespace Vertical.SpectreLogger.Rendering.Internal
 {
-    internal class TemplateRendererBuilder : ITemplateRendererBuilder
+    internal class RendererBuilder : IRendererBuilder
     {
         private readonly Dictionary<LogLevel, ITemplateRenderer[]> _rendererDictionary;
         
-         public TemplateRendererBuilder(IOptions<SpectreLoggerOptions> optionsProvider,
-             IEnumerable<TemplateDescriptor> descriptors)
+         public RendererBuilder(IOptions<SpectreLoggerOptions> optionsProvider,
+             IEnumerable<RendererDescriptor> descriptors)
          {
              _rendererDictionary = Build(optionsProvider.Value, descriptors);
          }
 
          private static Dictionary<LogLevel, ITemplateRenderer[]> Build(
              SpectreLoggerOptions options, 
-             IEnumerable<TemplateDescriptor> descriptors)
+             IEnumerable<RendererDescriptor> descriptors)
          {
              return options
                  .FormattingProfiles
@@ -29,7 +29,7 @@ namespace Vertical.SpectreLogger.Rendering.Internal
          }
 
          private static ITemplateRenderer[] BuildRendererCollection(FormattingProfile profile, 
-             IEnumerable<TemplateDescriptor> descriptors)
+             IEnumerable<RendererDescriptor> descriptors)
          {
              var template = profile.OutputTemplate ?? SpectreLoggerOptions.OutputTemplate;
              var list = new List<ITemplateRenderer>();
@@ -40,7 +40,7 @@ namespace Vertical.SpectreLogger.Rendering.Internal
                  list.Add(new UnescapedSpanRenderer($"[{profile.BaseEventStyle}]"));
              }
              
-             TemplateParser.EnumerateTokens(template, (match, token) =>
+             ParseUtilities.EnumerateTokens(template, (match, token) =>
              {
                  switch (match)
                  {
@@ -64,7 +64,7 @@ namespace Vertical.SpectreLogger.Rendering.Internal
              return list.ToArray();
          }
 
-         private static bool TryGetRendererInstance(IEnumerable<TemplateDescriptor> descriptors,
+         private static bool TryGetRendererInstance(IEnumerable<RendererDescriptor> descriptors,
              string matchValue,
              out ITemplateRenderer? templateRenderer)
          {

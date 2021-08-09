@@ -21,7 +21,7 @@ namespace Vertical.SpectreLogger
         private static readonly ConcurrentDictionary<string, ILogger> CachedLoggers = new();
         
         private readonly IOptions<SpectreLoggerOptions> _optionsProvider;
-        private readonly ITemplateRendererBuilder _rendererBuilder;
+        private readonly IRendererBuilder _rendererBuilder;
         private readonly AsyncLocal<ImmutableStack<SpectreLoggerScope>> _asyncLocalScopes = new();
         private readonly IWriteBufferFactory _writeBufferFactory;
 
@@ -32,7 +32,7 @@ namespace Vertical.SpectreLogger
         /// <param name="rendererBuilder">Template format provider</param>
         /// <param name="writeBufferFactory">Write buffer factory</param>
         public SpectreLoggerProvider(IOptions<SpectreLoggerOptions> optionsProvider, 
-            ITemplateRendererBuilder rendererBuilder,
+            IRendererBuilder rendererBuilder,
             IWriteBufferFactory writeBufferFactory)
         {
             _optionsProvider = optionsProvider;

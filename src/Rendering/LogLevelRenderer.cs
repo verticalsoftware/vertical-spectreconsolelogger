@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Spectre.Console;
 using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Output;
+using Vertical.SpectreLogger.Templates;
 
 namespace Vertical.SpectreLogger.Rendering
 {
