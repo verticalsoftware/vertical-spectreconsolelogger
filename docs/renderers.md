@@ -30,5 +30,6 @@ Everytime the logger encounters a log event, it invokes the pipeline in this ord
 |[MarginRenderer](margin-control.md)|{Margin}|Sets the margin position for multi-line output|
 |[MessageTemplateRenderer](message-template.md)|{Message}|Outputs the log event message with structured value replacements|
 |[NewLineRenderer](new-line.md)|{NewLine}|Outputs a new line|
-|[ScopeValueRenderer](scope-values.md)|`{<key>}`|Outputs a structured log or scope value|
+|[ScopeValuesRenderer](scope-values.md)|`{<key>}`|Outputs all event scopes|
+|[SingleScopeRenderer](scope-value.md)|`{<key>}`|Outputs a single scope value|
 |[TimestampRenderer](timestamp.md)|{Timestamp}|Outputs the log event timestamp|

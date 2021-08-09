@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Rendering;
 
 namespace Vertical.SpectreLogger.Output
@@ -21,6 +22,21 @@ namespace Vertical.SpectreLogger.Output
         public static void WriteLine(this IWriteBuffer buffer)
         {
             buffer.Write(Environment.NewLine);
+        }
+
+        public static void WriteLine(this IWriteBuffer buffer, NewLineOptions options)
+        {
+            if (!options.WriteNewLine)
+                return;
+
+            if (options.Margin.HasValue)
+            {
+                buffer.Margin = options.SetMargin
+                    ? options.Margin.Value
+                    : buffer.Margin + options.Margin.Value;
+            }
+
+            buffer.WriteLine();
         }
 
         public static void WriteWhitespace(this IWriteBuffer buffer, int count = 1)

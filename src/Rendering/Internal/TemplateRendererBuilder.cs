@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Options;
 
-namespace Vertical.SpectreLogger.Rendering
+namespace Vertical.SpectreLogger.Rendering.Internal
 {
     internal class TemplateRendererBuilder : ITemplateRendererBuilder
     {

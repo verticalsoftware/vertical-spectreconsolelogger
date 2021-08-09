@@ -1,7 +1,6 @@
-using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 
-namespace Vertical.SpectreLogger.Rendering
+namespace Vertical.SpectreLogger.Rendering.Internal
 {
     /// <summary>
     /// Locates the appropriate formatters to use given a template string.

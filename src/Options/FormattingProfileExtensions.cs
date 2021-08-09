@@ -211,7 +211,7 @@ namespace Vertical.SpectreLogger.Options
         private static FormattingProfile ConfigureMultiTypeRenderers(this FormattingProfile formattingProfile,
             Action<MultiTypeRenderingOptions> configure)
         {
-            formattingProfile.ConfigureRenderer<ScopeValueRenderer.Options>(configure);
+            formattingProfile.ConfigureRenderer<KeyedPropertyValueRenderer.Options>(configure);
             formattingProfile.ConfigureRenderer<MessageTemplateRenderer.Options>(configure);
             return formattingProfile;
         }

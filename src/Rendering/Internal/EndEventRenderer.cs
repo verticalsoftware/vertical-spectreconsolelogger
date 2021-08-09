@@ -1,6 +1,6 @@
 using Vertical.SpectreLogger.Output;
 
-namespace Vertical.SpectreLogger.Rendering
+namespace Vertical.SpectreLogger.Rendering.Internal
 {
     internal class EndEventRenderer : ITemplateRenderer
     {

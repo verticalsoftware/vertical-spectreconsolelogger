@@ -1,18 +1,14 @@
-﻿# Message template renderer
+﻿# Scope values renderer
 
 ### Overview
 
-Renders the log event message with structured log values substituted in the output.
+Renders any scope values available in a log event.
 
 ```
-Template: {Message[:NewLine[?][:[-]<margin>[!]]]}
+Template: {ScopeValues[:NewLine[?][:[-]<margin>[!]]]}
 ```
 
 ### Options
-
-> 💡 Note
->
-> Renderer names and options within the template are case-sensitive.
 
 |Template Option|Description|
 |---|---|
@@ -22,17 +18,19 @@ Template: {Message[:NewLine[?][:[-]<margin>[!]]]}
 |`<margin>`|The number of spaces to offset the current margin, or the exact value to set the margin to (when the `!` option is used)|
 |`!`|Sets the margin to the given value without offsetting.|
 
-Rendering is further controlled by the `MessageTemplateRenderer.Options` type. The following properties are available:
+Rendering is further controlled by configuring the `ScopeValuesRenderer.Options` type that has the following properties:
 
 |Property|Description|
 |---|---|
 |`DefaultTypeFormatter`|A formatting function used as a fallback for all values rendered whose types are not located in the `TypeFormatters` dictionary.
 |`DefaultTypeStyle`|A single markup style used as a fallback for all values rendered whose types are not located in the `TypeSyles` dictionary.|
+|`ProviderFilter`|A function that is given and returns an `IEnumerable<object?>` collection of scope values. This is useful for applying any filtering, limiting, transformations, etc. to the scope values before rendering.|
+|`Separator`|A string that is inserted between each scope value - defaults to ` => `|
 |`TypeFormatters`|A dictionary of formatting functions that are associated to specific types. The renderer evaluates the type of value being rendered and looks for a formatting function in this dictionary. If found, the function provides the value to render.
 |`TypeStyles`|A dictionary of markup styles that are associated to specific types. The renderer evaluates the type of value being rendered and looks for a style in this dictionary. If found, the markup is applied before the value is rendered and the tag is closed afterward.|
 |`ValueStyles`|A dictionary of markup styles that are associated to specific values. The renderer evaluates the value being rendered and looks for a style in this dictionary. If found, the markup is applied before the value is rendered and the tag is closed afterward.|
 
-Instead of accessing the dictionaries directly, alternatively use the extension methods on the `FormattedLogValuesRenderer.Options` types to set formatters and styles as shown below:
+Instead of accessing the dictionaries directly, alternatively use the extension methods on the `MultiTypeRenderingOptions` type to set formatters and styles as shown below:
 
 |Extension Method|Description|
 |---|---|
@@ -47,45 +45,3 @@ Instead of accessing the dictionaries directly, alternatively use the extension 
 |`ClearTypeFormatters()`|Clears all type formatters|
 |`ClearTypeStyles()`|Clears all type styles|
 |`ClearValueStyles()`|Clears all value styles|
-
-### Example
-
-```csharp
-var loggerFactory = LoggerFactory.Create(builder =>
-{
-    builder.AddSpectreConsole(options =>
-    {
-        options.MinimumLevel = LogLevel.Trace;
-        options.ConfigureProfiles(profile => profile
-            .AddTypeStyle<NullValue>(Color.Orange3.ToMarkup())
-            .AddTypeFormatter<NullValue>(_ => "(null)")
-            .OutputTemplate = "{LogLevel,-5} : {Margin:8}{Message}{Exception:NewLine?}");
-    });
-    builder.SetMinimumLevel(LogLevel.Trace);
-});
-
-var logLevels = new[] {LogLevel.Trace, LogLevel.Debug, LogLevel.Information, LogLevel.Warning, LogLevel.Error, LogLevel.Critical};
-
-foreach (var logLevel in logLevels)
-{
-    Console.WriteLine();
-
-    logger.Log(logLevel,
-        "This is a formatted message for the {level} log level. Note how the following values are rendered:" + Environment.NewLine 
-        + "Numbers:   {x}, {y} {z}" + Environment.NewLine
-        + "Boolean:   {bool_true}, {bool_false}" + Environment.NewLine 
-        + "Date/time: {date}" + Environment.NewLine
-        + "Strings:   {string}" + Environment.NewLine
-        + "Null:      {value}",
-        logLevel.ToString(),
-        10, 20, 30f,
-        true, false,
-        DateTimeOffset.UtcNow,
-        "test-string",
-        null);
-}
-```
-
-Output
-
-![output](snips/message-template.png)

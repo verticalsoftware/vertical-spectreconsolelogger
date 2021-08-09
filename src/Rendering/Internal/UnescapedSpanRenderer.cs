@@ -1,20 +1,17 @@
-using System;
-using System.Text;
-using Spectre.Console;
 using Vertical.SpectreLogger.Output;
 
-namespace Vertical.SpectreLogger.Rendering
+namespace Vertical.SpectreLogger.Rendering.Internal
 {
     /// <summary>
     /// Internal renderer that writes static strings to the buffer.
     /// </summary>
-    internal class StaticSpanRenderer : ITemplateRenderer
+    internal class UnescapedSpanRenderer : ITemplateRenderer
     {
         private readonly string _span;
 
-        internal StaticSpanRenderer(string span)
+        internal UnescapedSpanRenderer(string span)
         {
-            _span = span.EscapeMarkup();
+            _span = span;
         }
 
         /// <inheritdoc />
@@ -24,6 +21,6 @@ namespace Vertical.SpectreLogger.Rendering
         }
 
         /// <inheritdoc />
-        public override string ToString() => $"Static span=\"{_span}\"";
+        public override string ToString() => $"UnescapedSpan=\"{_span}\"";
     }
 }

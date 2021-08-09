@@ -1,11 +1,11 @@
-# Scope Value renderer
+# Keyed Property Value renderer
 
 ### Overview
 
-Renders the exception if set in the current log event. Configuration and styling is controlled by the `ExceptionRenderer.Options` type.
+Renders a single keyed property value using optional width and formatting.
 
 ```
-Template: {Scope:<key>[,width][:format]}
+Template: {Property:<key>[,width][:format]}
 ```
 
 ### Options
@@ -16,11 +16,11 @@ Template: {Scope:<key>[,width][:format]}
 
 |Template Option|Description|
 |---|---|
-|`<key>`|The key of the scope property to render. The renderer will recognize the following scope types: `KeyValuePair<string, object>`, a `ValueTuple<string, object>`, `Tuple<string, object>`, or found in an `IEnumerable<T>` collection of any of these types.|
+|`<key>`|The key of the scope property to render. The renderer will match this value on a property in the log event, or with a key on the following scope types: `KeyValuePair<string, object>`, a `ValueTuple<string, object>`, `Tuple<string, object>`, or in one of the elements found in an `IEnumerable<T>` collection of any of these types.|
 |`[,width]`|Used to align the output within a fixed width. Negative values align the text to the left; positive values align the text to the right.|
 |`[:format]`|A composite formatting code supported by `string.Format` and the value type.
 
-Rendering is further controlled by the `ScopeValueRenderer.Options` type. The following properties are available:
+Rendering is further controlled by the `KeyedPropertyValueRenderer.Options` type. The following properties are available:
 
 |Property|Description|
 |---|---|
@@ -56,7 +56,7 @@ var logger = LoggerFactory.Create(builder => builder.AddSpectreConsole(options =
 {
     options.ConfigureProfiles(profile =>
     {
-        profile.OutputTemplate = "[{LogLevel,-5}]: {Scope:MethodName} {Message}";
+        profile.OutputTemplate = "[{LogLevel,-5}]: {Property:MethodName} {Message}";
         profile.ConfigureRenderer<ScopeValueRenderer.Options>(renderer =>
         {
             renderer.ClearTypeStyles();

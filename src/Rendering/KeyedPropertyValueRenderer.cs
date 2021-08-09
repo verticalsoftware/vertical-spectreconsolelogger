@@ -5,8 +5,8 @@ using Vertical.SpectreLogger.PseudoTypes;
 
 namespace Vertical.SpectreLogger.Rendering
 {
-    [Template(@"{Scope:(\w+)(,-?\d+)?(:[^}]+)?}")]
-    public class ScopeValueRenderer : ITemplateRenderer
+    [Template(@"{Property:(\w+)(,-?\d+)?(:[^}]+)?}")]
+    public class KeyedPropertyValueRenderer : ITemplateRenderer
     {
         private readonly string _key;
         private readonly string _width;
@@ -16,7 +16,7 @@ namespace Vertical.SpectreLogger.Rendering
         {
         }
 
-        public ScopeValueRenderer(Match matchContext)
+        public KeyedPropertyValueRenderer(Match matchContext)
         {
             _key = matchContext.Groups[1].Value;
             _width = matchContext.Groups[2].Value;
@@ -31,16 +31,14 @@ namespace Vertical.SpectreLogger.Rendering
             if (!logValues.TryGetValue(_key, out var logValue))
                 return;
 
-            var type = logValue?.GetType() ?? typeof(NullValue);
+            logValue ??= NullValue.Default;
+
+            var type = logValue.GetType();
             var options = eventInfo.FormattingProfile.GetRendererOptions<Options>();
             var formattedValue = FormattingHelper.FormatValue(options, logValue, type, _width, _format);
-
-            if (formattedValue == null)
-                return;
-
             var markup = FormattingHelper.MarkupValue(options, logValue, type);
+            
             buffer.Write(formattedValue, markup);
         }
-
     }
 }

@@ -7,6 +7,7 @@ using Spectre.Console;
 using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Output;
 using Vertical.SpectreLogger.Rendering;
+using Vertical.SpectreLogger.Rendering.Internal;
 
 namespace Vertical.SpectreLogger
 {

@@ -2,10 +2,8 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Spectre.Console;
-using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Output;
-using Vertical.SpectreLogger.PseudoTypes;
 
 namespace Vertical.SpectreLogger.Rendering
 {
@@ -62,7 +60,7 @@ namespace Vertical.SpectreLogger.Rendering
             var profile = eventInfo.FormattingProfile;
             var rendererOptions = profile.GetRendererOptions<Options>();
             var profileFormat = rendererOptions?.Formatter?.Invoke(categoryName) ?? categoryName;
-            var compositeFormat = FormattingHelper.GetCompositeFormat(profileFormat, _alignment, null);
+            var compositeFormat = FormattingHelper.GetCompositeFormat(profileFormat, _alignment);
             var markup = rendererOptions?.Style;
             
             formattedValue = new FormattedValue(compositeFormat.EscapeMarkup(), markup);

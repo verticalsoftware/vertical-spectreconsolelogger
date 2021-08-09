@@ -24,31 +24,36 @@ namespace Vertical.SpectreLogger.Rendering
                 : string.Format($"{{0{alignment ?? string.Empty}{format ?? string.Empty}}}", value);
         }
 
-        public static string? FormatValue(MultiTypeRenderingOptions? options,
-            object? value,
+        public static string FormatValue(MultiTypeRenderingOptions? options,
+            object value,
             Type type,
             string? width = null,
             string? format = null)
         {
+            if (options == null)
+            {
+                return value.ToString().EscapeMarkup();
+            }
+
             var compositeFormat = $"{width}{format}";
             
             if (!string.IsNullOrWhiteSpace(compositeFormat))
             {
-                var formatString = $"{{0{width}{format}}}";
+                var formatString = $"{{0{compositeFormat}}}";
                 return string.Format(formatString, value);
             }
             
             var formatted =
-                options?.TypeFormatters?.GetValueOrDefault(type)?.Invoke(value)
+                options.TypeFormatters.GetValueOrDefault(type)?.Invoke(value)
                 ??
-                options?.DefaultTypeFormatter?.Invoke(value)
+                options.DefaultTypeFormatter?.Invoke(value)
                 ??
-                value?.ToString();
+                value.ToString();
 
-            return formatted?.EscapeMarkup();
+            return formatted.EscapeMarkup();
         }
 
-        public static string? MarkupValue(MultiTypeRenderingOptions? options, object? value, Type type)
+        public static string? MarkupValue(MultiTypeRenderingOptions? options, object value, Type type)
         {
             return
                 options?.ValueStyles.GetValueOrDefault((type, value!))

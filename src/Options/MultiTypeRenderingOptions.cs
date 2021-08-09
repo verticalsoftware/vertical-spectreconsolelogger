@@ -33,6 +33,6 @@ namespace Vertical.SpectreLogger.Options
         /// Gets or sets the formatting function to use if one cannot be
         /// found in <see cref="TypeFormatters"/>.
         /// </summary>
-        public Func<object?, string?> DefaultTypeFormatter { get; set; } = obj => obj?.ToString();
+        public Func<object, string>? DefaultTypeFormatter { get; set; } = obj => obj.ToString() ?? string.Empty;
     }
 }
