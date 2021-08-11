@@ -6,22 +6,25 @@ using Vertical.SpectreLogger.Templates;
 
 namespace Vertical.SpectreLogger.Rendering
 {
-    [Template(MyTemplate)]
     public class TimestampRenderer : ITemplateRenderer
     {
-        private const string MyTemplate = @"{Timestamp(,-?\d+)?(:[^}]+)?}";
-        
-        private readonly string _alignment;
-        private readonly string _format;
+        private readonly TemplateContext _templateContext;
+
+        [TemplateProvider]
+        public static readonly Template Template = new()
+        {
+            RendererKey = "Timestamp",
+            FieldWidthFormatting = true,
+            CompositeFormatting = true
+        };
 
         public class Options : TypeRenderingOptions<DateTimeOffset>
         {
         }
 
-        public TimestampRenderer(Match matchContext)
+        public TimestampRenderer(TemplateContext templateContext)
         {
-            _alignment = matchContext.Groups[1].Value;
-            _format = matchContext.Groups[2].Value;
+            _templateContext = templateContext;
         }
 
         /// <inheritdoc />
@@ -32,7 +35,9 @@ namespace Vertical.SpectreLogger.Rendering
             var formattedValue =
                 options?.Formatter?.Invoke(value)
                 ??
-                FormattingHelper.GetCompositeFormat(value, _alignment, _format);
+                FormattingHelper.GetCompositeFormat(value, 
+                    _templateContext.FieldWidth, 
+                    _templateContext.CompositeFormat);
             
             buffer.Write(formattedValue, options?.Style);
         }

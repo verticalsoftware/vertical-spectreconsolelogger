@@ -28,12 +28,7 @@ namespace Vertical.SpectreLogger.Output
         public static void WriteLine(this IWriteBuffer buffer, TemplateContext context)
         {
             // Adjust margin
-            buffer.Margin = context.MarginControlMode switch
-            {
-                MarginControlMode.Set => context.MarginAdjustment,
-                MarginControlMode.Offset => buffer.Margin + context.MarginAdjustment,
-                _ => buffer.Margin
-            };
+            buffer.SetMargin(context);
             
             // write line
             // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
@@ -84,6 +79,16 @@ namespace Vertical.SpectreLogger.Output
             {
                 buffer.Append(c);
             }
+        }
+
+        public static void SetMargin(this IWriteBuffer buffer, TemplateContext context)
+        {
+            buffer.Margin = context.MarginControlMode switch
+            {
+                MarginControlMode.Offset => buffer.Margin + context.MarginAdjustment,
+                MarginControlMode.Set => context.MarginAdjustment,
+                _ => buffer.Margin
+            };
         }
     }
 }

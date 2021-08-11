@@ -1,4 +1,3 @@
-using System;
 using System.Text.RegularExpressions;
 using Vertical.SpectreLogger.Output;
 using Vertical.SpectreLogger.Templates;
@@ -8,41 +7,28 @@ namespace Vertical.SpectreLogger.Rendering
     /// <summary>
     /// Renderer that writes newlines to the buffer.
     /// </summary>
-    [Template(MyTemplate)]
     public class NewLineRenderer : ITemplateRenderer
     {
-        private const string MyTemplate = @"{NewLine(\?)?(?::([-]?)(\d+)?(!)?)}";
-        
-        private readonly bool _conditional;
-        private readonly int? _margin;
-        private readonly bool _assign;
+        private readonly bool _atMargin;
 
-        public NewLineRenderer(Match matchContext)
+        [TemplateProvider]
+        public static readonly Template Template = new()
         {
-            _conditional = matchContext.Groups[1].Success;
-            _margin = matchContext.Groups[2].Success
-                ? int.Parse(matchContext.Groups[2].Value)
-                : null;
-            _assign = matchContext.Groups[3].Success;
+            CustomPattern = $"{{NewLine(\\?)?}}"
+        };
+
+        public NewLineRenderer(Match match)
+        {
+            _atMargin = match.Groups[1].Success;
         }
 
         /// <inheritdoc />
         public void Render(IWriteBuffer buffer, in LogEventInfo eventInfo)
         {
-            if (_margin.HasValue)
+            if (!buffer.AtMargin || !_atMargin)
             {
-                buffer.Margin = _assign
-                    ? _margin.Value
-                    : buffer.Margin + _margin.Value;
+                buffer.WriteLine();
             }
-
-            if (_conditional && buffer.AtMargin)
-                return;
-         
-            buffer.WriteLine();
         }
-
-        /// <inheritdoc />
-        public override string ToString() => $"NewLine{(_conditional ? "?" : "")} ";
     }
 }

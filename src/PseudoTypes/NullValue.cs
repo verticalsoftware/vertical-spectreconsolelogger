@@ -11,5 +11,8 @@ namespace Vertical.SpectreLogger.PseudoTypes
         private NullValue()
         {
         }
+
+        /// <inheritdoc />
+        public override string ToString() => "(null)";
     }
 }

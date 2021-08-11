@@ -8,50 +8,42 @@ namespace Vertical.SpectreLogger.Templates
         /// <summary>
         /// Creates a new template parser.
         /// </summary>
-        /// <returns>A <see cref="TemplateParser"/> instance.</returns>
-        public static string BuildPattern(TemplateParser parser)
+        /// <returns>A <see cref="Template"/> instance.</returns>
+        public static string BuildPattern(Template descriptor)
         {
-            if (parser.CustomPattern != null)
+            if (descriptor.CustomPattern != null)
             {
-                return parser.CustomPattern;
+                return descriptor.CustomPattern;
             }
             
             var pattern = new StringBuilder(120);
 
             pattern.Append("{");
-            pattern.Append(parser.RendererKey ?? throw new InvalidOperationException("Template parser has no renderer key or custom pattern"));
+            pattern.Append(descriptor.RendererKey ?? string.Empty);
 
-            if (parser.NewLineControl)
+            if (descriptor.NewLineControl)
             {
-                AppendCaptureGroup(pattern, CaptureGroups.NewLine, ":NewLine",
-                    pb => AppendCaptureGroup(pb, CaptureGroups.NewLineAtMargin, @"\?", null, optional: true),
-                    optional: true);
+                pattern.Append($"(?<{CaptureGroups.NewLine}>:NewLine(?<{CaptureGroups.NewLineAtMargin}>\\?)?)?");
             }
 
-            if (parser.MarginControl)
+            if (descriptor.MarginControl)
             {
-                AppendCaptureGroup(pattern, id: null, "@",
-                    pb =>
-                    {
-                        AppendCaptureGroup(pb, CaptureGroups.Margin, "-?\\d+", null, optional: false);
-                        AppendCaptureGroup(pb, CaptureGroups.MarginSet, "!", null, optional: true);
-                    },
-                    optional: true);
+                pattern.Append($"(:Margin@(?<{CaptureGroups.Margin}>-?\\d+)(?<{CaptureGroups.MarginSet}>!)?)?");
             }
 
-            if (parser.FieldWidthFormatting)
+            if (descriptor.FieldWidthFormatting)
             {
-                AppendCaptureGroup(pattern, CaptureGroups.FieldWidth, @"-?\d+", null, optional: true);
+                pattern.Append($"(,(?<{CaptureGroups.FieldWidth}>-?\\d+))?");
             }
 
-            if (parser.CompositeFormatting)
+            if (descriptor.CompositeFormatting)
             {
-                AppendCaptureGroup(pattern, CaptureGroups.CompositeFormat, @"[^}]+", null, optional: true);
+                pattern.Append($"(:(?<{CaptureGroups.CompositeFormat}>[^}}]+))?");
             }
             
-            if (!string.IsNullOrWhiteSpace(parser.CustomFormat))
+            if (!string.IsNullOrWhiteSpace(descriptor.CustomFormat))
             {
-                AppendCaptureGroup(pattern, CaptureGroups.CustomFormat, parser.CustomFormat!, null, optional: true);
+                AppendCaptureGroup(pattern, CaptureGroups.CustomFormat, descriptor.CustomFormat!, null, optional: true);
             }
 
             pattern.Append("}");
@@ -71,10 +63,17 @@ namespace Vertical.SpectreLogger.Templates
                 builder.Append(id);
                 builder.Append(">");
             }
-            else builder.Append("(?:");
+            else
+            {
+                builder.Append("(?:");
+            }
+            
             builder.Append(pattern);
+            
             configureInner?.Invoke(builder);
+            
             builder.Append(")");
+            
             if (optional)
             {
                 builder.Append("?");

@@ -1,5 +1,3 @@
-using System;
-using System.Text.RegularExpressions;
 using Vertical.SpectreLogger.Output;
 using Vertical.SpectreLogger.Templates;
 
@@ -8,31 +6,25 @@ namespace Vertical.SpectreLogger.Rendering
     /// <summary>
     /// Controls offsets of the margin.
     /// </summary>
-    [Template(MyTemplate)]
     public class MarginControlRenderer : ITemplateRenderer
     {
-        private const string MyTemplate = @"{Margin:(-?\d+)(!)?}";
+        private readonly TemplateContext _templateContext;
 
-        private enum SetMode { Assign, OffsetIncrement, OffsetDecrement };
-        
-        private readonly int _value;
-        private readonly bool _assign;
-
-        public MarginControlRenderer(Match matchContext)
+        [TemplateProvider] 
+        public static readonly Template Template = new()
         {
-            _value = int.Parse(matchContext.Groups[1].Value);
-            _assign = matchContext.Groups[2].Success;
+            CustomPattern = $"{{Margin@(?<{CaptureGroups.Margin}>-?\\d+)(?<{CaptureGroups.MarginSet}>!)?}}"
+        };
+
+        public MarginControlRenderer(TemplateContext templateContext)
+        {
+            _templateContext = templateContext;
         }
         
         /// <inheritdoc />
         public void Render(IWriteBuffer buffer, in LogEventInfo eventInfo)
         {
-            buffer.Margin = _assign
-                ? _value
-                : buffer.Margin + _value;
+            buffer.SetMargin(_templateContext);
         }
-
-        /// <inheritdoc />
-        public override string ToString() => $"Margin control={_value}";
     }
 }

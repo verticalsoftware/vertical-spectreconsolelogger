@@ -1,6 +1,5 @@
 using System.Collections.Concurrent;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Spectre.Console;
 using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Output;
@@ -11,23 +10,29 @@ namespace Vertical.SpectreLogger.Rendering
     /// <summary>
     /// Renders the category name.
     /// </summary>
-    [Template(MyTemplate)]
     public class CategoryNameRenderer : ITemplateRenderer
     {
-        private const string MyTemplate = @"{CategoryName(,-?\d+)?(:S(\d+))?}";
-        private readonly string _alignment;
-        private readonly int? _segments;
         private readonly ConcurrentDictionary<string, FormattedValue> _cachedEntries = new();
+        private readonly TemplateContext _templateContext;
+        private readonly int? _segments;
+
+        [TemplateProvider]
+        public static readonly Template Template = new()
+        {
+            RendererKey = "CategoryName",
+            FieldWidthFormatting = true,
+            CustomFormat = "(:S(?<segments>\\d+))?"
+        };
 
         /// <summary>
         /// Creates a new instance.
         /// </summary>
-        /// <param name="matchContext">Match context.</param>
-        public CategoryNameRenderer(Match matchContext)
+        /// <param name="templateContext">Template context</param>
+        public CategoryNameRenderer(TemplateContext templateContext)
         {
-            _alignment = matchContext.Groups[1].Value;
-            _segments = matchContext.Groups[3].Success
-                ? int.Parse(matchContext.Groups[3].Value)
+            _templateContext = templateContext;
+            _segments = templateContext.MatchContext.Groups["segments"].Success
+                ? int.Parse(templateContext.MatchContext.Groups["segments"].Value)
                 : null;
         }
 
@@ -65,7 +70,7 @@ namespace Vertical.SpectreLogger.Rendering
             var profile = eventInfo.FormattingProfile;
             var rendererOptions = profile.GetRendererOptions<Options>();
             var profileFormat = rendererOptions?.Formatter?.Invoke(categoryName) ?? categoryName;
-            var compositeFormat = FormattingHelper.GetCompositeFormat(profileFormat, _alignment);
+            var compositeFormat = FormattingHelper.GetCompositeFormat(profileFormat, _templateContext.FieldWidth);
             var markup = rendererOptions?.Style;
             
             formattedValue = new FormattedValue(compositeFormat.EscapeMarkup(), markup);

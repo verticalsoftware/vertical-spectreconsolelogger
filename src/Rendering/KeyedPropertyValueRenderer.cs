@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Output;
 using Vertical.SpectreLogger.PseudoTypes;
@@ -6,22 +5,27 @@ using Vertical.SpectreLogger.Templates;
 
 namespace Vertical.SpectreLogger.Rendering
 {
-    [Template(@"{Property:(\w+)(,-?\d+)?(:[^}]+)?}")]
     public class KeyedPropertyValueRenderer : ITemplateRenderer
     {
+        private readonly TemplateContext _templateContext;
         private readonly string _key;
-        private readonly string _width;
-        private readonly string _format;
 
+        [TemplateProvider]
+        public static readonly Template Template = new()
+        {
+            RendererKey = @"Property\.(?<key>\w+)",
+            FieldWidthFormatting = true,
+            CompositeFormatting = true
+        };
+        
         public class Options : MultiTypeRenderingOptions
         {
         }
 
-        public KeyedPropertyValueRenderer(Match matchContext)
+        public KeyedPropertyValueRenderer(TemplateContext templateContext)
         {
-            _key = matchContext.Groups[1].Value;
-            _width = matchContext.Groups[2].Value;
-            _format = matchContext.Groups[3].Value;
+            _templateContext = templateContext;
+            _key = templateContext.MatchContext.Groups["key"].Value;
         }
         
         /// <inheritdoc />
@@ -36,7 +40,11 @@ namespace Vertical.SpectreLogger.Rendering
 
             var type = logValue.GetType();
             var options = eventInfo.FormattingProfile.GetRendererOptions<Options>();
-            var formattedValue = FormattingHelper.FormatValue(options, logValue, type, _width, _format);
+            var formattedValue = FormattingHelper.FormatValue(options, 
+                logValue, 
+                type, 
+                _templateContext.FieldWidth, 
+                _templateContext.CompositeFormat);
             var markup = FormattingHelper.MarkupValue(options, logValue, type);
             
             buffer.Write(formattedValue, markup);

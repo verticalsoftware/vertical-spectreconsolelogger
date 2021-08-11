@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Vertical.SpectreLogger.Internal
 {
@@ -13,7 +14,6 @@ namespace Vertical.SpectreLogger.Internal
                 ? value
                 : defaultIfNotFound;
         }
-
 
         internal static void AddState<TState>(this Dictionary<string, object?> properties, TState state)
         {

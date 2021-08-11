@@ -8,7 +8,6 @@ using Vertical.SpectreLogger.Templates;
 
 namespace Vertical.SpectreLogger.Rendering
 {
-    [Template(@"{Scopes(:NewLine(\?)?(?::(-?\d+)(!)?)?)?}")]
     public class ScopeValuesRenderer : ITemplateRenderer
     {
         private const string DefaultSeparator = " => ";
@@ -19,6 +18,14 @@ namespace Vertical.SpectreLogger.Rendering
 
             public Func<IEnumerable<object?>, IEnumerable<object?>>? ProviderFilter { get; set; }
         }
+
+        [TemplateProvider]
+        public static readonly Template Template = new()
+        {
+            RendererKey = "Scopes",
+            NewLineControl = true,
+            MarginControl = true
+        };
         
         private readonly bool _newLine;
         private readonly bool _newLineConditional;

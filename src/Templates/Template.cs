@@ -3,14 +3,14 @@ using System.Text.RegularExpressions;
 
 namespace Vertical.SpectreLogger.Templates
 {
-    public class TemplateParser
+    public class Template
     {
         private readonly Lazy<string> _lazyPattern;
 
         /// <summary>
         /// Creates a new instance of this type.
         /// </summary>
-        public TemplateParser()
+        public Template()
         {
             _lazyPattern = new Lazy<string>(() => TemplatePatternBuilder.BuildPattern(this));
         }

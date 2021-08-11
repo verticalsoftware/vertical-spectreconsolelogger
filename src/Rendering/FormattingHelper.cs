@@ -14,20 +14,21 @@ namespace Vertical.SpectreLogger.Rendering
         /// Formats the string using composite formatting.
         /// </summary>
         /// <param name="value">Value to format.</param>
-        /// <param name="alignment">Alignment</param>
+        /// <param name="fieldWidth">Alignment</param>
         /// <param name="format">Format</param>
         /// <returns>The formatted string.</returns>
-        public static string GetCompositeFormat(object value, string? alignment = null, string? format = null)
+        public static string GetCompositeFormat(object value, int? fieldWidth = null, string? format = null)
         {
-            return alignment == null && format == null
-                ? value.ToString()!
-                : string.Format($"{{0{alignment ?? string.Empty}{format ?? string.Empty}}}", value);
+            var fieldWidthFormat = fieldWidth.HasValue ? $",{fieldWidth}" : string.Empty;
+            var compositeFormat = format != null ? $":{format}" : string.Empty;
+
+            return string.Format($"{{0{fieldWidthFormat}{compositeFormat}}}", value);
         }
 
         public static string FormatValue(MultiTypeRenderingOptions? options,
             object value,
             Type type,
-            string? width = null,
+            int? width = null,
             string? format = null)
         {
             if (options == null)

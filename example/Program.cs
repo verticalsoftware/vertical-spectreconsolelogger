@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
-using Vertical.SpectreLogger;
 
 namespace SpectreLoggerExample
 {
@@ -13,21 +13,18 @@ namespace SpectreLoggerExample
             var examples = typeof(Program)
                 .Assembly
                 .DefinedTypes
-                .Where(type => typeof(IExample).IsAssignableFrom(type) && type.IsClass)
-                .Select(Activator.CreateInstance)
-                .Cast<IExample>()
-                .OrderBy(example => example.Description)
+                .Select(type => new{type, demo = type.GetCustomAttribute<DemoAttribute>()})
+                .Where(item => item.demo != null)
                 .ToArray();
 
             while (true)
             {
-
                 AnsiConsole.MarkupLine("Select one of the following examples:");
                 AnsiConsole.WriteLine();
 
                 for (var c = 0; c < examples.Length; c++)
                 {
-                    AnsiConsole.MarkupLine($"[yellow]{c + 1,-2}[/] - {examples[c].Description}");
+                    AnsiConsole.MarkupLine($"[yellow]{c + 1,-2}[/] - {examples[c].demo!.Description}");
                 }
 
                 AnsiConsole.WriteLine();
@@ -41,26 +38,45 @@ namespace SpectreLoggerExample
                         return;
                     
                     case { } when int.TryParse(input, out var id) && id > 0 && id <= examples.Length:
-                        RunExample(examples[id - 1]);
+                        RunExample(examples[id - 1].type, examples[id -1].demo!.Description);
                         break;
                 }
             }
         }
 
-        private static void RunExample(IExample example)
+        private static void RunExample(Type type, string description)
         {
-            var loggerFactory = LoggerFactory.Create(builder =>
-            {
-                builder.ClearProviders();
-                builder.SetMinimumLevel(LogLevel.Trace);
-                builder.AddSpectreConsole(example.Configuration);
-            });
-
-            var logger = loggerFactory.CreateLogger("Vertical.SpectreLogger.Example");
-
             Console.WriteLine();
-            
-            example.Demo(logger);
+
+            var methods = type
+                .GetMethods()
+                .Select(method => (method, demo: method.GetCustomAttribute<DemoAttribute>()))
+                .Where(i => i.demo != null)
+                .ToArray();
+
+            var item = 1;
+            var harness = Activator.CreateInstance(type);
+
+            foreach (var (method, demo) in methods)
+            {
+                if (item > 1)
+                {
+                    AnsiConsole.WriteLine();
+                    AnsiConsole.MarkupLine($"Press [{Color.Yellow.ToMarkup()}]any key[/] for the next example...");
+                    Console.ReadKey();
+                    AnsiConsole.WriteLine();
+                }
+                
+                AnsiConsole.WriteLine("------------------------------------------------------------------------------");
+                AnsiConsole.MarkupLine($"Example #{item}: [{Color.SeaGreen1.ToMarkup()}]{demo.Description}[/]");
+                AnsiConsole.MarkupLine($"Reference source: [{Color.SeaGreen1.ToMarkup()}]{type}[/]." + 
+                                       $"[{Color.Magenta1.ToMarkup()}]{method.Name}()[/]:");
+                AnsiConsole.WriteLine("------------------------------------------------------------------------------");
+                
+                method.Invoke(harness, Array.Empty<object>());
+
+                ++item;
+            }
 
             Console.WriteLine();
         }

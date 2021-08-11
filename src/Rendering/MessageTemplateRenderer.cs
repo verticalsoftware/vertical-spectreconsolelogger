@@ -6,27 +6,29 @@ using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Output;
 using Vertical.SpectreLogger.PseudoTypes;
 using Vertical.SpectreLogger.Templates;
+using Vertical.SpectreLogger.Utilities;
 
 namespace Vertical.SpectreLogger.Rendering
 {
-    [Template(@"{Message(:NewLine(\?)?(?::(-?\d+)(!)?)?)?}")]
     public class MessageTemplateRenderer : ITemplateRenderer
     {
+        private readonly TemplateContext _templateContext;
+
         public class Options : MultiTypeRenderingOptions
         {
         }
 
-        private readonly bool _newLine;
-        private readonly bool _newLineConditional;
-        private readonly int? _margin;
-        private readonly bool _assign;
-        
-        public MessageTemplateRenderer(Match matchContext)
+        [TemplateProvider]
+        public static readonly Template Template = new()
         {
-            _newLine = matchContext.Groups[1].Success;
-            _newLineConditional = matchContext.Groups[2].Success;
-            _margin = matchContext.Groups[3].Success ? int.Parse(matchContext.Groups[3].Value) : null;
-            _assign = matchContext.Groups[4].Success;
+            RendererKey = "Message",
+            NewLineControl = true,
+            MarginControl = true
+        };
+        
+        public MessageTemplateRenderer(TemplateContext templateContext)
+        {
+            _templateContext = templateContext;
         }
         
         /// <inheritdoc />
@@ -42,32 +44,25 @@ namespace Vertical.SpectreLogger.Rendering
                 return;
             }
 
-            if (_newLine && (!buffer.AtMargin || !_newLineConditional))
-            {
-                buffer.WriteLine();
-                if (_margin.HasValue)
-                {
-                    buffer.Margin = _assign
-                        ? _margin.Value
-                        : buffer.Margin + _margin.Value;
-                }
-            }
+            buffer.WriteLine(_templateContext);
 
             // Render each part of the template
-            ParseUtilities.EnumerateTokens(template, (match, token) =>
+            template.SplitTemplate(match =>
             {
-                if (match != null && logValues.TryGetValue(token, out var logValue))
+                var (token, isTemplate) = match;
+                
+                if (isTemplate && logValues.TryGetValue(token.Substring(1, token.Length-2), out var logValue))
                 {
                     logValue ??= NullValue.Default;
 
                     var type = logValue.GetType();
-                    var width = match.Groups[2].Value;
-                    var format = match.Groups[3].Value;
-                    var formattedValue = FormattingHelper.FormatValue(options, logValue, type, width, format);
-                    
+                    var formattedValue = FormattingHelper.FormatValue(options, logValue, type, 
+                        _templateContext.FieldWidth, 
+                        _templateContext.CompositeFormat);
                     var markup = FormattingHelper.MarkupValue(options, logValue, type);
+                    
                     buffer.Write(formattedValue, markup);
-
+                    
                     return;
                 }
                 

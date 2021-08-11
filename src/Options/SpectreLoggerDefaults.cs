@@ -10,7 +10,7 @@ namespace Vertical.SpectreLogger.Options
         /// <summary>
         /// Defines the default output template.
         /// </summary>
-        public const string OutputTemplate = "{LogLevel,-5} : {Margin:8}{Message}{Exception:NewLine?}";
+        public const string OutputTemplate = "{LogLevel,-7}: {CategoryName}{Message:NewLine:Margin@9}{Exception:NewLine?}";
 
         private static void ConfigureDefaults(SpectreLoggerOptions options)
         {
@@ -20,7 +20,7 @@ namespace Vertical.SpectreLogger.Options
 
                 profile.BaseEventStyle = Color.Grey35.ToMarkup();
                 profile.SetDefaultTypeStyle(Color.Purple4_1.ToMarkup());
-                profile.SetLogLevelDisplayName("Trace");
+                profile.SetLogLevelDisplayName("[Trace]");
                 profile.AddTypeStyle(Types.NumericTypes, Color.DarkMagenta.ToMarkup());
                 profile.AddTypeStyle(Types.CharacterTypes, Color.DeepSkyBlue4_2.ToMarkup());
                 profile.AddTypeStyle<LogLevel>(profile.BaseEventStyle!);
@@ -34,7 +34,7 @@ namespace Vertical.SpectreLogger.Options
                 profile.LogLevel = LogLevel.Debug;
                 profile.BaseEventStyle = Color.Grey50.ToMarkup();
                 profile.SetDefaultTypeStyle(Color.Purple4_1.ToMarkup());
-                profile.SetLogLevelDisplayName("Debug");
+                profile.SetLogLevelDisplayName("[Debug]");
                 profile.AddTypeStyle(Types.NumericTypes, Color.DarkMagenta.ToMarkup());
                 profile.AddTypeStyle(Types.CharacterTypes, Color.DeepSkyBlue4_2.ToMarkup());
                 profile.AddValueStyle(true, Color.DarkGreen.ToMarkup());
@@ -45,15 +45,15 @@ namespace Vertical.SpectreLogger.Options
             options.ConfigureProfile(LogLevel.Information, profile =>
             {
                 profile.LogLevel = LogLevel.Information;
-                profile.BaseEventStyle = Color.Grey93.ToMarkup();
+                profile.BaseEventStyle = Color.Grey82.ToMarkup();
                 profile.SetDefaultTypeStyle(Color.SkyBlue3.ToMarkup());
-                profile.SetLogLevelDisplayName("Info");
+                profile.SetLogLevelDisplayName("[Info]");
                 profile.AddTypeStyle(Types.NumericTypes, Color.Magenta1.ToMarkup());
-                profile.AddTypeStyle(Types.CharacterTypes, Color.SkyBlue3.ToMarkup());
-                profile.AddTypeStyle<LogLevel>(profile.BaseEventStyle!);
+                profile.AddTypeStyle(Types.CharacterTypes, Color.DarkGoldenrod.ToMarkup());
                 profile.AddValueStyle(true, Color.DarkSeaGreen4_1.ToMarkup());
                 profile.AddValueStyle(false, Color.Maroon.ToMarkup());
                 profile.AddTypeStyle<NullValue>(Color.DarkOrange.ToMarkup());
+                profile.ConfigureRenderer<LogLevelRenderer.Options>(rnd => rnd.Style = Color.Green.ToMarkup());
             });
 
             options.ConfigureProfile(LogLevel.Warning, profile =>
@@ -61,10 +61,9 @@ namespace Vertical.SpectreLogger.Options
                 profile.LogLevel = LogLevel.Warning;
                 profile.BaseEventStyle = Color.LightGoldenrod2_2.ToMarkup();
                 profile.SetDefaultTypeStyle(Color.Cyan1.ToMarkup());
-                profile.SetLogLevelDisplayName("Warn");
+                profile.SetLogLevelDisplayName("[Warn]");
                 profile.AddTypeStyle(Types.NumericTypes, Color.Magenta1.ToMarkup());
                 profile.AddTypeStyle(Types.CharacterTypes, Color.SkyBlue3.ToMarkup());
-                profile.AddTypeStyle<LogLevel>(profile.BaseEventStyle!);
                 profile.AddValueStyle(true, Color.DarkSeaGreen4_1.ToMarkup());
                 profile.AddValueStyle(false, Color.Maroon.ToMarkup());
                 profile.AddTypeStyle<NullValue>(Color.DarkOrange.ToMarkup());
@@ -74,19 +73,17 @@ namespace Vertical.SpectreLogger.Options
             {
                 profile.LogLevel = LogLevel.Error;
                 profile.BaseEventStyle = Color.Red1.ToMarkup();
-                profile.SetDefaultTypeStyle(Color.White.ToMarkup());
-                profile.SetLogLevelDisplayName("Error");
-                profile.AddTypeStyle<LogLevel>(profile.BaseEventStyle!);
+                profile.SetDefaultTypeStyle(Color.Yellow.ToMarkup());
+                profile.SetLogLevelDisplayName("[Error]");
             });
 
             options.ConfigureProfile(LogLevel.Critical, profile =>
             {
                 profile.LogLevel = LogLevel.Error;
                 profile.BaseEventStyle = Color.Red1.ToMarkup();
-                profile.SetDefaultTypeStyle(Color.White.ToMarkup());
-                profile.SetLogLevelDisplayName("Crit");
-                profile.ConfigureRenderer<LogLevelRenderer.Options>(opt => opt.Style = "white on red1");
-                profile.AddTypeStyle<LogLevel>("white on red1");
+                profile.SetDefaultTypeStyle(Color.Yellow.ToMarkup());
+                profile.SetLogLevelDisplayName("[Crit]");
+                profile.ConfigureRenderer<LogLevelRenderer.Options>(rnd => rnd.Style = "white on red1");
             });
             
             options.ConfigureProfiles(profile =>
@@ -102,6 +99,7 @@ namespace Vertical.SpectreLogger.Options
                     opt.SourceLineNumberStyle = Color.Magenta1.ToMarkup(); 
                     opt.MaxStackFrames = 5;
                     opt.MethodNameStyle = Color.DarkOrange3_1.ToMarkup();
+                    opt.MethodNameFormatter = name => name;
                     opt.ParameterNameStyle = Color.Grey93.ToMarkup();
                     opt.ParameterTypeStyle = Color.DodgerBlue1.ToMarkup();
                     opt.RenderParameterNames = true;

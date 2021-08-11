@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Output;
@@ -6,24 +5,30 @@ using Vertical.SpectreLogger.Templates;
 
 namespace Vertical.SpectreLogger.Rendering
 {
-    [Template(MyTemplate)]
     public class EventIdRenderer : ITemplateRenderer
     {
-        private const string MyTemplate = @"{EventId(,-?\d+)?(?::(Id|Name))?}";
+        private readonly TemplateContext _templateContext;
+        
+        [TemplateProvider]
+        public static readonly Template Descriptor = new ()
+        {
+            RendererKey = "EventId",
+            FieldWidthFormatting = true,
+            CustomFormat = "(:(?<property>Id|Name))?"
+        };
 
         public class Options : TypeRenderingOptions<EventId>
         {
         }
 
-        private readonly string _alignment;
         private readonly string _format;
 
-        public EventIdRenderer(Match matchContext)
+        public EventIdRenderer(TemplateContext templateContext)
         {
-            _alignment = matchContext.Groups[1].Value;
-            _format = matchContext.Groups[2].Value;
+            _templateContext = templateContext;
+            _format = templateContext.MatchContext.Groups["property"].Value;
         }
-
+        
         /// <inheritdoc />
         public void Render(IWriteBuffer buffer, in LogEventInfo eventInfo)
         {
@@ -46,7 +51,7 @@ namespace Vertical.SpectreLogger.Rendering
             };
 
             return valueFormat != null
-                ? FormattingHelper.GetCompositeFormat(valueFormat, _alignment)
+                ? FormattingHelper.GetCompositeFormat(valueFormat, _templateContext.FieldWidth)
                 : null;
         }
 

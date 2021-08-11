@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Options;
+using Vertical.SpectreLogger.Utilities;
 
 namespace Vertical.SpectreLogger.Rendering.Internal
 {
@@ -40,16 +41,17 @@ namespace Vertical.SpectreLogger.Rendering.Internal
                  list.Add(new UnescapedSpanRenderer($"[{profile.BaseEventStyle}]"));
              }
              
-             ParseUtilities.EnumerateTokens(template, (match, token) =>
+            template.SplitTemplate(match =>
              {
+                 
                  switch (match)
                  {
-                     case { } when TryGetRendererInstance(descriptors, match.Value, out var renderer):
+                     case { isTemplate: true } when TryGetRendererInstance(descriptors, match.token, out var renderer):
                          list.Add(renderer!);
                          break;
                      
                      default:
-                         list.Add(new StaticSpanRenderer(token));
+                         list.Add(new StaticSpanRenderer(match.token));
                          break;
                  }
              });

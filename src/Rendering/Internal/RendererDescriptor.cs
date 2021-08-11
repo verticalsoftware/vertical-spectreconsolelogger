@@ -10,19 +10,19 @@ namespace Vertical.SpectreLogger.Rendering.Internal
     internal class RendererDescriptor
     {
         private readonly Type _type;
-        private readonly TemplateParser _parser;
+        private readonly Template _descriptor;
         private readonly Delegate _factory;
 
         internal RendererDescriptor(Type type)
         {
             _type = type;
-            _parser = GetParser(type);
+            _descriptor = GetTemplateDescriptor(type);
             _factory = CreateFactoryExpression(type);
         }
 
         internal bool TryCreateRenderer(string template, out ITemplateRenderer? renderer)
         {
-            var templateContext = _parser.Parse(template);
+            var templateContext = _descriptor.Parse(template);
 
             if (!templateContext.MatchContext.Success)
             {
@@ -93,52 +93,36 @@ namespace Vertical.SpectreLogger.Rendering.Internal
                 $"Cannot create renderer type {type} because it does not have a compatible constructor.");
         }
 
-        private static TemplateParser GetParser(Type type)
+        private static Template GetTemplateDescriptor(Type type)
         {
-            var parserAttribute = type.GetCustomAttribute<TemplateParserAttribute>();
-
-            if (parserAttribute == null)
-            {
-                return new TemplateParser {CustomPattern = GetTemplate(type)};
-            }
-            
             var property = type
-                .GetProperties(BindingFlags.Public | BindingFlags.Static)
-                .FirstOrDefault(prop => prop.PropertyType == typeof(TemplateParser) && prop.Name == parserAttribute.PropertyOrFieldName);
+                .GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic)
+                .FirstOrDefault(prop => 
+                    prop.PropertyType == typeof(Template) 
+                    && prop.GetCustomAttribute<TemplateProviderAttribute>() != null);
                 
             if (property != null)
             {
-                return property.GetValue(null) as TemplateParser ?? throw new InvalidOperationException(
-                    $"Static member {type}.{parserAttribute.PropertyOrFieldName} returned a null value.");
+                return property.GetValue(null) as Template ?? throw new InvalidOperationException(
+                    $"Static member {type}.{property.Name} returned a null value.");
             }
                 
             var field = type
-                .GetFields(BindingFlags.Public | BindingFlags.Static)
-                .FirstOrDefault(prop => prop.FieldType == typeof(TemplateParser) && prop.Name == parserAttribute.PropertyOrFieldName);
-                
+                .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic)
+                .FirstOrDefault(fld => 
+                    fld.FieldType == typeof(Template) 
+                    && fld.GetCustomAttribute<TemplateProviderAttribute>() != null);
+
             if (field != null)
             {
-                return field.GetValue(null) as TemplateParser ?? throw new InvalidOperationException(
-                    $"Static member {type}.{parserAttribute.PropertyOrFieldName} returned a null value.");
+                return field.GetValue(null) as Template ?? throw new InvalidOperationException(
+                    $"Static member {type}.{field.Name} returned a null value.");
             }
 
-            throw new InvalidOperationException($"Cannot find static property or field '{type}.{parserAttribute.PropertyOrFieldName}'");
-        }
-        
-        private static string GetTemplate(MemberInfo type)
-        {
-            var templateAttribute = type.GetCustomAttribute<TemplateAttribute>();
-
-            if (templateAttribute != null)
-            {
-                return templateAttribute.Template;
-            }
-
-            throw new InvalidOperationException(
-                $"Cannot use renderer type {type} because it does not have a Template attribute");
+            throw new InvalidOperationException($"Cannot find static property or field template provider in {type}");
         }
 
         /// <inheritdoc />
-        public override string ToString() => $"{_type}=\"{_parser.Pattern}\"";
+        public override string ToString() => $"{_type}=\"{_descriptor.Pattern}\"";
     }
 }

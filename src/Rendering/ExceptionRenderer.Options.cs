@@ -6,6 +6,8 @@ namespace Vertical.SpectreLogger.Rendering
     {
         public class Options
         {
+            private readonly string _instanceId = Guid.NewGuid().ToString("N").Substring(0, 4);
+            
             /// <summary>
             /// Gets the number of character to indent stack frame output.
             /// </summary>
@@ -34,12 +36,12 @@ namespace Vertical.SpectreLogger.Rendering
             /// <summary>
             /// Gets or sets a function that formats the exception type name.
             /// </summary>
-            public Func<Type, string>? ExceptionNameFormatter { get; set; } = type => type.FullName!;
+            public Func<Type, string>? ExceptionNameFormatter { get; set; }
 
             /// <summary>
             /// Gets or sets a function that formats the source path.
             /// </summary>
-            public Func<string, string>? SourcePathFormatter { get; set; } = path => path;
+            public Func<string, string>? SourcePathFormatter { get; set; }
 
             /// <summary>
             /// Gets or sets the markup to apply when rendering the exception name.

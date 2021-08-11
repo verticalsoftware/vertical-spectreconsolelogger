@@ -12,12 +12,12 @@ namespace Vertical.SpectreLogger.Rendering
     /// <summary>
     /// Renders exceptions.
     /// </summary>
-    [TemplateParser(nameof(MyParser))]
     public partial class ExceptionRenderer : ITemplateRenderer
     {
         private static readonly string[] StackFrameSplitValues = {Environment.NewLine};
 
-        public static readonly TemplateParser MyParser = new()
+        [TemplateProvider]
+        public static readonly Template Descriptor = new()
         {
             RendererKey = "Exception",
             NewLineControl = true,
@@ -57,7 +57,7 @@ namespace Vertical.SpectreLogger.Rendering
                 buffer.WriteMarkup(options.StackFrameStyle);
             }
             
-            RenderInternal(buffer, options, 1, new[]{exception});
+            RenderInternal(buffer, options, 0, new[]{exception});
 
             if (options.StackFrameStyle != null)
             {
@@ -108,11 +108,15 @@ namespace Vertical.SpectreLogger.Rendering
             {
                 buffer.WriteLine();
             }
-            
+
+            var margin = buffer.Margin;
             var type = exception.GetType();
             var exceptionName = options.ExceptionNameFormatter?.Invoke(type) ?? type.FullName!;
+
+            buffer.Margin += (indent * options.StackFrameIndentChars);
             
             // Render the exception name
+            buffer.WriteWhitespace(indent * options.StackFrameIndentChars);
             buffer.Write(exceptionName.EscapeMarkup(), options.ExceptionNameStyle);
             
             buffer.Write(": ");
@@ -130,16 +134,16 @@ namespace Vertical.SpectreLogger.Rendering
             foreach (var stackFrame in stackFrames.Take(options.MaxStackFrames))
             { 
                 buffer.WriteLine();
-                buffer.WriteWhitespace(options.StackFrameIndentChars * indent);
                 RenderStackFrame(buffer, options, stackFrame);
             }
 
             if (stackFrames.Length > options.MaxStackFrames && options.ShowHiddenStackFrameCount)
             {
                 buffer.WriteLine();
-                buffer.WriteWhitespace(options.StackFrameIndentChars * indent);
-                buffer.Write($"+{stackFrames.Length - options.MaxStackFrames} more...");
+                buffer.Write($"  +{stackFrames.Length - options.MaxStackFrames} more...");
             }
+
+            buffer.Margin = margin;
         }
 
         private static void RenderStackFrame(IWriteBuffer buffer, 
