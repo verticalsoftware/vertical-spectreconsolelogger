@@ -5,32 +5,41 @@ using Microsoft.Extensions.Logging;
 namespace Vertical.SpectreLogger.Options
 {
     /// <summary>
-    /// Defines a group of colors and settings that determine how segments are
-    /// rendered.
+    /// Defines customizable options for a particular <see cref="LogLevel"/>
     /// </summary>
     public class FormattingProfile
     {
-        /// <summary>
-        /// Gets the log level.
-        /// </summary>
-        public LogLevel LogLevel { get; internal set; }
-        
-        /// <summary>
-        /// Gets or sets the output template.
-        /// </summary>
-        public string? OutputTemplate { get; set; }
-        
-        /// <summary>
-        /// Gets or sets the base style markup to apply before any rendering.
-        /// </summary>
-        public string? BaseEventStyle { get; set; }
+        internal FormattingProfile(LogLevel logLevel)
+        {
+            LogLevel = logLevel;
+        }
 
         /// <summary>
-        /// Gets a dictionary of option objects keyed by specific type.
+        /// Gets the <see cref="LogLevel"/> for which the profile defines options for.
         /// </summary>
-        public Dictionary<Type, object> RendererOptions { get; } = new();
+        public LogLevel LogLevel { get; }
 
-        /// <inheritdoc />
-        public override string ToString() => LogLevel.ToString();
+        /// <summary>
+        /// Gets a dictionary of functions that format specific types of values. The function receives
+        /// the original value and returns the string representation to display.
+        /// </summary>
+        public Dictionary<Type, Func<object, string>> TypeFormatters { get; } = new();
+
+        /// <summary>
+        /// Gets a dictionary of functions that format specific values. The function receives the original
+        /// value and returns the string representation to display.
+        /// </summary>
+        public Dictionary<object, Func<object, string>> ValueFormatters { get; } = new();
+
+        /// <summary>
+        /// Gets a dictionary of markup strings that are applied when rendering values of a specific
+        /// type.
+        /// </summary>
+        public Dictionary<Type, string> TypeStyles { get; } = new();
+
+        /// <summary>
+        /// Gets a dictionary of markup strings that are applied when rendering specific values.
+        /// </summary>
+        public Dictionary<object, string> ValueStyles { get; } = new();
     }
 }

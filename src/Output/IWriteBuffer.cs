@@ -1,44 +1,46 @@
 using System;
-using System.Drawing;
 
 namespace Vertical.SpectreLogger.Output
 {
     /// <summary>
-    /// Represents an object that buffers output to the console.
+    /// Represents an object that buffers data to the final output.
     /// </summary>
     public interface IWriteBuffer : IDisposable
     {
         /// <summary>
-        /// Appends a string.
+        /// Writes a string to the buffer.
         /// </summary>
-        /// <param name="str">Content to render.</param>
-        void Append(string str);
+        /// <param name="str">String to write.</param>
+        void Write(string str);
 
         /// <summary>
-        /// Appends a single character.
+        /// Writes a portion of a string to the buffer.
         /// </summary>
-        /// <param name="c">Character to append</param>
-        void Append(char c);
+        /// <param name="str">String to write.</param>
+        /// <param name="index">Starting position in the string.</param>
+        /// <param name="length">The number of characters to write.</param>
+        void Write(string str, int index, int length);
 
         /// <summary>
-        /// Clears the buffer of all content.
+        /// Writes a character to the buffer.
         /// </summary>
-        void Clear();
+        /// <param name="c">Character to write.</param>
+        /// <param name="count">The number of times to repeat the operation.</param>
+        void Write(char c, int count = 1);
 
         /// <summary>
-        /// Flushes the content to the target.
+        /// Flushes the content of the buffer to the final output.
         /// </summary>
         void Flush();
+
+        /// <summary>
+        /// Clears all content from the buffer.
+        /// </summary>
+        void Clear();
         
         /// <summary>
-        /// Gets whether the last operation on the write buffer inserted
-        /// a new line character with margin positioning.
+        /// Gets or sets the number of characters to indent on new lines of output.
         /// </summary>
-        bool AtMargin { get; }
-        
-        /// <summary>
-        /// Gets or sets the left-aligned margin to apply.
-        /// </summary>
-        int Margin { get; set; }
+        int Indent { get; set; }
     }
 }
