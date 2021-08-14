@@ -42,5 +42,10 @@ namespace Vertical.SpectreLogger.Output
         /// Gets or sets the number of characters to indent on new lines of output.
         /// </summary>
         int Indent { get; set; }
+        
+        /// <summary>
+        /// Gets the content length of the current buffer.
+        /// </summary>
+        int Length { get; }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
+using Vertical.SpectreLogger.Core;
 
 namespace Vertical.SpectreLogger.Options
 {
@@ -41,5 +42,10 @@ namespace Vertical.SpectreLogger.Options
         /// Gets a dictionary of markup strings that are applied when rendering specific values.
         /// </summary>
         public Dictionary<object, string> ValueStyles { get; } = new();
+        
+        /// <summary>
+        /// Gets or sets a filter for each log event.
+        /// </summary>
+        public LogEventPredicate? LogEventFilter { get; set; }
     }
 }

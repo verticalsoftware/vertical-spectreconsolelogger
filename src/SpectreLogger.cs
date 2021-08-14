@@ -1,25 +1,28 @@
 using System;
 using Microsoft.Extensions.Logging;
 using Vertical.SpectreLogger.Core;
+using Vertical.SpectreLogger.Infrastructure;
 using Vertical.SpectreLogger.Options;
+using Vertical.SpectreLogger.Output;
 
 namespace Vertical.SpectreLogger
 {
-    public class SpectreLogger : ILogger
+    internal class SpectreLogger : ILogger
     {
-        private readonly SpectreLoggerProvider _provider;
-        private readonly SpectreConsoleLoggerOptions _options;
-        private readonly ILogEventFilter _eventFilter;
+        private readonly IConfiguredLoggingContext _loggingContext;
+        private readonly IWriteBufferProvider _bufferProvider;
+        private readonly IScopeManager _scopeManager;
         private readonly string _categoryName;
 
-        public SpectreLogger(SpectreLoggerProvider provider,
-            SpectreConsoleLoggerOptions options,
-            ILogEventFilter eventFilter,
+        internal SpectreLogger(
+            IConfiguredLoggingContext loggingContext,
+            IWriteBufferProvider bufferProvider,
+            IScopeManager scopeManager,
             string categoryName)
         {
-            _provider = provider;
-            _options = options;
-            _eventFilter = eventFilter;
+            _loggingContext = loggingContext;
+            _bufferProvider = bufferProvider;
+            _scopeManager = scopeManager;
             _categoryName = categoryName;
         }
         
@@ -30,7 +33,9 @@ namespace Vertical.SpectreLogger
             Exception exception, 
             Func<TState, Exception, string> formatter)
         {
-            var scopes = _provider.Scopes;
+            var formattingProfile = _loggingContext.GetFormattingProfile(logLevel);
+            var scopes = _scopeManager.Scopes;
+            
             var eventInfo = new LogEventInfo(
                 _categoryName,
                 logLevel,
@@ -38,21 +43,24 @@ namespace Vertical.SpectreLogger
                 state,
                 scopes,
                 exception,
-                null!);
+                formattingProfile);
 
-            if (!_eventFilter.Render(eventInfo))
+            if (!formattingProfile.LogEventFilter?.Invoke(eventInfo) ?? true)
                 return;
-            
-            
+
+            using var buffer = _bufferProvider.GetInstance();
+            var pipeline = _loggingContext.GetRenderingPipeline(logLevel);
+
+            foreach (var renderer in pipeline)
+            {
+                renderer.Render(buffer, eventInfo);
+            }
         }
 
         /// <inheritdoc />
-        public bool IsEnabled(LogLevel logLevel) => logLevel >= _options.MinimumLevel && logLevel > LogLevel.None;
+        public bool IsEnabled(LogLevel logLevel) => logLevel >= _loggingContext.MinimumLevel;
 
         /// <inheritdoc />
-        public IDisposable BeginScope<TState>(TState state)
-        {
-            throw new NotImplementedException();
-        }
+        public IDisposable BeginScope<TState>(TState state) => _scopeManager.BeginScope(state);
     }
 }

@@ -1,11 +1,12 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 
 namespace Vertical.SpectreLogger.Core
 {
     /// <summary>
     /// Defines a span of characters within an output template.
     /// </summary>
-    public class TemplateSpan
+    public class TemplateSpan : IEquatable<TemplateSpan>
     {
         /// <summary>
         /// Creates a new instance.
@@ -40,6 +41,9 @@ namespace Vertical.SpectreLogger.Core
         /// </summary>
         public int Length { get; }
 
+        /// <summary>
+        /// Gets the string value of the span.
+        /// </summary>
         public string Value => Match?.Value ?? Source.Substring(StartIndex, Length);
 
         /// <summary>
@@ -54,5 +58,17 @@ namespace Vertical.SpectreLogger.Core
 
         /// <inheritdoc />
         public override string ToString() => $"{(IsTemplate ? "template" : "span")}=\"{Value}\" @{StartIndex}";
+
+        /// <inheritdoc />
+        public bool Equals(TemplateSpan? other) => other != null
+                                                   && Source == other.Source
+                                                   && Value == other.Value
+                                                   && IsTemplate == other.IsTemplate;
+
+        /// <inheritdoc />
+        public override bool Equals(object? obj) => obj is TemplateSpan other && Equals(other);
+
+        /// <inheritdoc />
+        public override int GetHashCode() => HashCode.Combine(Source, Value, IsTemplate);
     }
 }

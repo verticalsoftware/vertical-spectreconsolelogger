@@ -1,23 +1,25 @@
 using System;
 using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Vertical.SpectreLogger.Core;
-using Vertical.SpectreLogger.Options;
+using Vertical.SpectreLogger.Infrastructure;
+using Vertical.SpectreLogger.Output;
 
 namespace Vertical.SpectreLogger
 {
     public class SpectreLoggerProvider : ILoggerProvider
     {
-        private readonly ILogEventFilter _eventFilter;
-        private readonly SpectreConsoleLoggerOptions _options;
+        private readonly IConfiguredLoggingContext _loggingContext;
+        private readonly IWriteBufferProvider _bufferProvider;
+        private readonly IScopeManager _scopeManager;
         private readonly ConcurrentDictionary<string, ILogger> _cachedLoggers = new();
 
-        public SpectreLoggerProvider(IOptions<SpectreConsoleLoggerOptions> optionsProvider,
-            ILogEventFilter eventFilter)
+        public SpectreLoggerProvider(IConfiguredLoggingContext loggingContext,
+            IWriteBufferProvider bufferProvider,
+            IScopeManager scopeManager)
         {
-            _eventFilter = eventFilter;
-            _options = optionsProvider.Value;
+            _loggingContext = loggingContext;
+            _bufferProvider = bufferProvider;
+            _scopeManager = scopeManager;
         }
         
         /// <inheritdoc />
@@ -29,12 +31,10 @@ namespace Vertical.SpectreLogger
         public ILogger CreateLogger(string categoryName)
         {
             return _cachedLoggers.GetOrAdd(categoryName, id => new SpectreLogger(
-                this, 
-                _options, 
-                _eventFilter,
+                _loggingContext,
+                _bufferProvider,
+                _scopeManager,
                 id));
         }
-
-        internal object?[] Scopes => Array.Empty<object?>();
     }
 }

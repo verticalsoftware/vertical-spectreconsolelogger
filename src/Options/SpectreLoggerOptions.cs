@@ -8,18 +8,26 @@ namespace Vertical.SpectreLogger.Options
     /// <summary>
     /// Represents options for <see cref="SpectreLogger"/>
     /// </summary>
-    public class SpectreConsoleLoggerOptions
+    public class SpectreLoggerOptions
     {
+        private LogLevel _minimumLevel;
+
         /// <summary>
         /// Gets or sets the minimum log level.
         /// </summary>
-        public LogLevel MinimumLevel { get; set; } = LogLevel.Trace;
-        
-        /// <summary>
-        /// Gets or sets a function used to filter events. The predicate should return a
-        /// boolean value indicating whether the event should be rendered.
-        /// </summary>
-        public LogEventPredicate? EventFilter { get; set; }
+        public LogLevel MinimumLevel
+        {
+            get => _minimumLevel;
+            set
+            {
+                if (value == LogLevel.None)
+                {
+                    throw new ArgumentException("LogLevel.None is not a valid value for this property.");
+                }
+
+                _minimumLevel = value;
+            }
+        }
 
         /// <summary>
         /// Gets a dictionary of <see cref="FormattingProfiles"/>, one for each <see cref="LogLevel"/>
@@ -34,5 +42,10 @@ namespace Vertical.SpectreLogger.Options
             [LogLevel.Error] = new FormattingProfile(LogLevel.Error),
             [LogLevel.Critical] = new FormattingProfile(LogLevel.Critical)
         };
+
+        /// <summary>
+        /// Gets a collection of types available to the rendering pipeline.
+        /// </summary>
+        public HashSet<Type> RendererTypes { get; } = new();
     }
 }

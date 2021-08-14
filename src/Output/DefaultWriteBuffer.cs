@@ -24,7 +24,7 @@ namespace Vertical.SpectreLogger.Output
         }
 
         public void Dispose() => _provider.WriteDisposed(this);
-        
+
         /// <inheritdoc />
         public void Write(string str)
         {
@@ -81,5 +81,8 @@ namespace Vertical.SpectreLogger.Output
             get => _indent;
             set => _indent = Math.Max(0, value);
         }
+
+        /// <inheritdoc />
+        public int Length => _stringBuilder.Length;
     }
 }
