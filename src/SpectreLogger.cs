@@ -5,14 +5,14 @@ using Vertical.SpectreLogger.Options;
 
 namespace Vertical.SpectreLogger
 {
-    public class SpectreConsoleLogger : ILogger
+    public class SpectreLogger : ILogger
     {
-        private readonly SpectreConsoleLoggerProvider _provider;
+        private readonly SpectreLoggerProvider _provider;
         private readonly SpectreConsoleLoggerOptions _options;
         private readonly ILogEventFilter _eventFilter;
         private readonly string _categoryName;
 
-        public SpectreConsoleLogger(SpectreConsoleLoggerProvider provider,
+        public SpectreLogger(SpectreLoggerProvider provider,
             SpectreConsoleLoggerOptions options,
             ILogEventFilter eventFilter,
             string categoryName)

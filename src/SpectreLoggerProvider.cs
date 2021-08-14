@@ -7,13 +7,13 @@ using Vertical.SpectreLogger.Options;
 
 namespace Vertical.SpectreLogger
 {
-    public class SpectreConsoleLoggerProvider : ILoggerProvider
+    public class SpectreLoggerProvider : ILoggerProvider
     {
         private readonly ILogEventFilter _eventFilter;
         private readonly SpectreConsoleLoggerOptions _options;
         private readonly ConcurrentDictionary<string, ILogger> _cachedLoggers = new();
 
-        public SpectreConsoleLoggerProvider(IOptions<SpectreConsoleLoggerOptions> optionsProvider,
+        public SpectreLoggerProvider(IOptions<SpectreConsoleLoggerOptions> optionsProvider,
             ILogEventFilter eventFilter)
         {
             _eventFilter = eventFilter;
@@ -28,7 +28,7 @@ namespace Vertical.SpectreLogger
         /// <inheritdoc />
         public ILogger CreateLogger(string categoryName)
         {
-            return _cachedLoggers.GetOrAdd(categoryName, id => new SpectreConsoleLogger(
+            return _cachedLoggers.GetOrAdd(categoryName, id => new SpectreLogger(
                 this, 
                 _options, 
                 _eventFilter,

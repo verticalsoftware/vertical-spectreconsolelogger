@@ -6,7 +6,7 @@ using Vertical.SpectreLogger.Core;
 namespace Vertical.SpectreLogger.Options
 {
     /// <summary>
-    /// Represents options for <see cref="SpectreConsoleLogger"/>
+    /// Represents options for <see cref="SpectreLogger"/>
     /// </summary>
     public class SpectreConsoleLoggerOptions
     {
