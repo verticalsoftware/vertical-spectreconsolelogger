@@ -11,6 +11,6 @@ namespace Vertical.SpectreLogger.Infrastructure
         /// <param name="outputTemplate">Output template.</param>
         /// <returns>A collection of <see cref="ITemplateRenderer"/> objects that are in invocation
         /// order.</returns>
-        IReadOnlyCollection<ITemplateRenderer> CreatePipeline(string outputTemplate);
+        IReadOnlyList<ITemplateRenderer> CreatePipeline(string outputTemplate);
     }
 }

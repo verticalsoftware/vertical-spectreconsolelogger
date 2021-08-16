@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
 using Vertical.SpectreLogger.Core;
+using Vertical.SpectreLogger.Infrastructure;
 
 namespace Vertical.SpectreLogger.Options
 {
@@ -12,6 +13,18 @@ namespace Vertical.SpectreLogger.Options
     /// </summary>
     public static class SpectreLoggerOptionsExtensions
     {
+        /// <summary>
+        /// Sets the minimum log level.
+        /// </summary>
+        /// <param name="options">Options</param>
+        /// <param name="logLevel">The minimum <see cref="LogLevel"/> the event must be to be rendered.</param>
+        /// <returns></returns>
+        public static SpectreLoggerOptions SetMinimumLogLevel(this SpectreLoggerOptions options, LogLevel logLevel)
+        {
+            options.LogLevelController = new DefaultLogLevelController(logLevel);
+            return options;
+        }
+        
         /// <summary>
         /// Configures a formatting profile.
         /// </summary>

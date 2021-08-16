@@ -1,21 +1,30 @@
-using System;
-using System.Collections.Immutable;
-
 namespace Vertical.SpectreLogger.Infrastructure
 {
-    internal sealed class ScopeProvider : IDisposable
+    internal sealed class ScopeProvider : IScopeProvider
     {
-        private readonly object _previousState;
+        private readonly IScopeManager _scopeManager;
 
-        internal ScopeProvider(object previousState)
+        internal ScopeProvider(IScopeManager scopeManager,
+            IScopeProvider? previousScope,
+            int iteration,
+            object? state)
         {
-            _previousState = previousState;
+            PreviousScope = previousScope;
+            Iteration = iteration;
+            State = state;
+            
+            _scopeManager = scopeManager;
         }
-        
+
         /// <inheritdoc />
         public void Dispose()
         {
-            throw new NotImplementedException();
+            _scopeManager.EndScope(this);
         }
+
+        public IScopeProvider? PreviousScope { get; }
+        public int Iteration { get; }
+
+        public object? State { get; }
     }
 }

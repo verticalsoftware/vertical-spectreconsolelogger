@@ -8,6 +8,6 @@ namespace Vertical.SpectreLogger.Infrastructure
         
         IDisposable BeginScope<TState>(TState state);
 
-        void EndScope(object state);
+        void EndScope(IScopeProvider scopeProvider);
     }
 }

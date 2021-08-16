@@ -3,7 +3,7 @@ namespace Vertical.SpectreLogger.Output
     /// <summary>
     /// Provides <see cref="IWriteBuffer"/> instances.
     /// </summary>
-    public interface IWriteBufferProvider
+    public interface IWriteBufferFactory
     {
         IWriteBuffer GetInstance();
 

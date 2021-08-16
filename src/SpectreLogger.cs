@@ -1,28 +1,31 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Vertical.SpectreLogger.Core;
 using Vertical.SpectreLogger.Infrastructure;
-using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Output;
 
 namespace Vertical.SpectreLogger
 {
     internal class SpectreLogger : ILogger
     {
-        private readonly IConfiguredLoggingContext _loggingContext;
-        private readonly IWriteBufferProvider _bufferProvider;
+        private readonly Dictionary<LogLevel, RuntimeFormattingProfile> _runtimeProfiles;
+        private readonly IWriteBufferFactory _bufferFactory;
         private readonly IScopeManager _scopeManager;
+        private readonly ILogLevelController _logLevelController;
         private readonly string _categoryName;
 
         internal SpectreLogger(
-            IConfiguredLoggingContext loggingContext,
-            IWriteBufferProvider bufferProvider,
+            Dictionary<LogLevel, RuntimeFormattingProfile> runtimeProfiles,
+            IWriteBufferFactory bufferFactory,
             IScopeManager scopeManager,
+            ILogLevelController logLevelController,
             string categoryName)
         {
-            _loggingContext = loggingContext;
-            _bufferProvider = bufferProvider;
+            _runtimeProfiles = runtimeProfiles;
+            _bufferFactory = bufferFactory;
             _scopeManager = scopeManager;
+            _logLevelController = logLevelController;
             _categoryName = categoryName;
         }
         
@@ -33,7 +36,7 @@ namespace Vertical.SpectreLogger
             Exception exception, 
             Func<TState, Exception, string> formatter)
         {
-            var formattingProfile = _loggingContext.GetFormattingProfile(logLevel);
+            var formattingProfile = _runtimeProfiles[logLevel];
             var scopes = _scopeManager.Scopes;
             
             var eventInfo = new LogEventInfo(
@@ -45,20 +48,23 @@ namespace Vertical.SpectreLogger
                 exception,
                 formattingProfile);
 
-            if (!formattingProfile.LogEventFilter?.Invoke(eventInfo) ?? true)
+            if (formattingProfile.LogEventFilter?.Invoke(eventInfo) == false)
                 return;
 
-            using var buffer = _bufferProvider.GetInstance();
-            var pipeline = _loggingContext.GetRenderingPipeline(logLevel);
+            using var buffer = _bufferFactory.GetInstance();
+            var pipeline = formattingProfile.RendererPipeline;
+            var length = pipeline.Count;
 
-            foreach (var renderer in pipeline)
+            for (var c = 0; c < length; c++)
             {
-                renderer.Render(buffer, eventInfo);
+                pipeline[c].Render(buffer, eventInfo);
             }
+            
+            buffer.Flush();
         }
 
         /// <inheritdoc />
-        public bool IsEnabled(LogLevel logLevel) => logLevel >= _loggingContext.MinimumLevel;
+        public bool IsEnabled(LogLevel logLevel) => logLevel > LogLevel.None && logLevel >= _logLevelController.MinimumLevel;
 
         /// <inheritdoc />
         public IDisposable BeginScope<TState>(TState state) => _scopeManager.BeginScope(state);

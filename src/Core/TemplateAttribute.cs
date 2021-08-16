@@ -7,7 +7,7 @@ namespace Vertical.SpectreLogger.Core
     /// Used to decorate renderers with the template pattern.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public class TemplateRendererAttribute : Attribute
+    public class TemplateAttribute : Attribute
     {
         /// <summary>
         /// Creates a new instance of this type.
@@ -15,7 +15,7 @@ namespace Vertical.SpectreLogger.Core
         /// <param name="templatePattern">The template matching pattern.</param>
         /// <exception cref="ArgumentNullException"><paramref name="templatePattern"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="templatePattern"/> is whitespace.</exception>
-        public TemplateRendererAttribute(string templatePattern)
+        public TemplateAttribute(string templatePattern)
         {
             TemplatePattern = templatePattern ?? throw new ArgumentNullException(nameof(templatePattern));
 

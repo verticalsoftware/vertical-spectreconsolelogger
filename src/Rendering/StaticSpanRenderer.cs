@@ -1,3 +1,4 @@
+using Spectre.Console;
 using Vertical.SpectreLogger.Core;
 using Vertical.SpectreLogger.Output;
 
@@ -9,13 +10,13 @@ namespace Vertical.SpectreLogger.Rendering
 
         internal StaticSpanRenderer(string value)
         {
-            _value = value;
+            _value = value.EscapeMarkup();
         }
         
         /// <inheritdoc />
         public void Render(IWriteBuffer buffer, in LogEventInfo eventInfo)
         {
-            throw new System.NotImplementedException();
+            buffer.Write(_value);
         }
     }
 }

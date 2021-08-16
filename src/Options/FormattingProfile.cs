@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Vertical.SpectreLogger.Core;
+using Vertical.SpectreLogger.Infrastructure;
 
 namespace Vertical.SpectreLogger.Options
 {
@@ -19,6 +20,11 @@ namespace Vertical.SpectreLogger.Options
         /// Gets the <see cref="LogLevel"/> for which the profile defines options for.
         /// </summary>
         public LogLevel LogLevel { get; }
+
+        /// <summary>
+        /// Gets or sets the output template.
+        /// </summary>
+        public string OutputTemplate { get; set; } = default!;
 
         /// <summary>
         /// Gets a dictionary of functions that format specific types of values. The function receives
@@ -47,5 +53,15 @@ namespace Vertical.SpectreLogger.Options
         /// Gets or sets a filter for each log event.
         /// </summary>
         public LogEventPredicate? LogEventFilter { get; set; }
+
+        internal void CopyTo(FormattingProfile formattingProfile)
+        {
+            TypeFormatters.CopyTo(formattingProfile.TypeFormatters);
+            TypeStyles.CopyTo(formattingProfile.TypeStyles);
+            ValueFormatters.CopyTo(formattingProfile.ValueFormatters);
+            ValueStyles.CopyTo(formattingProfile.ValueStyles);
+            formattingProfile.LogEventFilter = LogEventFilter;
+            formattingProfile.OutputTemplate = OutputTemplate;
+        }
     }
 }

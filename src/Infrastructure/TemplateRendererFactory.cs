@@ -9,6 +9,8 @@ using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Rendering;
 using Vertical.SpectreLogger.Utilities;
 
+// ReSharper disable ParameterTypeCanBeEnumerable.Local
+
 namespace Vertical.SpectreLogger.Infrastructure
 {
     internal class TemplateRendererFactory : ITemplateRendererFactory
@@ -21,16 +23,22 @@ namespace Vertical.SpectreLogger.Infrastructure
         }
         
         /// <inheritdoc />
-        public IReadOnlyCollection<ITemplateRenderer> CreatePipeline(string outputTemplate)
+        public IReadOnlyList<ITemplateRenderer> CreatePipeline(string outputTemplate)
         {
             var patterns = _options
                 .RendererTypes
                 .ToDictionary(type => type, GetTemplatePattern);
 
-            return TemplateParser
+            var renderers = new List<ITemplateRenderer>(6);
+
+            renderers.AddRange(TemplateParser
                 .Split(outputTemplate)
                 .Select(span => GetRenderer(span, patterns))
-                .ToArray();
+                .ToArray());
+            
+            renderers.Add(new NewLineRenderer(onlyIfNotAtMargin: true));
+
+            return renderers;
         }
 
         private static ITemplateRenderer GetRenderer(TemplateSpan span, Dictionary<Type, string> patterns)
@@ -50,8 +58,10 @@ namespace Vertical.SpectreLogger.Infrastructure
                     continue;
 
                 var constructors = entry.Key.GetConstructors();
+                var templateContext = new TemplateContext(match);
 
-                return TryCreateRenderer(constructors, match)
+                return TryCreateRenderer(constructors, templateContext)
+                       ?? TryCreateRenderer(constructors, match)
                        ?? TryCreateRenderer(constructors)
                        ?? throw new InvalidOperationException($"Renderer type {type} does not contain a compatible constructor.");
             }
@@ -59,13 +69,14 @@ namespace Vertical.SpectreLogger.Infrastructure
             return new StaticSpanRenderer(span.Value);
         }
 
-        private static ITemplateRenderer? TryCreateRenderer(ConstructorInfo[] constructors, Match match)
+        private static ITemplateRenderer? TryCreateRenderer<T>(ConstructorInfo[] constructors, T parameter)
+            where T : notnull
         {
             var constructor = constructors.FirstOrDefault(ctor => ctor
                 .GetParameters()
-                .Count(param => param.ParameterType == typeof(Match)) == 1);
+                .Count(param => param.ParameterType == typeof(T)) == 1);
 
-            return constructor?.Invoke(new object[] {match}) as ITemplateRenderer;
+            return constructor?.Invoke(new object[] {parameter}) as ITemplateRenderer;
         }
 
         private static ITemplateRenderer? TryCreateRenderer(ConstructorInfo[] constructors)
@@ -77,11 +88,11 @@ namespace Vertical.SpectreLogger.Infrastructure
 
         private static string GetTemplatePattern(Type type)
         {
-            var templateAttribute = type.GetCustomAttribute<TemplateRendererAttribute>();
+            var templateAttribute = type.GetCustomAttribute<TemplateAttribute>();
 
             return templateAttribute?.TemplatePattern 
                    ??
-                   throw new InvalidOperationException($"Type {type} is missing {nameof(TemplateRendererAttribute)} and cannot be used.");
+                   throw new InvalidOperationException($"Type {type} is missing {nameof(TemplateAttribute)} and cannot be used.");
         }
     }
 }

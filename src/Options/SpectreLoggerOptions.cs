@@ -8,27 +8,8 @@ namespace Vertical.SpectreLogger.Options
     /// <summary>
     /// Represents options for <see cref="SpectreLogger"/>
     /// </summary>
-    public class SpectreLoggerOptions
+    public partial class SpectreLoggerOptions
     {
-        private LogLevel _minimumLevel;
-
-        /// <summary>
-        /// Gets or sets the minimum log level.
-        /// </summary>
-        public LogLevel MinimumLevel
-        {
-            get => _minimumLevel;
-            set
-            {
-                if (value == LogLevel.None)
-                {
-                    throw new ArgumentException("LogLevel.None is not a valid value for this property.");
-                }
-
-                _minimumLevel = value;
-            }
-        }
-
         /// <summary>
         /// Gets a dictionary of <see cref="FormattingProfiles"/>, one for each <see cref="LogLevel"/>
         /// value with the exception of <see cref="LogLevel.None"/>
@@ -47,5 +28,10 @@ namespace Vertical.SpectreLogger.Options
         /// Gets a collection of types available to the rendering pipeline.
         /// </summary>
         public HashSet<Type> RendererTypes { get; } = new();
+        
+        /// <summary>
+        /// Gets or sets an object that can dynamically control the log level.
+        /// </summary>
+        public ILogLevelController? LogLevelController { get; set; }
     }
 }
