@@ -18,6 +18,7 @@ namespace SpectreLoggerExample
                 .CreateLogger<Program>();
             
             logger.LogInformation("Nope");
+            logger.LogInformation("You");
         }
     }
 }

@@ -29,11 +29,7 @@ namespace Vertical.SpectreLogger.Utilities
             IFormatter? formatter,
             T value) where T : notnull
         {
-            var type = typeof(T);
-            
-            var markup = profile.ValueStyles.GetValueOrDefault(value)
-                         ??
-                         profile.TypeStyles.GetValueOrDefault(type);
+            var markup = MarkupValue(profile, value);
 
             if (markup != null)
             {
@@ -50,6 +46,15 @@ namespace Vertical.SpectreLogger.Utilities
             }
         }
 
+        private static string? MarkupValue<T>(FormattingProfile profile, T value) where T : notnull
+        {
+            return profile.ValueStyles.GetValueOrDefault(value)
+                   ??
+                   profile.TypeStyles.GetValueOrDefault(typeof(T))
+                   ??
+                   profile.DefaultStyle;
+        }
+
         private static string FormatValue<T>(FormattingProfile profile, 
             TemplateContext? templateContext, 
             IFormatter? formatter, 
@@ -60,7 +65,7 @@ namespace Vertical.SpectreLogger.Utilities
 
             for (;;)
             {
-                if ((formattedValue = profile.ValueFormatters.GetValueOrDefault(value)?.Invoke(value)) != null)
+                if ((formattedValue = profile.ValueFormatters.GetValueOrDefault(value)) != null)
                     break;
 
                 if ((formattedValue = profile.TypeFormatters.GetValueOrDefault(typeof(T))?.Invoke(value)) != null)
@@ -71,7 +76,7 @@ namespace Vertical.SpectreLogger.Utilities
                 if (format != null && ((formattedValue = formatter?.Format(format, value)) != null))
                     break;
 
-                formattedValue = value.ToString();
+                formattedValue = profile.DefaultFormatter?.Invoke(value) ?? value.ToString();
                 break;
             }
 
@@ -81,7 +86,7 @@ namespace Vertical.SpectreLogger.Utilities
                 formattedValue = string.Format(formatString, formattedValue);
             }
 
-            return formattedValue;
+            return formattedValue!;
         }
     }
 }

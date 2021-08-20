@@ -53,7 +53,7 @@ namespace Vertical.SpectreLogger
             return options
                 .FormattingProfiles
                 .Values
-                .Select(profile => new RuntimeFormattingProfile(profile, rendererFactory.CreatePipeline(profile.OutputTemplate)))
+                .Select(profile => new RuntimeFormattingProfile(profile, rendererFactory.CreatePipeline(profile)))
                 .ToDictionary(profile => profile.LogLevel);
         }
     }

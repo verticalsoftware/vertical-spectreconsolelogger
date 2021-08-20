@@ -25,6 +25,18 @@ namespace Vertical.SpectreLogger.Options
         /// Gets or sets the output template.
         /// </summary>
         public string OutputTemplate { get; set; } = default!;
+        
+        /// <summary>
+        /// Gets the style that is applied values not specifically registered in
+        /// <see cref="ValueStyles"/> or <see cref="TypeStyles"/>
+        /// </summary>
+        public string? DefaultStyle { get; set; }
+        
+        /// <summary>
+        /// Gets the formatter that is applied to values or types not specifically found
+        /// in <see cref="ValueFormatters"/> or <see cref="TypeFormatters"/>
+        /// </summary>
+        public Func<object, string>? DefaultFormatter { get; set; }
 
         /// <summary>
         /// Gets a dictionary of functions that format specific types of values. The function receives
@@ -36,7 +48,7 @@ namespace Vertical.SpectreLogger.Options
         /// Gets a dictionary of functions that format specific values. The function receives the original
         /// value and returns the string representation to display.
         /// </summary>
-        public Dictionary<object, Func<object, string>> ValueFormatters { get; } = new();
+        public Dictionary<object, string> ValueFormatters { get; } = new();
 
         /// <summary>
         /// Gets a dictionary of markup strings that are applied when rendering values of a specific

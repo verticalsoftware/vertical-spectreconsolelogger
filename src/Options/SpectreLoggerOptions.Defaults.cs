@@ -10,37 +10,39 @@ namespace Vertical.SpectreLogger.Options
 
             options.ConfigureProfiles(profile =>
             {
-                profile.OutputTemplate = "{LogLevel,-7}:{CategoryName:F}{Margin:8}{NewLine}Hello SpectreLogger!";
+                profile.OutputTemplate = "{LogLevel,-7}: {CategoryName:F}{Margin:9}{NewLine}Hello SpectreLogger!";
+                profile.DefaultFormatter = obj => obj.ToString() ?? string.Empty;
             });
 
             options.ConfigureProfile(LogLevel.Trace, profile =>
             {
-                profile.AddValueFormatter(LogLevel.Trace, _ => "[Trace]");
+                profile.AddValueFormatter(LogLevel.Trace, "[Trace]");
             });
             
             options.ConfigureProfile(LogLevel.Debug, profile =>
             {
-                profile.AddValueFormatter(LogLevel.Debug, _ => "[Debug]");
+                profile.AddValueFormatter(LogLevel.Debug, "[Debug]");
             });
             
             options.ConfigureProfile(LogLevel.Information, profile =>
             {
-                profile.AddValueFormatter(LogLevel.Information, _ => "[Info]");
+                profile.OutputTemplate = "[green]{LogLevel,-7}[/][grey35]: {CategoryName:F}{Margin:9}{NewLine}Hello SpectreLogger![/]";
+                profile.AddValueFormatter(LogLevel.Information, "[Info]");
             });
             
             options.ConfigureProfile(LogLevel.Warning, profile =>
             {
-                profile.AddValueFormatter(LogLevel.Warning, _ => "[Warn]");
+                profile.AddValueFormatter(LogLevel.Warning, "[Warn]");
             });
             
             options.ConfigureProfile(LogLevel.Error, profile =>
             {
-                profile.AddValueFormatter(LogLevel.Error, _ => "[Error]");
+                profile.AddValueFormatter(LogLevel.Error, "[Error]");
             });
             
             options.ConfigureProfile(LogLevel.Critical, profile =>
             {
-                profile.AddValueFormatter(LogLevel.Critical, _ => "[Crit]");
+                profile.AddValueFormatter(LogLevel.Critical, "[Crit]");
             });
         }
     }

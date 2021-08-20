@@ -8,11 +8,8 @@ namespace Vertical.SpectreLogger.Rendering
     {
         private readonly string _value;
 
-        internal StaticSpanRenderer(string value)
-        {
-            _value = value.EscapeMarkup();
-        }
-        
+        internal StaticSpanRenderer(string value) => _value = value;
+
         /// <inheritdoc />
         public void Render(IWriteBuffer buffer, in LogEventInfo eventInfo)
         {

@@ -23,7 +23,7 @@ namespace Vertical.SpectreLogger.Infrastructure
         }
         
         /// <inheritdoc />
-        public IReadOnlyList<ITemplateRenderer> CreatePipeline(string outputTemplate)
+        public IReadOnlyList<ITemplateRenderer> CreatePipeline(FormattingProfile profile)
         {
             var patterns = _options
                 .RendererTypes
@@ -31,11 +31,22 @@ namespace Vertical.SpectreLogger.Infrastructure
 
             var renderers = new List<ITemplateRenderer>(6);
 
+            if (profile.DefaultStyle != null)
+            {
+                renderers.Add(new StyleControlRenderer(profile.DefaultStyle));
+            }
+
             renderers.AddRange(TemplateParser
-                .Split(outputTemplate)
+                .Split(profile.OutputTemplate)
                 .Select(span => GetRenderer(span, patterns))
                 .ToArray());
+
+            if (profile.DefaultStyle != null)
+            {
+                renderers.Add(StyleControlRenderer.CloseTag);
+            }
             
+            renderers.Add(new MarginControlRenderer(MarginControlRenderer.Mode.Set, 0));
             renderers.Add(new NewLineRenderer(onlyIfNotAtMargin: true));
 
             return renderers;
