@@ -1,4 +1,5 @@
 using System;
+using Vertical.SpectreLogger.Formatting;
 
 namespace Vertical.SpectreLogger.Options
 {
@@ -31,10 +32,10 @@ namespace Vertical.SpectreLogger.Options
         /// <returns><see cref="FormattingProfile"/></returns>
         public static FormattingProfile AddTypeFormatter<T>(
             this FormattingProfile profile,
-            Func<T, string> formatter)
+            IFormatter formatter)
             where T : notnull
         {
-            profile.TypeFormatters[typeof(T)] = obj => formatter((T)obj);
+            profile.TypeFormatters[typeof(T)] = formatter;
             return profile;
         }
 
@@ -70,6 +71,43 @@ namespace Vertical.SpectreLogger.Options
         {
             profile.TypeStyles[typeof(T)] = style;
             return profile;
+        }
+
+        /// <summary>
+        /// Configures a renderer.
+        /// </summary>
+        /// <param name="profile">Formatting profile</param>
+        /// <param name="configureOptions">A delegate used to configure the options instance.</param>
+        /// <typeparam name="TOptions">Options type.</typeparam>
+        /// <returns><see cref="FormattingProfile"/></returns>
+        public static FormattingProfile ConfigureRenderer<TOptions>(
+            this FormattingProfile profile,
+            Action<TOptions> configureOptions)
+            where TOptions : class, new()
+        {
+            if (!profile.OptionsDictionary.TryGetValue(typeof(TOptions), out var options))
+            {
+                options = new TOptions();
+                profile.OptionsDictionary.Add(typeof(TOptions), options);
+            }
+
+            configureOptions((TOptions) options);
+
+            return profile;
+        }
+
+        /// <summary>
+        /// Gets a specific instance of an options type.
+        /// </summary>
+        /// <param name="profile">Formatting profile.</param>
+        /// <typeparam name="TOptions">Options type.</typeparam>
+        /// <returns>The options instance or null if the options were never configured.</returns>
+        public static TOptions? GetRendererOptions<TOptions>(this FormattingProfile profile)
+            where TOptions : class
+        {
+            return profile.OptionsDictionary.TryGetValue(typeof(TOptions), out var options)
+                ? (TOptions) options
+                : default;
         }
     }
 }

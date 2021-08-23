@@ -1,27 +1,30 @@
 using Vertical.SpectreLogger.Core;
-using Vertical.SpectreLogger.Output;
-using Vertical.SpectreLogger.Utilities;
+using Vertical.SpectreLogger.Formatting;
 
 namespace Vertical.SpectreLogger.Rendering
 {
-    [Template(@"{LogLevel" + TemplatePatterns.WidthCapturePattern + "}")]
-    public class LogLevelRenderer : ITemplateRenderer
+    [Template(@"{LogLevel" + TemplatePatterns.WidthAndCompositeFormatPattern + "}")]
+    public partial class LogLevelRenderer : FormattedValueRenderer
     {
         private readonly TemplateContext _templateContext;
 
-        public LogLevelRenderer(TemplateContext templateContext)
+        /// <inheritdoc />
+        public LogLevelRenderer(TemplateContext templateContext, RenderedValueCache cache) 
+            : base(templateContext, 
+                Formatter.Default, 
+                FormattingOptions.CompositeFormat, 
+                cache)
         {
             _templateContext = templateContext;
         }
+
+        /// <inheritdoc />
+        protected override object GetRenderValue(in LogEventInfo eventInfo)
+        {
+            return eventInfo.LogLevel;
+        }
         
         /// <inheritdoc />
-        public void Render(IWriteBuffer buffer, in LogEventInfo eventInfo)
-        {
-            buffer.Write(
-                eventInfo.FormattingProfile,
-                _templateContext,
-                null,
-                eventInfo.LogLevel);
-        }
+        public override string ToString() => $"LogLevel (format=\"{_templateContext.Format}\")";
     }
 }

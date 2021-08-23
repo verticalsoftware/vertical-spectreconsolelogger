@@ -20,6 +20,7 @@ namespace Vertical.SpectreLogger.Output
         public override void Dispose()
         {
             Clear();
+            Margin = 0;
             _factory.WriteDisposed(this);
         }
 

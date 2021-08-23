@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Vertical.SpectreLogger.Formatting;
 
 namespace Vertical.SpectreLogger.Options
 {
@@ -6,43 +7,61 @@ namespace Vertical.SpectreLogger.Options
     {
         public SpectreLoggerOptions()
         {
+            const string defaultTemplate = "{LogLevel,-7:D}: {CategoryName:F}{Margin:9}{NewLine}{Scopes}{Message}{NewLine??}{Exception}";
             var options = this;
+
+            this.SetMinimumLogLevel(LogLevel.Trace);
 
             options.ConfigureProfiles(profile =>
             {
-                profile.OutputTemplate = "{LogLevel,-7}: {CategoryName:F}{Margin:9}{NewLine}Hello SpectreLogger!";
-                profile.DefaultFormatter = obj => obj.ToString() ?? string.Empty;
+                profile.OutputTemplate = defaultTemplate;
+                profile.DefaultLogValueFormatter = new ValueFormatter<object>(value => value.ToString() ?? string.Empty);
+                
+                profile.ConfigureRenderer<ExceptionRendererOptions>(renderer =>
+                {
+                    renderer.ExceptionFormatter = ex => $"{ex.GetType()}: {ex.Message}";
+                    renderer.MethodFormatter = method => method;
+                    renderer.FilePathFormatter = path => path;
+                    renderer.MaxStackFrames = 5;
+                    renderer.HiddenStackFramesFormatter = hidden => $"(+{hidden} more...)";
+                    renderer.MethodParameterFormatter = method => $"{method.type} {method.name}";
+                    renderer.StackFrameFormatter = frame => $"  at {frame.method} in {frame.file}:{frame.line}";
+                    renderer.FileLineNumberFormatter = line => $"line {line}";
+                    renderer.UnwindAggregateExceptions = true;
+                    renderer.UnwindInnerExceptions = true;
+                });
+
+                profile.ConfigureRenderer<ScopesRendererOptions>(renderer =>
+                {
+                    renderer.Separator = " => ";
+                    renderer.PostRenderFormat = " => ";
+                    renderer.RenderNullScopes = false;
+                });
             });
 
             options.ConfigureProfile(LogLevel.Trace, profile =>
             {
-                profile.AddValueFormatter(LogLevel.Trace, "[Trace]");
             });
             
             options.ConfigureProfile(LogLevel.Debug, profile =>
             {
-                profile.AddValueFormatter(LogLevel.Debug, "[Debug]");
             });
             
             options.ConfigureProfile(LogLevel.Information, profile =>
             {
-                profile.OutputTemplate = "[green]{LogLevel,-7}[/][grey35]: {CategoryName:F}{Margin:9}{NewLine}Hello SpectreLogger![/]";
-                profile.AddValueFormatter(LogLevel.Information, "[Info]");
+
             });
             
             options.ConfigureProfile(LogLevel.Warning, profile =>
             {
-                profile.AddValueFormatter(LogLevel.Warning, "[Warn]");
             });
             
             options.ConfigureProfile(LogLevel.Error, profile =>
             {
-                profile.AddValueFormatter(LogLevel.Error, "[Error]");
             });
             
             options.ConfigureProfile(LogLevel.Critical, profile =>
             {
-                profile.AddValueFormatter(LogLevel.Critical, "[Crit]");
             });
         }
     }

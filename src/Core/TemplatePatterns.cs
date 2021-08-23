@@ -6,5 +6,6 @@ namespace Vertical.SpectreLogger.Core
         public const string CompositeFormatCaptureGroup = "format";
         public const string WidthCapturePattern = @"(?:,(?<"+ WidthCaptureGroup + @">-?\d+))?";
         public const string CompositeFormatPattern = @"(?::(?<" + CompositeFormatCaptureGroup + @">[^\}]+))?";
+        public const string WidthAndCompositeFormatPattern = WidthCapturePattern + CompositeFormatPattern;
     }
 }

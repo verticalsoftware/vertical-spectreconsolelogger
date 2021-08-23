@@ -47,6 +47,11 @@ namespace Vertical.SpectreLogger.Core
         public string Value => Match?.Value ?? Source.Substring(StartIndex, Length);
 
         /// <summary>
+        /// Gets the template key or an empty string if <see cref="IsTemplate"/> is false.
+        /// </summary>
+        public string TemplateKey => Match?.Groups[1].Value ?? string.Empty;
+
+        /// <summary>
         /// Gets whether this instance represents a match to a template.
         /// </summary>
         public bool IsTemplate => Match != null;

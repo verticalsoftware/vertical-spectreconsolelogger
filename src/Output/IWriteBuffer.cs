@@ -8,13 +8,37 @@ namespace Vertical.SpectreLogger.Output
     public interface IWriteBuffer : IDisposable
     {
         /// <summary>
+        /// Defers writing a string to the buffer until any other
+        /// content is appended.
+        /// </summary>
+        /// <param name="str">String to write.</param>
+        void Enqueue(string str);
+
+        /// <summary>
+        /// Defers writing a subset of a string to the buffer until other
+        /// content is appended.
+        /// </summary>
+        /// <param name="str">String to write.</param>
+        /// <param name="index">Starting position in the string.</param>
+        /// <param name="length">The number of characters to write.</param>
+        void Enqueue(string str, int index, int length);
+        
+        /// <summary>
+        /// Defers writing a character to the buffer until other content is
+        /// appended.
+        /// </summary>
+        /// <param name="c">Character to write.</param>
+        /// <param name="count">The number of times to repeat the operation.</param>
+        void Enqueue(char c, int count = 1);
+        
+        /// <summary>
         /// Writes a string to the buffer.
         /// </summary>
         /// <param name="str">String to write.</param>
         void Write(string str);
 
         /// <summary>
-        /// Writes a portion of a string to the buffer.
+        /// Writes a subset of a string to the buffer.
         /// </summary>
         /// <param name="str">String to write.</param>
         /// <param name="index">Starting position in the string.</param>
@@ -37,7 +61,12 @@ namespace Vertical.SpectreLogger.Output
         /// Clears all content from the buffer.
         /// </summary>
         void Clear();
-        
+
+        /// <summary>
+        /// Clears any content that has been enqueued.
+        /// </summary>
+        void ClearEnqueued();
+
         /// <summary>
         /// Gets or sets the number of characters to indent on new lines of output.
         /// </summary>

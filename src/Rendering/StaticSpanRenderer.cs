@@ -1,4 +1,3 @@
-using Spectre.Console;
 using Vertical.SpectreLogger.Core;
 using Vertical.SpectreLogger.Output;
 
@@ -15,5 +14,8 @@ namespace Vertical.SpectreLogger.Rendering
         {
             buffer.Write(_value);
         }
+
+        /// <inheritdoc />
+        public override string ToString() => "\"" + _value + "\"";
     }
 }

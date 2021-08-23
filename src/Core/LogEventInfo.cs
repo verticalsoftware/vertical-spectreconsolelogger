@@ -15,7 +15,7 @@ namespace Vertical.SpectreLogger.Core
             EventId eventId,
             object? state,
             object?[] scopes,
-            Exception exception,
+            Exception? exception,
             FormattingProfile formattingProfile)
         {
             CategoryName = categoryName;
@@ -36,7 +36,7 @@ namespace Vertical.SpectreLogger.Core
 
         public object?[] Scopes { get; }
 
-        public Exception Exception { get; }
+        public Exception? Exception { get; }
 
         public FormattingProfile FormattingProfile { get; }
     }

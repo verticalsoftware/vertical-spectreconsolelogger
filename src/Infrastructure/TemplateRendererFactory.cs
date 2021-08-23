@@ -25,34 +25,25 @@ namespace Vertical.SpectreLogger.Infrastructure
         /// <inheritdoc />
         public IReadOnlyList<ITemplateRenderer> CreatePipeline(FormattingProfile profile)
         {
+            var valueCache = new RenderedValueCache();
+            
             var patterns = _options
                 .RendererTypes
                 .ToDictionary(type => type, GetTemplatePattern);
 
             var renderers = new List<ITemplateRenderer>(6);
 
-            if (profile.DefaultStyle != null)
-            {
-                renderers.Add(new StyleControlRenderer(profile.DefaultStyle));
-            }
-
             renderers.AddRange(TemplateParser
                 .Split(profile.OutputTemplate)
-                .Select(span => GetRenderer(span, patterns))
+                .Select(span => GetRenderer(span, patterns, valueCache))
                 .ToArray());
 
-            if (profile.DefaultStyle != null)
-            {
-                renderers.Add(StyleControlRenderer.CloseTag);
-            }
-            
-            renderers.Add(new MarginControlRenderer(MarginControlRenderer.Mode.Set, 0));
-            renderers.Add(new NewLineRenderer(onlyIfNotAtMargin: true));
+            renderers.Add(new EndEventRenderer());
 
             return renderers;
         }
 
-        private static ITemplateRenderer GetRenderer(TemplateSpan span, Dictionary<Type, string> patterns)
+        private static ITemplateRenderer GetRenderer(TemplateSpan span, Dictionary<Type, string> patterns, RenderedValueCache valueCache)
         {
             if (!span.IsTemplate)
             {
@@ -68,33 +59,17 @@ namespace Vertical.SpectreLogger.Infrastructure
                 if (!match.Success)
                     continue;
 
-                var constructors = entry.Key.GetConstructors();
-                var templateContext = new TemplateContext(match);
+                var rendererType = entry.Key;
 
-                return TryCreateRenderer(constructors, templateContext)
-                       ?? TryCreateRenderer(constructors, match)
-                       ?? TryCreateRenderer(constructors)
-                       ?? throw new InvalidOperationException($"Renderer type {type} does not contain a compatible constructor.");
+                return (ITemplateRenderer)DynamicActivator.CreateInstance(rendererType, new object[]
+                {
+                    new TemplateContext(match),
+                    match,
+                    valueCache
+                });
             }
 
             return new StaticSpanRenderer(span.Value);
-        }
-
-        private static ITemplateRenderer? TryCreateRenderer<T>(ConstructorInfo[] constructors, T parameter)
-            where T : notnull
-        {
-            var constructor = constructors.FirstOrDefault(ctor => ctor
-                .GetParameters()
-                .Count(param => param.ParameterType == typeof(T)) == 1);
-
-            return constructor?.Invoke(new object[] {parameter}) as ITemplateRenderer;
-        }
-
-        private static ITemplateRenderer? TryCreateRenderer(ConstructorInfo[] constructors)
-        {
-            var constructor = constructors.FirstOrDefault(ctor => ctor.GetParameters().Length == 0);
-
-            return constructor?.Invoke(Array.Empty<object>()) as ITemplateRenderer;
         }
 
         private static string GetTemplatePattern(Type type)

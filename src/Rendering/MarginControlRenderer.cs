@@ -51,5 +51,8 @@ namespace Vertical.SpectreLogger.Rendering
                     break;
             }
         }
+
+        /// <inheritdoc />
+        public override string ToString() => $"{_mode}:{_value}";
     }
 }
