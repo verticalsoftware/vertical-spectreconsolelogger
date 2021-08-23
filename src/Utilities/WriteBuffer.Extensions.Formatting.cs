@@ -12,47 +12,6 @@ namespace Vertical.SpectreLogger.Utilities
     public static partial class WriteBufferExtensions
     {
         /// <summary>
-        /// Writes to the buffer.
-        /// </summary>
-        /// <param name="buffer">Buffer instance</param>
-        /// <param name="profile">Formatting profile</param>
-        /// <param name="templateContext">Template context or null</param>
-        /// <param name="formatter">Custom formatter or null</param>
-        /// <param name="value">Value</param>
-        /// <param name="options">Formatting options to apply</param>
-        /// <typeparam name="T">Value type</typeparam>
-        /// <returns>The string that was written</returns>
-        public static string CaptureFormattedValue<T>(this IWriteBuffer buffer, 
-            T value,
-            FormattingProfile profile,
-            TemplateContext? templateContext = null,
-            IFormatter? formatter = null,
-            FormattingOptions options = FormattingOptions.All) 
-            where T : notnull
-        {
-            var position = buffer.Length;
-            var markup = GetMarkup(profile, value, options);
-
-            if (markup != null)
-            {
-                buffer.Write($"[{markup}]");
-            }
-
-            var formattedValue = GetFormattedValue(profile, templateContext, formatter, value, options);
-            
-            buffer.Write(formattedValue.EscapeMarkup());
-
-            if (markup != null)
-            {
-                buffer.Write("[/]");
-            }
-
-            var writeLength = buffer.Length - position;
-            
-            return writeLength > 0 ? buffer.ToString(position, writeLength) : string.Empty;
-        }
-
-        /// <summary>
         /// Writes values that are to be structured within a template string.
         /// </summary>
         /// <param name="buffer">Write buffer</param>
@@ -114,7 +73,7 @@ namespace Vertical.SpectreLogger.Utilities
 
             buffer.WriteTemplate(template, logValues, profile);
         }
-        
+
         /// <summary>
         /// Writes to the buffer.
         /// </summary>
@@ -124,6 +83,7 @@ namespace Vertical.SpectreLogger.Utilities
         /// <param name="formatter">Custom formatter or null</param>
         /// <param name="value">Value</param>
         /// <param name="options">Formatting options to apply</param>
+        /// <param name="destructure">Whether or not to destructure the value when rendering</param>
         /// <typeparam name="T">Value type</typeparam>
         /// <returns>The string that was written</returns>
         public static void WriteFormattedValue<T>(this IWriteBuffer buffer, 
@@ -131,7 +91,8 @@ namespace Vertical.SpectreLogger.Utilities
             FormattingProfile profile,
             TemplateContext? templateContext = null,
             IFormatter? formatter = null,
-            FormattingOptions options = FormattingOptions.All) 
+            FormattingOptions options = FormattingOptions.All,
+            bool destructure = false) 
             where T : notnull
         {
             var markup = GetMarkup(profile, value, options);
@@ -149,6 +110,36 @@ namespace Vertical.SpectreLogger.Utilities
             {
                 buffer.Write("[/]");
             }
+        }
+
+        /// <summary>
+        /// Writes to the buffer.
+        /// </summary>
+        /// <param name="buffer">Buffer instance</param>
+        /// <param name="profile">Formatting profile</param>
+        /// <param name="templateContext">Template context or null</param>
+        /// <param name="formatter">Custom formatter or null</param>
+        /// <param name="capture">A string that is assigned with the captured value.</param>
+        /// <param name="value">Value</param>
+        /// <param name="options">Formatting options to apply</param>
+        /// <typeparam name="T">Value type</typeparam>
+        /// <returns>The string that was written</returns>
+        public static void WriteFormattedValue<T>(this IWriteBuffer buffer, 
+            out string capture,
+            T value,
+            FormattingProfile profile,
+            TemplateContext? templateContext = null,
+            IFormatter? formatter = null,
+            FormattingOptions options = FormattingOptions.All) 
+            where T : notnull
+        {
+            var position = buffer.Length;
+            
+            buffer.WriteFormattedValue(value, profile, templateContext, formatter, options);
+
+            var length = buffer.Length - position;
+
+            capture = length > 0 ? buffer.ToString(position, length) : string.Empty;
         }
 
         private static string? GetMarkup<T>(FormattingProfile profile, T value, FormattingOptions options) where T : notnull

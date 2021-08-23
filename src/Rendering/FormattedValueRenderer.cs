@@ -61,7 +61,8 @@ namespace Vertical.SpectreLogger.Rendering
                 return;
             }
 
-            var renderedValue = buffer.CaptureFormattedValue(
+            buffer.WriteFormattedValue(
+                out var renderedValue,
                 originalValue,
                 eventInfo.FormattingProfile,
                 _templateContext,

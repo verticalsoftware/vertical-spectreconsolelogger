@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Vertical.SpectreLogger.Core;
 using Vertical.SpectreLogger.Formatting;
@@ -76,11 +75,6 @@ namespace Vertical.SpectreLogger.Options
         /// Gets or sets a filter for each log event.
         /// </summary>
         public LogEventPredicate? LogEventFilter { get; set; }
-        
-        /// <summary>
-        /// Gets or sets serializer options for values that are destructured inline.
-        /// </summary>
-        public JsonSerializerOptions SerializerOptions { get; set; }
 
         internal void CopyTo(FormattingProfile formattingProfile)
         {
