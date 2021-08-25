@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Spectre.Console;
 using Vertical.SpectreLogger.Core;
 using Vertical.SpectreLogger.Formatting;
-using Vertical.SpectreLogger.Infrastructure;
 using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Output;
 using Vertical.SpectreLogger.Types;
@@ -102,7 +101,7 @@ namespace Vertical.SpectreLogger.Utilities
                 buffer.Write($"[{markup}]");
             }
 
-            var formattedValue = GetFormattedValue(profile, templateContext, formatter, value, options);
+            var formattedValue = GetFormattedValueOrDefault(profile, templateContext, formatter, value, options);
             
             buffer.Write(formattedValue.EscapeMarkup());
 
@@ -151,14 +150,26 @@ namespace Vertical.SpectreLogger.Utilities
                    (options.ApplyDefaultStyle() ? profile.DefaultLogValueStyle : null);
         }
 
-        private static string GetFormattedValue<T>(FormattingProfile profile, 
+        private static string GetFormattedValueOrDefault<T>(FormattingProfile profile,
+            TemplateContext? templateContext,
+            IFormatter? formatter,
+            T value,
+            FormattingOptions options)
+            where T : notnull
+        {
+            TryGetFormattedValue(profile, templateContext, formatter, value, options, out var formattedValue);
+
+            return formattedValue as string ?? value.ToString() ?? string.Empty;
+        }
+
+        private static bool TryGetFormattedValue<T>(FormattingProfile profile, 
             TemplateContext? templateContext, 
             IFormatter? formatter,
             T value,
-            FormattingOptions options) 
+            FormattingOptions options,
+            out object? formattedValue) 
             where T : notnull
         {
-            string? formattedValue;
             var templateFormat = templateContext?.Format ?? string.Empty;
 
             for (;;)
@@ -184,9 +195,8 @@ namespace Vertical.SpectreLogger.Utilities
                 if (options.ApplyDefaultFormat() && (formattedValue = profile.DefaultLogValueFormatter?.Format(templateFormat, value)) != null)
                     break;
 
-                formattedValue = value.ToString();
-                
-                break;
+                formattedValue = value;
+                return false;
             }
 
             if (options.ApplyTemplateWidth() && templateContext?.Width.HasValue == true)
@@ -195,7 +205,7 @@ namespace Vertical.SpectreLogger.Utilities
                 formattedValue = string.Format(formatString, formattedValue);
             }
 
-            return formattedValue!;
+            return true;
         }
     }
 }

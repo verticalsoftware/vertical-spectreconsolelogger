@@ -1,4 +1,7 @@
 using System;
+using Vertical.SpectreLogger.Core;
+using Vertical.SpectreLogger.Formatting;
+using Vertical.SpectreLogger.Options;
 
 namespace Vertical.SpectreLogger.Output
 {

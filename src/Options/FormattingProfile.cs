@@ -72,6 +72,11 @@ namespace Vertical.SpectreLogger.Options
         public IReadOnlyDictionary<Type, object> RendererOptions { get; }
 
         /// <summary>
+        /// Gets the max destructuring depth.
+        /// </summary>
+        public uint MaxDestructuringDepth { get; set; } = 3;
+
+        /// <summary>
         /// Gets or sets a filter for each log event.
         /// </summary>
         public LogEventPredicate? LogEventFilter { get; set; }
