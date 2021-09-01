@@ -4,7 +4,7 @@ using System.Linq;
 namespace Vertical.SpectreLogger.Core
 {
     /// <summary>
-    /// Used to decorate renderers with the template pattern.
+    /// Defines the template for a rendering component.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
     public class TemplateAttribute : Attribute
@@ -12,25 +12,28 @@ namespace Vertical.SpectreLogger.Core
         /// <summary>
         /// Creates a new instance of this type.
         /// </summary>
-        /// <param name="templatePattern">The template matching pattern.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="templatePattern"/> is null</exception>
-        /// <exception cref="ArgumentException"><paramref name="templatePattern"/> is whitespace.</exception>
-        public TemplateAttribute(string templatePattern)
+        /// <param name="template">Template value.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="template"/> is null</exception>
+        /// <exception cref="ArgumentException"><paramref name="template"/> is whitespace</exception>
+        public TemplateAttribute(string template)
         {
-            TemplatePattern = templatePattern ?? throw new ArgumentNullException(nameof(templatePattern));
+            Template = template ?? throw new ArgumentNullException(nameof(template));
 
-            if (templatePattern.All(char.IsWhiteSpace))
+            if (template.All(char.IsWhiteSpace))
             {
-                throw new ArgumentException("Template pattern cannot be empty");
+                throw new ArgumentException("Template cannot be empty/whitespace");
             }
         }
 
         /// <summary>
-        /// Gets the template pattern.
+        /// Gets the template value.
         /// </summary>
-        public string TemplatePattern { get; }
+        public string Template { get; }
 
         /// <inheritdoc />
-        public override string ToString() => TemplatePattern;
+        public override string ToString() => Template;
+
+        /// <inheritdoc />
+        public override int GetHashCode() => Template.GetHashCode();
     }
 }

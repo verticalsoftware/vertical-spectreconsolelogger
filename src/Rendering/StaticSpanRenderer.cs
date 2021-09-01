@@ -3,19 +3,19 @@ using Vertical.SpectreLogger.Output;
 
 namespace Vertical.SpectreLogger.Rendering
 {
-    internal class StaticSpanRenderer : ITemplateRenderer
+    internal sealed class StaticSpanRenderer : ITemplateRenderer
     {
-        private readonly string _value;
+        private readonly string _content;
 
-        internal StaticSpanRenderer(string value) => _value = value;
-
-        /// <inheritdoc />
-        public void Render(IWriteBuffer buffer, in LogEventInfo eventInfo)
+        internal StaticSpanRenderer(string content)
         {
-            buffer.Write(_value);
+            _content = content;
         }
-
+        
         /// <inheritdoc />
-        public override string ToString() => "\"" + _value + "\"";
+        public void Render(IWriteBuffer buffer, in LogEventInfo logEventInfo)
+        {
+            buffer.Write(_content, 0, _content.Length);
+        }
     }
 }

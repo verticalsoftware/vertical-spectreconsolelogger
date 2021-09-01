@@ -3,15 +3,15 @@ using Vertical.SpectreLogger.Output;
 namespace Vertical.SpectreLogger.Core
 {
     /// <summary>
-    /// Represents an object that renders log event data to the write buffer.
+    /// An object that renders the content represented by a template.
     /// </summary>
     public interface ITemplateRenderer
     {
         /// <summary>
-        /// Renders the event data specific to the template.
+        /// Renders the template portion of the log event to the provided buffer.
         /// </summary>
-        /// <param name="buffer">The buffer to write the data to.</param>
-        /// <param name="eventInfo"><see cref="LogEventInfo"/> that describes the event data.</param>
-        void Render(IWriteBuffer buffer, in LogEventInfo eventInfo);
+        /// <param name="buffer">Write buffer</param>
+        /// <param name="logEventInfo">Log event data.</param>
+        void Render(IWriteBuffer buffer, in LogEventInfo logEventInfo);
     }
 }

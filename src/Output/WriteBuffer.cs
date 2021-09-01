@@ -1,114 +1,88 @@
 using System;
 using System.Text;
+using Spectre.Console;
+using Vertical.SpectreLogger.Internal;
 
 namespace Vertical.SpectreLogger.Output
 {
-    public abstract class WriteBuffer : IWriteBuffer
+    /// <summary>
+    /// Represents the default implementation of a <see cref="IWriteBuffer"/>.
+    /// </summary>
+    public class WriteBuffer : IWriteBuffer
     {
-        private readonly StringBuilder _stringBuilder;
+        private readonly IAnsiConsoleWriter _consoleWriter;
         private readonly StringBuilder _queue = new();
-        private int _margin;
+        private readonly StringBuilder _buffer = new();
 
-        protected WriteBuffer(int capacity)
+        /// <summary>
+        /// Creates a new instance of this type.
+        /// </summary>
+        /// <param name="consoleWriter">Underlying console to flush output to.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="consoleWriter"/> is null.</exception>
+        public WriteBuffer(IAnsiConsoleWriter consoleWriter)
         {
-            _stringBuilder = new StringBuilder(capacity);
+            _consoleWriter = consoleWriter ?? throw new ArgumentNullException(nameof(consoleWriter));
         }
-
-        public abstract void Dispose();
+        
+        /// <inheritdoc />
+        public int Margin { get; set; }
 
         /// <inheritdoc />
-        public void Enqueue(string str) => _queue.Append(str);
+        public int LinePosition { get; private set; }
 
         /// <inheritdoc />
-        public void Enqueue(string str, int index, int length) => _queue.Append(str, index, length);
-
-        /// <inheritdoc />
-        public void Enqueue(char c, int count = 1) => _queue.Append(new string(c, count));
-
-        /// <inheritdoc />
-        public void Write(string str)
+        public void Enqueue(string str, int startIndex, int length)
         {
-            Write(str, 0, str.Length);
-        }
-
-        /// <inheritdoc />
-        public void Write(string str, int index, int length)
-        {
-            for (var c = index; c < length; c++)
-            {
-                Write(str[c], 1);
-            }
+            _queue.Append(str, startIndex, length);
         }
 
         /// <inheritdoc />
-        public void Write(char c, int count = 1)
+        public void Write(string str, int startIndex, int length)
         {
             if (_queue.Length > 0)
             {
-                _stringBuilder.Append(_queue);
+                _buffer.Append(_queue);
                 _queue.Clear();
             }
-            
-            _stringBuilder.Append(c, count);
 
-            switch (c)
+            var pastLastIndex = startIndex + length;
+
+            for (var c = startIndex; c < pastLastIndex; c++)
             {
-                case '\n':
-                    if (_margin > 0)
-                    {
-                        _stringBuilder.Append(' ', _margin);
-                    }
+                var ch = str[c];
 
-                    CharPosition = 0;
-                    break;
-                
-                default:
-                    CharPosition += count;
-                    break;
+                if (ch == '\n')
+                {
+                    _buffer.AppendLine();
+                    _buffer.Append(' ', Margin);
+                    LinePosition = 0;
+                }
+
+                _buffer.Append(ch);
+                ++LinePosition;
             }
         }
 
         /// <inheritdoc />
-        public abstract void Flush();
+        public int Length => _buffer.Length;
+
+        /// <inheritdoc />
+        public void Flush()
+        {
+            _consoleWriter.Write(_buffer.ToString());
+            Clear();
+        }
 
         /// <inheritdoc />
         public void Clear()
         {
-            _stringBuilder.Clear();
+            _buffer.Clear();
             _queue.Clear();
-            CharPosition = 0;
+            LinePosition = 0;
+            Enqueue(MarginStrings.Instance[Margin], 0, Margin);
         }
 
         /// <inheritdoc />
-        public void ClearEnqueued()
-        {
-            _queue.Clear();
-        }
-
-        /// <inheritdoc />
-        public int CharPosition { get; private set; }
-
-        /// <inheritdoc />
-        public int Margin
-        {
-            get => _margin;
-            set => _margin = Math.Max(0, value);
-        }
-
-        /// <inheritdoc />
-        /// <inheritdoc />
-        public int Length => _stringBuilder.Length;
-
-        /// <inheritdoc />
-        public string ToString(int startIndex, int length)
-        {
-            return _stringBuilder.ToString(startIndex, length);
-        }
-
-        /// <summary>
-        /// Gets the current value in the buffer.
-        /// </summary>
-        /// <inheritdoc />
-        public override string ToString() => _stringBuilder.ToString();
+        public override string ToString() => _buffer.ToString();
     }
 }

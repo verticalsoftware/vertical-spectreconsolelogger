@@ -1,60 +1,53 @@
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
+using Spectre.Console;
 using Vertical.SpectreLogger.Core;
-using Vertical.SpectreLogger.Infrastructure;
+using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Output;
 
 namespace Vertical.SpectreLogger
 {
-    internal class SpectreLoggerProvider : ILoggerProvider
+    /// <summary>
+    /// Logger provider for <see cref="SpectreLogger"/>
+    /// </summary>
+    public class SpectreLoggerProvider : ILoggerProvider
     {
-        private readonly IWriteBufferFactory _bufferFactory;
-        private readonly ILogLevelController _logLevelController;
-        private readonly IScopeManager _scopeManager;
+        private readonly IOptions<SpectreLoggerOptions> _optionsProvider;
+        private readonly IRendererPipeline _rendererPipeline;
+        private readonly ScopeManager _scopeManager = new();
+        private readonly DefaultObjectPool<IWriteBuffer> _writeBufferPool;
         private readonly ConcurrentDictionary<string, ILogger> _cachedLoggers = new();
-        private readonly Dictionary<LogLevel,RuntimeFormattingProfile> _runtimeProfiles;
-
+        
+        /// <summary>
+        /// Creates a new instance of this provider type.
+        /// </summary>
         public SpectreLoggerProvider(
             IOptions<SpectreLoggerOptions> optionsProvider,
-            ITemplateRendererFactory templateRendererFactory,
-            IWriteBufferFactory bufferFactory,
-            ILogLevelController logLevelController,
-            IScopeManager scopeManager)
+            IRendererPipeline rendererPipeline,
+            IAnsiConsoleWriter consoleWriter)
         {
-            _bufferFactory = bufferFactory;
-            _logLevelController = logLevelController;
-            _scopeManager = scopeManager;
-            _runtimeProfiles = BuildRuntimeProfiles(optionsProvider.Value, templateRendererFactory);
+            _optionsProvider = optionsProvider;
+            _rendererPipeline = rendererPipeline;
+            _writeBufferPool = new(new WriteBufferPooledObjectPolicy(consoleWriter));
         }
         
         /// <inheritdoc />
         public void Dispose()
         {
+            // Not implemented
         }
 
         /// <inheritdoc />
         public ILogger CreateLogger(string categoryName)
         {
-            return _cachedLoggers.GetOrAdd(categoryName, id => new SpectreLogger(
-                _runtimeProfiles,
-                _bufferFactory,
-                _scopeManager,
-                _logLevelController,
-                id));
-        }
-
-        private static Dictionary<LogLevel, RuntimeFormattingProfile> BuildRuntimeProfiles(SpectreLoggerOptions options,
-            ITemplateRendererFactory rendererFactory)
-        {
-            return options
-                .FormattingProfiles
-                .Values
-                .Select(profile => new RuntimeFormattingProfile(profile, rendererFactory.CreatePipeline(profile)))
-                .ToDictionary(profile => profile.LogLevel);
+            return _cachedLoggers.GetOrAdd(categoryName, name => new SpectreLogger(
+                _rendererPipeline,
+                _optionsProvider.Value,
+                _writeBufferPool,
+                _scopeManager));
         }
     }
 }

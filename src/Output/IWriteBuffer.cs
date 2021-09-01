@@ -1,96 +1,52 @@
-using System;
-using Vertical.SpectreLogger.Core;
-using Vertical.SpectreLogger.Formatting;
-using Vertical.SpectreLogger.Options;
-
 namespace Vertical.SpectreLogger.Output
 {
     /// <summary>
-    /// Represents an object that buffers data to the final output.
+    /// Provides an interface for writing content.
     /// </summary>
-    public interface IWriteBuffer : IDisposable
+    public interface IWriteBuffer
     {
         /// <summary>
-        /// Defers writing a string to the buffer until any other
-        /// content is appended.
+        /// Gets the number of characters to indent anytime a newline character is
+        /// encountered.
         /// </summary>
-        /// <param name="str">String to write.</param>
-        void Enqueue(string str);
-
-        /// <summary>
-        /// Defers writing a subset of a string to the buffer until other
-        /// content is appended.
-        /// </summary>
-        /// <param name="str">String to write.</param>
-        /// <param name="index">Starting position in the string.</param>
-        /// <param name="length">The number of characters to write.</param>
-        void Enqueue(string str, int index, int length);
+        int Margin { get; }
         
         /// <summary>
-        /// Defers writing a character to the buffer until other content is
-        /// appended.
+        /// Gets the number of characters that have been written since the last
+        /// new line character.
         /// </summary>
-        /// <param name="c">Character to write.</param>
-        /// <param name="count">The number of times to repeat the operation.</param>
-        void Enqueue(char c, int count = 1);
+        int LinePosition { get; }
+
+        /// <summary>
+        /// Enqueues characters that are not written until any other characters
+        /// are written.
+        /// </summary>
+        /// <param name="str">String value</param>
+        /// <param name="startIndex">Starting index</param>
+        /// <param name="length">Number of characters to write</param>
+        void Enqueue(string str, int startIndex, int length);
+
+        /// <summary>
+        /// Writes a string or string portion.
+        /// </summary>
+        /// <param name="str">String value</param>
+        /// <param name="startIndex">Starting index</param>
+        /// <param name="length">Number of characters to write</param>
+        void Write(string str, int startIndex, int length);
         
         /// <summary>
-        /// Writes a string to the buffer.
+        /// Gets the length of the buffer.
         /// </summary>
-        /// <param name="str">String to write.</param>
-        void Write(string str);
-
+        int Length { get; }
+        
         /// <summary>
-        /// Writes a subset of a string to the buffer.
-        /// </summary>
-        /// <param name="str">String to write.</param>
-        /// <param name="index">Starting position in the string.</param>
-        /// <param name="length">The number of characters to write.</param>
-        void Write(string str, int index, int length);
-
-        /// <summary>
-        /// Writes a character to the buffer.
-        /// </summary>
-        /// <param name="c">Character to write.</param>
-        /// <param name="count">The number of times to repeat the operation.</param>
-        void Write(char c, int count = 1);
-
-        /// <summary>
-        /// Flushes the content of the buffer to the final output.
+        /// Flushes the content of the buffer to an underlying output. 
         /// </summary>
         void Flush();
 
         /// <summary>
-        /// Clears all content from the buffer.
+        /// Clears the buffer of all content.
         /// </summary>
         void Clear();
-
-        /// <summary>
-        /// Clears any content that has been enqueued.
-        /// </summary>
-        void ClearEnqueued();
-
-        /// <summary>
-        /// Gets or sets the number of characters to indent on new lines of output.
-        /// </summary>
-        int Margin { get; set; }
-
-        /// <summary>
-        /// Gets the number of character written since the last line feed (\n).
-        /// </summary>
-        int CharPosition { get; }
-
-        /// <summary>
-        /// Gets the content length of the current buffer.
-        /// </summary>
-        int Length { get; }
-
-        /// <summary>
-        /// Gets a portion of the content within the buffer.
-        /// </summary>
-        /// <param name="startIndex">Starting index.</param>
-        /// <param name="length">Length to retrieve.</param>
-        /// <returns><see cref="string"/></returns>
-        string ToString(int startIndex, int length);
     }
 }

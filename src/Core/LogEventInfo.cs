@@ -4,40 +4,30 @@ using Vertical.SpectreLogger.Options;
 
 namespace Vertical.SpectreLogger.Core
 {
-    /// <summary>
-    /// A structure that defines the data of a log event.
-    /// </summary>
     public readonly struct LogEventInfo
     {
-        public LogEventInfo(
-            string categoryName,
+        internal LogEventInfo(
             LogLevel logLevel,
             EventId eventId,
-            object? state,
-            object?[] scopes,
-            Exception? exception,
-            FormattingProfile formattingProfile)
+            object state,
+            Exception exception,
+            LogLevelProfile profile)
         {
-            CategoryName = categoryName;
             LogLevel = logLevel;
             EventId = eventId;
             State = state;
-            Scopes = scopes;
             Exception = exception;
-            FormattingProfile = formattingProfile;
+            Profile = profile;
         }
 
-        public string CategoryName { get; }
+        /// <summary>
+        /// Gets the log level.
+        /// </summary>
         public LogLevel LogLevel { get; }
 
         public EventId EventId { get; }
-
-        public object? State { get; }
-
-        public object?[] Scopes { get; }
-
-        public Exception? Exception { get; }
-
-        public FormattingProfile FormattingProfile { get; }
+        public object State { get; }
+        public Exception Exception { get; }
+        public LogLevelProfile Profile { get; }
     }
 }
