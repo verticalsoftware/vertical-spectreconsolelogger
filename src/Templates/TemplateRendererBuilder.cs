@@ -25,7 +25,7 @@ namespace Vertical.SpectreLogger.Templates
         {
             var rendererList = new List<ITemplateRenderer>(16);
             
-            TemplateParser.Split(templateString, (in TemplateSegment segment) =>
+            TemplateString.Split(templateString, (in TemplateSegment segment) =>
             {
                 rendererList.Add(SelectRenderer(segment));
             });

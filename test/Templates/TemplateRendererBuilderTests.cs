@@ -8,7 +8,7 @@ using Vertical.SpectreLogger.Rendering;
 using Vertical.SpectreLogger.Templates;
 using Xunit;
 
-namespace Vertical.SpectreLogger.Tests.Internal
+namespace Vertical.SpectreLogger.Tests.Templates
 {
     public class TemplateRendererBuilderTests
     {
@@ -23,7 +23,7 @@ namespace Vertical.SpectreLogger.Tests.Internal
         public class NameRenderer : ITemplateRenderer
         {
             /// <inheritdoc />
-            public void Render(IWriteBuffer buffer, in LogEventInfo logEventInfo)
+            public void Render(IWriteBuffer buffer, in LogEventInfo eventInfo)
             {
             }
         }
@@ -36,7 +36,7 @@ namespace Vertical.SpectreLogger.Tests.Internal
             }
             
             /// <inheritdoc />
-            public void Render(IWriteBuffer buffer, in LogEventInfo logEventInfo)
+            public void Render(IWriteBuffer buffer, in LogEventInfo eventInfo)
             {
             }
         }
@@ -45,7 +45,7 @@ namespace Vertical.SpectreLogger.Tests.Internal
         public class AddressRenderer : ITemplateRenderer
         {
             /// <inheritdoc />
-            public void Render(IWriteBuffer buffer, in LogEventInfo logEventInfo)
+            public void Render(IWriteBuffer buffer, in LogEventInfo eventInfo)
             {
             }
         }

@@ -7,7 +7,6 @@ namespace Vertical.SpectreLogger.Templates
     /// </summary>
     public readonly struct TemplateSegment
     {
-
         internal TemplateSegment(
             Match? match,
             string source,

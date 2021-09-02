@@ -9,7 +9,7 @@ namespace Vertical.SpectreLogger.Core
         internal LogEventInfo(
             LogLevel logLevel,
             EventId eventId,
-            object state,
+            object? state,
             Exception exception,
             LogLevelProfile profile)
         {
@@ -26,7 +26,7 @@ namespace Vertical.SpectreLogger.Core
         public LogLevel LogLevel { get; }
 
         public EventId EventId { get; }
-        public object State { get; }
+        public object? State { get; }
         public Exception Exception { get; }
         public LogLevelProfile Profile { get; }
     }

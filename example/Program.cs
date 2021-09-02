@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Spectre.Console;
+using Vertical.SpectreLogger;
 
 namespace SpectreLoggerExample
 {
@@ -29,9 +30,14 @@ namespace SpectreLoggerExample
         
         static void Main(string[] args)
         {
-            var match = Regex.Match("Dan Ingalla 8662 E Layton Ave", "8662");
+            var logger = LoggerFactory.Create(builder =>
+            {
+                builder.AddSpectreConsole();
+            }).CreateLogger<Profile>();
+
+            logger.LogInformation("My name is {name}", "Dan");
             
-            AnsiConsole.MarkupLine("Well hello there");
+            
         }
 
         private static Exception GetException()

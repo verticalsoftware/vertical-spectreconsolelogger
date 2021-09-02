@@ -4,9 +4,9 @@ using Shouldly;
 using Vertical.SpectreLogger.Templates;
 using Xunit;
 
-namespace Vertical.SpectreLogger.Tests.Internal
+namespace Vertical.SpectreLogger.Tests.Templates
 {
-    public class TemplateParserTests
+    public class TemplateStringTests
     {
         [Fact]
         public void SplitReturnsNoSegments()
@@ -71,7 +71,7 @@ namespace Vertical.SpectreLogger.Tests.Internal
         private static List<TemplateSegment> GetSegments(string str)
         {
             var list = new List<TemplateSegment>();
-            TemplateParser.Split(str, (in TemplateSegment segment) => list.Add(segment));
+            TemplateString.Split(str, (in TemplateSegment segment) => list.Add(segment));
             return list;
         }
     }

@@ -13,7 +13,7 @@ namespace Vertical.SpectreLogger.Rendering
         }
         
         /// <inheritdoc />
-        public void Render(IWriteBuffer buffer, in LogEventInfo logEventInfo)
+        public void Render(IWriteBuffer buffer, in LogEventInfo eventInfo)
         {
             buffer.Write(_content, 0, _content.Length);
         }

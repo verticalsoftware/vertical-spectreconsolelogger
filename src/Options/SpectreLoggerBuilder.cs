@@ -104,5 +104,32 @@ namespace Vertical.SpectreLogger.Options
 
             return this;
         }
+
+        /// <summary>
+        /// Adds a formatter for the given type to a single log level profile.
+        /// </summary>
+        /// <param name="logLevel">Log level</param>
+        /// <param name="customFormatter">Custom formatter</param>
+        /// <typeparam name="T">Type to format</typeparam>
+        /// <returns><see cref="SpectreLoggerBuilder"/></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="customFormatter"/> is null.</exception>
+        public SpectreLoggerBuilder AddTypeFormatter<T>(LogLevel logLevel, ICustomFormatter customFormatter)
+        {
+            return ConfigureProfile(logLevel, profile => profile.TypeFormatters[typeof(T)] = 
+                customFormatter ?? throw new ArgumentNullException(nameof(customFormatter)));
+        }
+
+        /// <summary>
+        /// Adds a formatter for the given type to all log level profiles.
+        /// </summary>
+        /// <param name="customFormatter">Custom formatter</param>
+        /// <typeparam name="T">Type to format</typeparam>
+        /// <returns><see cref="SpectreLoggerBuilder"/></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="customFormatter"/> is null.</exception>
+        public SpectreLoggerBuilder AddTypeFormatter<T>(ICustomFormatter customFormatter)
+        {
+            return ConfigureProfiles(profile => profile.TypeFormatters[typeof(T)] = customFormatter
+                ?? throw new ArgumentNullException(nameof(customFormatter)));
+        }
     }
 }

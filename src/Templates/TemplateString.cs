@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace Vertical.SpectreLogger.Templates
 {
-    public static class TemplateParser
+    public static class TemplateString
     {
         /// <summary>
         /// Splits a string into template segments.
@@ -33,7 +33,6 @@ namespace Vertical.SpectreLogger.Templates
                 {
                     // Report non-match segment
                     callback(new TemplateSegment(null, str, position, match.Index - position));
-                    position = match.Index;
                 }
 
                 callback(new TemplateSegment(match, str, match.Index, match.Length));
