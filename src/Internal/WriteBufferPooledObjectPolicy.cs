@@ -6,9 +6,9 @@ namespace Vertical.SpectreLogger.Internal
 {
     internal class WriteBufferPooledObjectPolicy : PooledObjectPolicy<IWriteBuffer>
     {
-        private readonly IAnsiConsoleWriter _consoleWriter;
+        private readonly IConsoleWriter _consoleWriter;
 
-        internal WriteBufferPooledObjectPolicy(IAnsiConsoleWriter consoleWriter)
+        internal WriteBufferPooledObjectPolicy(IConsoleWriter consoleWriter)
         {
             _consoleWriter = consoleWriter;
         }

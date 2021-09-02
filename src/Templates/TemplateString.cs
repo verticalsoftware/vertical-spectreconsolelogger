@@ -23,8 +23,25 @@ namespace Vertical.SpectreLogger.Templates
             {
                 throw new ArgumentNullException(nameof(callback));
             }
+
+            const string pattern =
+                @"(?<!{){(?<"
+                + TemplateSegment.InnerTemplateGroup
+                + @">(?<" 
+                + TemplateSegment.KeyGroup
+                + @">@?[^,:{}]+)(?<"
+                + TemplateSegment.CompositeFormatSpanGroup 
+                + @">(?<" 
+                + TemplateSegment.WidthSpanGroup 
+                + @">,(?<" 
+                + TemplateSegment.WidthValueGroup 
+                + @">-?\d+))?(?<" 
+                + TemplateSegment.FormatSpanGroup 
+                + ">:(?<" 
+                + TemplateSegment.FormatValueGroup 
+                + ">[^}]+))?))}";
             
-            var match = Regex.Match(str, @"(?<!\{)\{(?<_template>[a-zA-Z0-9:_]+)\}");
+            var match = Regex.Match(str, pattern);
             var position = 0;
 
             for (; match.Success; match = match.NextMatch())

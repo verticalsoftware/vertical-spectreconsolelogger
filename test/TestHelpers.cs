@@ -29,11 +29,11 @@ namespace Vertical.SpectreLogger.Tests
 
         public static void VerifyOutput(
             this ITemplateRenderer renderer,
-            in LogEventInfo eventInfo,
+            in LogEventContext eventContext,
             string expectedContent)
         {
-            var buffer = new WriteBuffer(Substitute.For<IAnsiConsoleWriter>());
-            renderer.Render(buffer, eventInfo);
+            var buffer = new WriteBuffer(Substitute.For<IConsoleWriter>());
+            renderer.Render(buffer, eventContext);
             
             buffer.ToString().ShouldBe(expectedContent);
         }

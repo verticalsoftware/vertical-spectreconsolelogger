@@ -32,14 +32,14 @@ namespace Vertical.SpectreLogger.Internal
         }
 
         /// <inheritdoc />
-        public void Render(IWriteBuffer buffer, in LogEventInfo logEventInfo)
+        public void Render(IWriteBuffer buffer, in LogEventContext logEventContext)
         {
-            var renderers = _pipelines[logEventInfo.LogLevel];
+            var renderers = _pipelines[logEventContext.LogLevel];
             var count = renderers.Count;
 
             for (var c = 0; c < count; c++)
             {
-                renderers[c].Render(buffer, logEventInfo);
+                renderers[c].Render(buffer, logEventContext);
             }
         }
 

@@ -5,7 +5,7 @@ using Spectre.Console;
 
 namespace Vertical.SpectreLogger.Output
 {
-    internal class BackgroundAnsiConsoleWriter : IAnsiConsoleWriter, IDisposable
+    internal class BackgroundConsoleWriter : IConsoleWriter, IDisposable
     {
         private const int MaxQueuedMessages = 1024;
         
@@ -17,7 +17,7 @@ namespace Vertical.SpectreLogger.Output
         /// Creates a new instance of this type.
         /// </summary>
         /// <param name="ansiConsole">AnsiConsole</param>
-        public BackgroundAnsiConsoleWriter(IAnsiConsole ansiConsole)
+        public BackgroundConsoleWriter(IAnsiConsole ansiConsole)
         {
             _ansiConsole = ansiConsole;
             _outputThread = new Thread(MessagePump)

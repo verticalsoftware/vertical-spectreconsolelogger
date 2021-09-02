@@ -11,7 +11,7 @@ namespace Vertical.SpectreLogger.Core
         /// Renders the template portion of the log event to the provided buffer.
         /// </summary>
         /// <param name="buffer">Write buffer</param>
-        /// <param name="eventInfo">Log event data.</param>
-        void Render(IWriteBuffer buffer, in LogEventInfo eventInfo);
+        /// <param name="context">Log event data.</param>
+        void Render(IWriteBuffer buffer, in LogEventContext context);
     }
 }

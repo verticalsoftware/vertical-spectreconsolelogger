@@ -5,8 +5,47 @@ namespace Vertical.SpectreLogger.Templates
     /// <summary>
     /// Represents a segment of a template string.
     /// </summary>
-    public readonly struct TemplateSegment
+    public sealed class TemplateSegment
     {
+        /// <summary>
+        /// Gets the inner template group.
+        /// </summary>
+        public const string InnerTemplateGroup = "_tmpl";
+        
+        /// <summary>
+        /// Defines the group name that captures the renderer template key.
+        /// </summary>
+        public const string KeyGroup = "_key";
+        
+        /// <summary>
+        /// Defines the group name that captures the composite formatting span.
+        /// </summary>
+        public const string CompositeFormatSpanGroup = "_cfmt";
+        
+        /// <summary>
+        /// Defines the group name that captures the width span portion of the composite
+        /// formatting span.
+        /// </summary>
+        public const string WidthSpanGroup = "_wdspan";
+        
+        /// <summary>
+        /// Defines the group name that captures the width value of the composite
+        /// formatting span.
+        /// </summary>
+        public const string WidthValueGroup = "_wd";
+        
+        /// <summary>
+        /// Defines the group name that captures the format span portion of the composite
+        /// formatting span.
+        /// </summary>
+        public const string FormatSpanGroup = "_fmspan";
+        
+        /// <summary>
+        /// Defines the group name that captures the format code value of the composite
+        /// formatting span.
+        /// </summary>
+        public const string FormatValueGroup = "_fm";
+        
         internal TemplateSegment(
             Match? match,
             string source,
@@ -37,7 +76,39 @@ namespace Vertical.SpectreLogger.Templates
         /// <summary>
         /// Gets the inner content of the template with the braces removed.
         /// </summary>
-        public string? InnerTemplate => Match?.Groups["_template"].Value;
+        public string? InnerTemplate => Match?.Groups["_tmpl"].Value;
+        
+        /// <summary>
+        /// Gets the template key.
+        /// </summary>
+        public string? Key => Match?.Groups[KeyGroup].Value;
+        
+        /// <summary>
+        /// Gets the format group value.
+        /// </summary>
+        public string? CompositeFormatSpan => Match?.Groups[CompositeFormatSpanGroup].Value;
+        
+        /// <summary>
+        /// Gets the width span.
+        /// </summary>
+        public string? WidthSpan => Match?.Groups[WidthSpanGroup].Value;
+        
+        /// <summary>
+        /// Gets the formatted width value, or 0 if the value is not available.
+        /// </summary>
+        public int? Width => int.TryParse(Match?.Groups[WidthValueGroup].Value, out var i)
+            ? i
+            : null;
+        
+        /// <summary>
+        /// Gets the format span.
+        /// </summary>
+        public string? FormatSpan => Match?.Groups[FormatSpanGroup].Value;
+
+        /// <summary>
+        /// Gets the format value.
+        /// </summary>
+        public string? Format => Match?.Groups[FormatValueGroup].Value;
         
         /// <summary>
         /// Gets the complete source string.

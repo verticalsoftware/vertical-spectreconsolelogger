@@ -43,13 +43,15 @@ namespace Vertical.SpectreLogger
                 // Nothing to render?
                 return;
             }
+
+            var profile = _options.LogLevelProfiles[logLevel];
             
-            var eventInfo = new LogEventInfo(
+            var eventInfo = new LogEventContext(
                 logLevel,
                 eventId,
                 state,
                 exception,
-                _options.LogLevelProfiles[logLevel]);
+                profile);
 
             if (_logEventFilter?.Filter(eventInfo) == true)
                 return;

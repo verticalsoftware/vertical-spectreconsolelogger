@@ -10,9 +10,9 @@ namespace Vertical.SpectreLogger.Rendering
     public class MessageRenderer : ITemplateRenderer
     {
         /// <inheritdoc />
-        public void Render(IWriteBuffer buffer, in LogEventInfo eventInfo)
+        public void Render(IWriteBuffer buffer, in LogEventContext context)
         {
-            var state = eventInfo.State;
+            var state = context.State;
 
             if (state is not IReadOnlyList<KeyValuePair<string, object>> formattedLogValues)
             {
@@ -33,9 +33,15 @@ namespace Vertical.SpectreLogger.Rendering
             
             TemplateString.Split(originalFormatString, (in TemplateSegment segment) =>
             {
-                if (segment.IsTemplate && formattedLogValues.TryGetValue(segment.InnerTemplate!, out var value))
+                switch (segment.IsTemplate)
                 {
-                    
+                    case true:
+                        if (formattedLogValues.TryGetValue(segment.Key!, out var logValue))
+                        {
+                                
+                        }
+                        
+                        break;
                 }
             });
         }

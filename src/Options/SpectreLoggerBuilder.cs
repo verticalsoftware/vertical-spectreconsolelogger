@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -22,7 +23,7 @@ namespace Vertical.SpectreLogger.Options
 
             services.AddTransient<ITemplateRendererBuilder, TemplateRendererBuilder>();
             services.AddSingleton(AnsiConsole.Console);
-            services.AddSingleton<IAnsiConsoleWriter, BackgroundAnsiConsoleWriter>();
+            services.AddSingleton<IConsoleWriter, BackgroundConsoleWriter>();
             services.AddSingleton<ScopeManager>();
             services.AddSingleton<IRendererPipeline, RendererPipeline>();
             services.AddSingleton<ILoggerProvider, SpectreLoggerProvider>();
@@ -103,6 +104,45 @@ namespace Vertical.SpectreLogger.Options
             }
 
             return this;
+        }
+
+        /// <summary>
+        /// Adds a formatter for the given types to all log level profiles.
+        /// </summary>
+        /// <param name="types">The types to apply the formatter to</param>
+        /// <param name="customFormatter">Custom formatter</param>
+        /// <returns><see cref="SpectreLoggerBuilder"/></returns>
+        public SpectreLoggerBuilder AddTypeFormatter(
+            IEnumerable<Type> types,
+            ICustomFormatter customFormatter)
+        {
+            return ConfigureProfiles(profile =>
+            {
+                foreach (var type in types)
+                {
+                    profile.TypeFormatters[type] = customFormatter;
+                }
+            });
+        }
+
+        /// <summary>
+        /// Adds a formatter for the given types to a single log level profile.
+        /// </summary>
+        /// <param name="logLevel">Log level</param>
+        /// <param name="types">The types to apply the formatter to</param>
+        /// <param name="customFormatter">Custom formatter</param>
+        /// <returns><see cref="SpectreLoggerBuilder"/></returns>
+        public SpectreLoggerBuilder AddTypeFormatter(LogLevel logLevel,
+            IEnumerable<Type> types,
+            ICustomFormatter customFormatter)
+        {
+            return ConfigureProfile(logLevel, profile =>
+            {
+                foreach (var type in types)
+                {
+                    profile.TypeFormatters[type] = customFormatter;
+                }
+            });
         }
 
         /// <summary>

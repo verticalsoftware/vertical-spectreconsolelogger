@@ -15,6 +15,16 @@ namespace Vertical.SpectreLogger.Tests.Templates
         }
 
         [Fact]
+        public void SplitIgnoresEscapedTemplate()
+        {
+            var segments = GetSegments("{template}{{not-template}}");
+            segments.Count.ShouldBe(2);
+            segments[0].Value.ShouldBe("{template}");
+            segments[0].IsTemplate.ShouldBeTrue();
+            segments[1].Value.ShouldBe("{{not-template}}");
+        }
+        
+        [Fact]
         public void SplitFindsFirstSegment()
         {
             var segment = GetSegments("{Template}").Single();

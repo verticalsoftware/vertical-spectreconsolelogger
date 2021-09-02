@@ -5,6 +5,5 @@ namespace Vertical.SpectreLogger.Output
     /// </summary>
     public static class WriteBufferExtensions
     {
-        
     }
 }

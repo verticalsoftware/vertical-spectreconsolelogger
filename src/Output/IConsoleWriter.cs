@@ -3,7 +3,7 @@ namespace Vertical.SpectreLogger.Output
     /// <summary>
     /// Provides an interface to IAnsiConsole
     /// </summary>
-    public interface IAnsiConsoleWriter
+    public interface IConsoleWriter
     {
         /// <summary>
         /// Writes content to the underlying console.

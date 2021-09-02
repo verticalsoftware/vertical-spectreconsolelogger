@@ -8,8 +8,8 @@ namespace Vertical.SpectreLogger.Core
         /// <summary>
         /// Determines whether the given event should be rendered.
         /// </summary>
-        /// <param name="eventInfo"><see cref="LogEventInfo"/> that describes the event.</param>
+        /// <param name="eventContext"><see cref="LogEventContext"/> that describes the event.</param>
         /// <returns>True if the event should be filtered from the output; false otherwise.</returns>
-        bool Filter(in LogEventInfo eventInfo);
+        bool Filter(in LogEventContext eventContext);
     }
 }

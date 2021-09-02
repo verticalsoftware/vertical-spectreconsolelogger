@@ -23,7 +23,7 @@ namespace Vertical.SpectreLogger.Tests.Templates
         public class NameRenderer : ITemplateRenderer
         {
             /// <inheritdoc />
-            public void Render(IWriteBuffer buffer, in LogEventInfo eventInfo)
+            public void Render(IWriteBuffer buffer, in LogEventContext context)
             {
             }
         }
@@ -31,12 +31,12 @@ namespace Vertical.SpectreLogger.Tests.Templates
         [Template("{id}")]
         public class IdRenderer : ITemplateRenderer
         {
-            public IdRenderer(TemplateContext context)
+            public IdRenderer(TemplateSegment segment)
             {
             }
             
             /// <inheritdoc />
-            public void Render(IWriteBuffer buffer, in LogEventInfo eventInfo)
+            public void Render(IWriteBuffer buffer, in LogEventContext context)
             {
             }
         }
@@ -45,7 +45,7 @@ namespace Vertical.SpectreLogger.Tests.Templates
         public class AddressRenderer : ITemplateRenderer
         {
             /// <inheritdoc />
-            public void Render(IWriteBuffer buffer, in LogEventInfo eventInfo)
+            public void Render(IWriteBuffer buffer, in LogEventContext context)
             {
             }
         }

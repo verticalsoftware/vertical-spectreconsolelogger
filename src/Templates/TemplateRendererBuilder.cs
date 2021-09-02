@@ -52,7 +52,7 @@ namespace Vertical.SpectreLogger.Templates
                 if (segment.Match != null)
                 {
                     parameters.Add(segment.Match);
-                    parameters.Add(new TemplateContext(segment.Match));
+                    parameters.Add(segment);
                 }
 
                 return (ITemplateRenderer)TypeActivator.CreateInstance(descriptor.ImplementationType, parameters);

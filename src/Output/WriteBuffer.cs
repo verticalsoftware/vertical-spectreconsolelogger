@@ -10,7 +10,7 @@ namespace Vertical.SpectreLogger.Output
     /// </summary>
     public class WriteBuffer : IWriteBuffer
     {
-        private readonly IAnsiConsoleWriter _consoleWriter;
+        private readonly IConsoleWriter _consoleWriter;
         private readonly StringBuilder _queue = new();
         private readonly StringBuilder _buffer = new();
 
@@ -19,7 +19,7 @@ namespace Vertical.SpectreLogger.Output
         /// </summary>
         /// <param name="consoleWriter">Underlying console to flush output to.</param>
         /// <exception cref="ArgumentNullException"><paramref name="consoleWriter"/> is null.</exception>
-        public WriteBuffer(IAnsiConsoleWriter consoleWriter)
+        public WriteBuffer(IConsoleWriter consoleWriter)
         {
             _consoleWriter = consoleWriter ?? throw new ArgumentNullException(nameof(consoleWriter));
         }

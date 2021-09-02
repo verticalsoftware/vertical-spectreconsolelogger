@@ -27,11 +27,12 @@ namespace Vertical.SpectreLogger
         public SpectreLoggerProvider(
             IOptions<SpectreLoggerOptions> optionsProvider,
             IRendererPipeline rendererPipeline,
-            IAnsiConsoleWriter consoleWriter)
+            IConsoleWriter consoleWriter)
         {
             _optionsProvider = optionsProvider;
             _rendererPipeline = rendererPipeline;
-            _writeBufferPool = new(new WriteBufferPooledObjectPolicy(consoleWriter));
+            _writeBufferPool = new(new WriteBufferPooledObjectPolicy(consoleWriter),
+                5);
         }
         
         /// <inheritdoc />
