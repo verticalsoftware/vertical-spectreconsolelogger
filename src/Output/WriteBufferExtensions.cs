@@ -1,3 +1,5 @@
+using Vertical.SpectreLogger.Options;
+
 namespace Vertical.SpectreLogger.Output
 {
     /// <summary>
@@ -5,5 +7,12 @@ namespace Vertical.SpectreLogger.Output
     /// </summary>
     public static class WriteBufferExtensions
     {
+        public static void WriteLogValue(
+            this IWriteBuffer buffer,
+            LogLevelProfile profile,
+            object value)
+        {
+            
+        }
     }
 }

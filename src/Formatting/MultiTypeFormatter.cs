@@ -8,11 +8,11 @@ namespace Vertical.SpectreLogger.Formatting
     /// Represents a <see cref="ICustomFormatter"/> that uses the profile type
     /// formatters.
     /// </summary>
-    internal class TypeFormatter : ICustomFormatter
+    internal class MultiTypeFormatter : ICustomFormatter
     {
         private readonly Dictionary<Type, ICustomFormatter> _typeFormatters;
 
-        internal TypeFormatter(Dictionary<Type, ICustomFormatter> typeFormatters)
+        internal MultiTypeFormatter(Dictionary<Type, ICustomFormatter> typeFormatters)
         {
             _typeFormatters = typeFormatters;
         }

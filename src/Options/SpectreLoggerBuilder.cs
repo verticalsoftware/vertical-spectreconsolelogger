@@ -61,7 +61,7 @@ namespace Vertical.SpectreLogger.Options
         /// </summary>
         /// <param name="logLevel">Log level.</param>
         /// <param name="configureProfile">Delegate that performs the configuration.</param>
-        /// <returns><see cref="SpectreLoggerBuilder"/></returns>
+        /// <returns>A reference to this instance</returns>
         public SpectreLoggerBuilder ConfigureProfile(LogLevel logLevel, Action<LogLevelProfile> configureProfile)
         {
             Services.Configure<SpectreLoggerOptions>(options => configureProfile(options.LogLevelProfiles[logLevel]));
@@ -72,7 +72,7 @@ namespace Vertical.SpectreLogger.Options
         /// Adds a template renderer.
         /// </summary>
         /// <param name="rendererType">Type that implements <see cref="ITemplateRenderer"/>.</param>
-        /// <returns><see cref="SpectreLoggerBuilder"/></returns>
+        /// <returns>A reference to this instance</returns>
         public SpectreLoggerBuilder AddTemplateRenderer(Type rendererType)
         {
             Services.AddSingleton(new RendererDescriptor(rendererType));
@@ -83,14 +83,14 @@ namespace Vertical.SpectreLogger.Options
         /// Adds a template renderer.
         /// </summary>
         /// <typeparam name="T">Type that implements <see cref="ITemplateRenderer"/></typeparam>
-        /// <returns><see cref="SpectreLoggerBuilder"/></returns>
+        /// <returns>A reference to this instance</returns>
         public SpectreLoggerBuilder AddTemplateRenderer<T>() where T : ITemplateRenderer => AddTemplateRenderer(typeof(T));
 
         /// <summary>
         /// Adds all public template renderers found in an assembly.
         /// </summary>
         /// <param name="assembly">The assembly to scan. If not provided, the calling assembly is used.</param>
-        /// <returns><see cref="SpectreLoggerBuilder"/></returns>
+        /// <returns>A reference to this instance</returns>
         public SpectreLoggerBuilder AddTemplateRenderers(Assembly? assembly)
         {
             assembly ??= Assembly.GetCallingAssembly();
@@ -111,7 +111,7 @@ namespace Vertical.SpectreLogger.Options
         /// </summary>
         /// <param name="types">The types to apply the formatter to</param>
         /// <param name="customFormatter">Custom formatter</param>
-        /// <returns><see cref="SpectreLoggerBuilder"/></returns>
+        /// <returns>A reference to this instance</returns>
         public SpectreLoggerBuilder AddTypeFormatter(
             IEnumerable<Type> types,
             ICustomFormatter customFormatter)
@@ -131,7 +131,7 @@ namespace Vertical.SpectreLogger.Options
         /// <param name="logLevel">Log level</param>
         /// <param name="types">The types to apply the formatter to</param>
         /// <param name="customFormatter">Custom formatter</param>
-        /// <returns><see cref="SpectreLoggerBuilder"/></returns>
+        /// <returns>A reference to this instance</returns>
         public SpectreLoggerBuilder AddTypeFormatter(LogLevel logLevel,
             IEnumerable<Type> types,
             ICustomFormatter customFormatter)
@@ -151,7 +151,7 @@ namespace Vertical.SpectreLogger.Options
         /// <param name="logLevel">Log level</param>
         /// <param name="customFormatter">Custom formatter</param>
         /// <typeparam name="T">Type to format</typeparam>
-        /// <returns><see cref="SpectreLoggerBuilder"/></returns>
+        /// <returns>A reference to this instance</returns>
         /// <exception cref="ArgumentNullException"><paramref name="customFormatter"/> is null.</exception>
         public SpectreLoggerBuilder AddTypeFormatter<T>(LogLevel logLevel, ICustomFormatter customFormatter)
         {
@@ -164,12 +164,40 @@ namespace Vertical.SpectreLogger.Options
         /// </summary>
         /// <param name="customFormatter">Custom formatter</param>
         /// <typeparam name="T">Type to format</typeparam>
-        /// <returns><see cref="SpectreLoggerBuilder"/></returns>
+        /// <returns>A reference to this instance</returns>
         /// <exception cref="ArgumentNullException"><paramref name="customFormatter"/> is null.</exception>
         public SpectreLoggerBuilder AddTypeFormatter<T>(ICustomFormatter customFormatter)
         {
             return ConfigureProfiles(profile => profile.TypeFormatters[typeof(T)] = customFormatter
                 ?? throw new ArgumentNullException(nameof(customFormatter)));
+        }
+
+        /// <summary>
+        /// Adds markup that is written just before a specific value is rendered for the given log level. The markup closing
+        /// tag is written automatically.
+        /// </summary>
+        /// <param name="logLevel">Log level to apply the value style for</param>
+        /// <param name="value">Value to style</param>
+        /// <param name="style">Markup that is written before this value is rendered</param>
+        /// <typeparam name="TValue">Value type</typeparam>
+        /// <returns>A reference to this instance</returns>
+        public SpectreLoggerBuilder AddValueStyle<TValue>(LogLevel logLevel, TValue value, string style)
+            where TValue : notnull
+        {
+            return ConfigureProfile(logLevel, profile => profile.ValueStyles[value] = style);
+        }
+
+        /// <summary>
+        /// Adds markup that is written just before a specific value is rendered for all log levels. The markup closing
+        /// tag is written automatically.
+        /// </summary>
+        /// <param name="value">Value to style</param>
+        /// <param name="style">Markup that is written before this value is rendered</param>
+        /// <typeparam name="TValue">Value type</typeparam>
+        /// <returns>A reference to this instance</returns>
+        public SpectreLoggerBuilder AddValueStyle<TValue>(TValue value, string style) where TValue : notnull
+        {
+            return ConfigureProfiles(profile => profile.ValueStyles[value] = style);
         }
     }
 }
