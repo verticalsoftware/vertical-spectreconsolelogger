@@ -1,15 +1,17 @@
+using System;
+
 namespace Vertical.SpectreLogger.Output
 {
     /// <summary>
     /// Provides an interface for writing content.
     /// </summary>
-    public interface IWriteBuffer
+    public interface IWriteBuffer : IDisposable
     {
         /// <summary>
         /// Gets the number of characters to indent anytime a newline character is
         /// encountered.
         /// </summary>
-        int Margin { get; }
+        int Margin { get; set; }
         
         /// <summary>
         /// Gets the number of characters that have been written since the last
@@ -22,9 +24,13 @@ namespace Vertical.SpectreLogger.Output
         /// are written.
         /// </summary>
         /// <param name="str">String value</param>
-        /// <param name="startIndex">Starting index</param>
-        /// <param name="length">Number of characters to write</param>
-        void Enqueue(string str, int startIndex, int length);
+        void Enqueue(string str);
+
+        /// <summary>
+        /// Writes a string to the buffer.
+        /// </summary>
+        /// <param name="str">String to write</param>
+        void Write(string str);
 
         /// <summary>
         /// Writes a string or string portion.

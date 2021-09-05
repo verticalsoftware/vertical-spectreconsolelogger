@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Vertical.SpectreLogger.Core;
+using Vertical.SpectreLogger.Formatting;
 using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Output;
 using Vertical.SpectreLogger.Templates;
@@ -13,36 +14,35 @@ namespace Vertical.SpectreLogger.Rendering
         public void Render(IWriteBuffer buffer, in LogEventContext context)
         {
             var state = context.State;
+            var profile = context.Profile;
 
             if (state is not IReadOnlyList<KeyValuePair<string, object>> formattedLogValues)
             {
-                // TODO: Render as what?
+                buffer.WriteLogValue(profile, null, state ?? NullValue.Default);
                 return;
             }
 
             if (!formattedLogValues.TryGetValue("{OriginalFormat}", out var originalFormat))
             {
-                // TODO: Not sure what to do here...
+                buffer.WriteLogValue(profile, null, state);
+                return;
             }
 
             if (originalFormat is not string originalFormatString)
             {
-                // TODO: Render as ToString?
+                buffer.WriteLogValue(profile, null, state);
                 return;
             }
-            
+
             TemplateString.Split(originalFormatString, (in TemplateSegment segment) =>
             {
-                switch (segment.IsTemplate)
+                if (segment.IsTemplate && formattedLogValues.TryGetValue(segment.Key!, out var logValue))
                 {
-                    case true:
-                        if (formattedLogValues.TryGetValue(segment.Key!, out var logValue))
-                        {
-                                
-                        }
-                        
-                        break;
+                    buffer.WriteLogValue(profile, segment, logValue ?? NullValue.Default);
+                    return;
                 }
+                
+                buffer.Write(segment.Value);
             });
         }
     }

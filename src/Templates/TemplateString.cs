@@ -24,22 +24,7 @@ namespace Vertical.SpectreLogger.Templates
                 throw new ArgumentNullException(nameof(callback));
             }
 
-            const string pattern =
-                @"(?<!{){(?<"
-                + TemplateSegment.InnerTemplateGroup
-                + @">(?<" 
-                + TemplateSegment.KeyGroup
-                + @">@?[^,:{}]+)(?<"
-                + TemplateSegment.CompositeFormatSpanGroup 
-                + @">(?<" 
-                + TemplateSegment.WidthSpanGroup 
-                + @">,(?<" 
-                + TemplateSegment.WidthValueGroup 
-                + @">-?\d+))?(?<" 
-                + TemplateSegment.FormatSpanGroup 
-                + ">:(?<" 
-                + TemplateSegment.FormatValueGroup 
-                + ">[^}]+))?))}";
+            var pattern = TemplatePatternBuilder.SplitPattern;
             
             var match = Regex.Match(str, pattern);
             var position = 0;

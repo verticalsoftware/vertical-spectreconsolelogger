@@ -1,7 +1,8 @@
 using System;
 using System.Linq;
+using System.Reflection;
 
-namespace Vertical.SpectreLogger.Core
+namespace Vertical.SpectreLogger.Templates
 {
     /// <summary>
     /// Defines the template for a rendering component.
@@ -35,5 +36,12 @@ namespace Vertical.SpectreLogger.Core
 
         /// <inheritdoc />
         public override int GetHashCode() => Template.GetHashCode();
+
+        /// <summary>
+        /// Attempts to locate an instance of the attribute from the given type.
+        /// </summary>
+        /// <param name="type">Type that is decorated with the attribute.</param>
+        /// <returns><see cref="TemplateAttribute"/> or null.</returns>
+        internal static string? ValueFromType(Type type) => type.GetCustomAttribute<TemplateAttribute>()?.Template;
     }
 }

@@ -44,6 +44,11 @@ namespace Vertical.SpectreLogger.Options
         public Dictionary<Type, string> TypeStyles { get; } = new();
 
         /// <summary>
+        /// Gets a dictionary of option objects for renderers.
+        /// </summary>
+        public RendererOptionsCollection RendererOptions { get; } = new();
+
+        /// <summary>
         /// Gets the custom formatter.
         /// </summary>
         internal ICustomFormatter Formatter => _formatter ??= new MultiTypeFormatter(TypeFormatters);

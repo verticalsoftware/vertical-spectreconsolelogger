@@ -1,23 +1,30 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Options;
 using Vertical.SpectreLogger.Core;
-using Vertical.SpectreLogger.Internal;
+using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Reflection;
 using Vertical.SpectreLogger.Rendering;
+using Vertical.SpectreLogger.Templates;
 
-namespace Vertical.SpectreLogger.Templates
+namespace Vertical.SpectreLogger.Internal
 {
     internal class TemplateRendererBuilder : ITemplateRendererBuilder
     {
-        private readonly IEnumerable<RendererDescriptor> _descriptors;
+        private readonly IEnumerable<TemplateDescriptor> _descriptors;
+        private readonly SpectreLoggerOptions _options;
 
         /// <summary>
         /// Creates a new instance of this type.
         /// </summary>
+        /// <param name="optionsProvider">Options provider.</param>
         /// <param name="descriptors">Descriptors.</param>
-        public TemplateRendererBuilder(IEnumerable<RendererDescriptor> descriptors)
+        public TemplateRendererBuilder(
+            IOptions<SpectreLoggerOptions> optionsProvider,
+            IEnumerable<TemplateDescriptor> descriptors)
         {
             _descriptors = descriptors;
+            _options = optionsProvider.Value;
         }
         
         /// <inheritdoc />
@@ -47,14 +54,19 @@ namespace Vertical.SpectreLogger.Templates
                 if (!match.Success)
                     continue;
 
-                var parameters = new List<object> {segment};
-
-                if (segment.Match != null)
+                var parameters = new List<object>
                 {
-                    parameters.Add(segment.Match);
-                    parameters.Add(segment);
-                }
+                    new TemplateSegment(match, 
+                        segment.Value, 
+                        0,
+                        segment.Value.Length),
+                    match,
+                    _options
+                };
 
+                parameters.Add(match);
+                parameters.Add(segment);
+                
                 return (ITemplateRenderer)TypeActivator.CreateInstance(descriptor.ImplementationType, parameters);
             }
 

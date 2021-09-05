@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Options;
 using Shouldly;
 using Vertical.SpectreLogger.Core;
 using Vertical.SpectreLogger.Internal;
+using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Output;
 using Vertical.SpectreLogger.Rendering;
 using Vertical.SpectreLogger.Templates;
@@ -12,12 +14,14 @@ namespace Vertical.SpectreLogger.Tests.Templates
 {
     public class TemplateRendererBuilderTests
     {
-        private readonly TemplateRendererBuilder _testInstance = new(new List<RendererDescriptor>
-        {
-            new(typeof(NameRenderer)),
-            new(typeof(AddressRenderer)),
-            new(typeof(IdRenderer))
-        });
+        private readonly TemplateRendererBuilder _testInstance = new(
+            new OptionsWrapper<SpectreLoggerOptions>(new SpectreLoggerOptions()),
+            new List<TemplateDescriptor>
+            {
+                new(typeof(NameRenderer)),
+                new(typeof(AddressRenderer)),
+                new(typeof(IdRenderer))
+            });
         
         [Template("{name}")]
         public class NameRenderer : ITemplateRenderer

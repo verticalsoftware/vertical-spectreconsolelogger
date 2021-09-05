@@ -2,20 +2,19 @@ using System;
 using System.Reflection;
 using Vertical.SpectreLogger.Core;
 using Vertical.SpectreLogger.Reflection;
+using Vertical.SpectreLogger.Templates;
 
 namespace Vertical.SpectreLogger.Internal
 {
     /// <summary>
     /// Represents the descriptor of a <see cref="ITemplateRenderer"/>
     /// </summary>
-    public class RendererDescriptor : IEquatable<RendererDescriptor>
+    public class TemplateDescriptor : IEquatable<TemplateDescriptor>
     {
-        internal RendererDescriptor(Type implementationType)
+        internal TemplateDescriptor(Type implementationType)
         {
             ImplementationType = implementationType ?? throw new ArgumentNullException(nameof(implementationType));
-            Template = implementationType.GetCustomAttribute<TemplateAttribute>()?.Template 
-                       ??
-                       throw new ArgumentException($"Type '{implementationType}' does not have a template defined (use TemplateAttribute)");
+            Template = GetTemplateValue(implementationType);
 
             if (TypeActivator.CanCreateInstanceOfType<ITemplateRenderer>(implementationType, out var reason))
                 return;
@@ -37,12 +36,22 @@ namespace Vertical.SpectreLogger.Internal
         public override string ToString() => $"{ImplementationType}=\"{Template}\"";
 
         /// <inheritdoc />
-        public bool Equals(RendererDescriptor? other) => ImplementationType == other?.ImplementationType && Template == other.Template;
+        public bool Equals(TemplateDescriptor? other) => ImplementationType == other?.ImplementationType && Template == other.Template;
 
         /// <inheritdoc />
-        public override bool Equals(object? obj) => obj is RendererDescriptor other && Equals(other);
+        public override bool Equals(object? obj) => obj is TemplateDescriptor other && Equals(other);
 
         /// <inheritdoc />
         public override int GetHashCode() => HashCode.Combine(ImplementationType, Template);
+
+        private static string GetTemplateValue(Type type)
+        {
+            return
+                TemplateAttribute.ValueFromType(type)
+                ??
+                TemplatePatternAttribute.ValueFromType(type)
+                ??
+                throw new ArgumentException($"Type '{type}' does not have a template defined (use TemplateAttribute)");
+        }
     }
 }

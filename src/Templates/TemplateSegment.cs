@@ -16,6 +16,11 @@ namespace Vertical.SpectreLogger.Templates
         /// Defines the group name that captures the renderer template key.
         /// </summary>
         public const string KeyGroup = "_key";
+
+        /// <summary>
+        /// Defines the group name that captures the control group.
+        /// </summary>
+        public const string ControlGroup = "_ctl";
         
         /// <summary>
         /// Defines the group name that captures the composite formatting span.
@@ -82,6 +87,11 @@ namespace Vertical.SpectreLogger.Templates
         /// Gets the template key.
         /// </summary>
         public string? Key => Match?.Groups[KeyGroup].Value;
+
+        /// <summary>
+        /// Gets the template control code.
+        /// </summary>
+        public string? ControlCode => Match?.Groups[ControlGroup].Value;
         
         /// <summary>
         /// Gets the format group value.
