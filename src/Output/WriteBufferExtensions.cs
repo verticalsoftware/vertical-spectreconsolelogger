@@ -1,4 +1,5 @@
 using System;
+using Spectre.Console;
 using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Templates;
@@ -47,7 +48,7 @@ namespace Vertical.SpectreLogger.Output
                 formatString,
                 value);
 
-            buffer.Write(valueFormatted);
+            buffer.Write(valueFormatted.EscapeMarkup());
 
             if (closeTag != null)
             {
@@ -61,9 +62,10 @@ namespace Vertical.SpectreLogger.Output
             T value) 
             where T : notnull
         {
-            var markup = profile.ValueStyles.GetValueOrDefault(value, null)
-                   ??
-                   profile.TypeStyles.GetValueOrDefault(value.GetType(), null);
+            var markup =
+                profile.ValueStyles.GetValueOrDefault(value, null)
+                ??
+                profile.TypeStyles.GetValueOrDefault(value.GetType(), null);
 
             if (markup == null)
                 return null;

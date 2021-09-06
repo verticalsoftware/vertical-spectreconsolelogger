@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.ObjectPool;
 using NSubstitute;
 using Shouldly;
 using Spectre.Console;
 using Vertical.SpectreLogger.Core;
+using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Output;
 
 namespace Vertical.SpectreLogger.Tests
@@ -33,6 +35,7 @@ namespace Vertical.SpectreLogger.Tests
             string expectedContent)
         {
             var buffer = new WriteBuffer(Substitute.For<IConsoleWriter>());
+            
             renderer.Render(buffer, eventContext);
             
             buffer.ToString().ShouldBe(expectedContent);

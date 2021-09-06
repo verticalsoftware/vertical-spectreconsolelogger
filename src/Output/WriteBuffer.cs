@@ -11,32 +11,26 @@ namespace Vertical.SpectreLogger.Output
     internal class WriteBuffer : IWriteBuffer
     {
         private readonly IConsoleWriter _consoleWriter;
-        private readonly WriteBufferPool _owner;
         private readonly StringBuilder _queue = new();
         private readonly StringBuilder _buffer = new();
+        private int _margin;
 
         /// <summary>
         /// Creates a new instance of this type.
         /// </summary>
         /// <param name="consoleWriter">Underlying console to flush output to.</param>
-        /// <param name="owner">Owning buffer pool</param>
         /// <exception cref="ArgumentNullException"><paramref name="consoleWriter"/> is null.</exception>
-        public WriteBuffer(IConsoleWriter consoleWriter, WriteBufferPool owner)
+        public WriteBuffer(IConsoleWriter consoleWriter)
         {
             _consoleWriter = consoleWriter ?? throw new ArgumentNullException(nameof(consoleWriter));
-            _owner = owner;
         }
 
-        /// <summary>
-        /// Releases the write buffer back to the pool.
-        /// </summary>
-        public void Dispose()
-        {
-            _owner.Disposed(this);
-        }
-        
         /// <inheritdoc />
-        public int Margin { get; set; }
+        public int Margin
+        {
+            get => _margin;
+            set => _margin = Math.Max(0, value);
+        }
 
         /// <inheritdoc />
         public int LinePosition { get; private set; }
@@ -83,16 +77,9 @@ namespace Vertical.SpectreLogger.Output
         public void Flush()
         {
             _consoleWriter.Write(_buffer.ToString());
-            Clear();
-            Enqueue(MarginStrings.Instance[Margin]);
-        }
-
-        /// <inheritdoc />
-        public void Clear()
-        {
             _buffer.Clear();
             _queue.Clear();
-            LinePosition = 0;
+            _margin = 0;
         }
 
         /// <inheritdoc />

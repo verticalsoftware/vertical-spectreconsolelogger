@@ -5,7 +5,7 @@ namespace Vertical.SpectreLogger.Output
     /// <summary>
     /// Provides an interface for writing content.
     /// </summary>
-    public interface IWriteBuffer : IDisposable
+    public interface IWriteBuffer
     {
         /// <summary>
         /// Gets the number of characters to indent anytime a newline character is
@@ -49,10 +49,5 @@ namespace Vertical.SpectreLogger.Output
         /// Flushes the content of the buffer to an underlying output. 
         /// </summary>
         void Flush();
-
-        /// <summary>
-        /// Clears the buffer of all content.
-        /// </summary>
-        void Clear();
     }
 }

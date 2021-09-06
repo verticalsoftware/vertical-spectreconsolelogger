@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
 using Vertical.SpectreLogger.Core;
 using Vertical.SpectreLogger.Options;
@@ -13,15 +14,18 @@ namespace Vertical.SpectreLogger.Internal
     internal sealed class RendererPipeline : IRendererPipeline
     {
         private readonly Dictionary<LogLevel, IReadOnlyList<ITemplateRenderer>> _pipelines;
+        private readonly ObjectPool<IWriteBuffer> _bufferPool;
 
         /// <summary>
         /// Creates a new instance.
         /// </summary>
         /// <param name="optionsProvider">Options provider for <see cref="SpectreLoggerOptions"/></param>
         /// <param name="rendererBuilder">Object that builds renderers.</param>
+        /// <param name="consoleWriter">Console writer implementation</param>
         public RendererPipeline(
             IOptions<SpectreLoggerOptions> optionsProvider,
-            ITemplateRendererBuilder rendererBuilder)
+            ITemplateRendererBuilder rendererBuilder,
+            IConsoleWriter consoleWriter)
         {
             _pipelines = optionsProvider
                 .Value
@@ -29,17 +33,28 @@ namespace Vertical.SpectreLogger.Internal
                 .ToDictionary(
                     entry => entry.Key, 
                     entry => CreatePipeline(rendererBuilder, entry.Value));
+
+            _bufferPool = new DefaultObjectPool<IWriteBuffer>(new WriteBufferPooledObjectPolicy(consoleWriter));
         }
 
         /// <inheritdoc />
-        public void Render(IWriteBuffer buffer, in LogEventContext logEventContext)
+        public void Render(in LogEventContext logEventContext)
         {
             var renderers = _pipelines[logEventContext.LogLevel];
             var count = renderers.Count;
+            var buffer = _bufferPool.Get();
 
-            for (var c = 0; c < count; c++)
+            try
             {
-                renderers[c].Render(buffer, logEventContext);
+                for (var c = 0; c < count; c++)
+                {
+                    renderers[c].Render(buffer, logEventContext);
+                }
+                buffer.WriteLine();
+            }
+            finally
+            {
+                _bufferPool.Return(buffer);   
             }
         }
 

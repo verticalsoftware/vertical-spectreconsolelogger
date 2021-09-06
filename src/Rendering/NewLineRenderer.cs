@@ -1,4 +1,5 @@
-﻿using Vertical.SpectreLogger.Core;
+﻿using System.Text.RegularExpressions;
+using Vertical.SpectreLogger.Core;
 using Vertical.SpectreLogger.Output;
 using Vertical.SpectreLogger.Templates;
 
@@ -12,10 +13,9 @@ namespace Vertical.SpectreLogger.Rendering
         /// <summary>
         /// Creates a new instance of this type.
         /// </summary>
-        /// <param name="template"></param>
-        public NewLineRenderer(TemplateSegment template)
+        public NewLineRenderer(Match match)
         {
-            _queueNewLine = template.Match!.Groups["_q"].Success;
+            _queueNewLine = match.Groups["_q"].Success;
         }
         
         /// <inheritdoc />
