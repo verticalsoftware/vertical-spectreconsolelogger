@@ -42,6 +42,12 @@ namespace Vertical.SpectreLogger.Options
         /// Gets a dictionary of markup to apply before a value of a specific type is rendered.
         /// </summary>
         public Dictionary<Type, string> TypeStyles { get; } = new();
+        
+        /// <summary>
+        /// Gets the style to apply before rendering a log value when no value or type
+        /// style is matched.
+        /// </summary>
+        public string? DefaultLogValueStyle { get; set; }
 
         /// <summary>
         /// Gets a dictionary of option objects for renderers.

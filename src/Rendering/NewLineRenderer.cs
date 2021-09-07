@@ -5,7 +5,7 @@ using Vertical.SpectreLogger.Templates;
 
 namespace Vertical.SpectreLogger.Rendering
 {
-    [Template("{Newline(?<_q>\\+)}")]
+    [Template("{New[Ll]ine(?<_q>\\+)?}")]
     public class NewLineRenderer : ITemplateRenderer
     {
         private readonly bool _queueNewLine; 

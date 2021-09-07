@@ -9,7 +9,7 @@ namespace Vertical.SpectreLogger.Internal
 
         internal LoggerScope(ScopeManager scopeManager,
             LoggerScope? previousScope,
-            object? value)
+            object value)
         {
             PreviousScope = previousScope;
             Value = value;
@@ -34,7 +34,7 @@ namespace Vertical.SpectreLogger.Internal
         /// <summary>
         /// Gets the scope value.
         /// </summary>
-        internal object? Value { get; }
+        internal object Value { get; }
 
         /// <inheritdoc />
         public override string ToString() => Value?.ToString() ?? "(null)";

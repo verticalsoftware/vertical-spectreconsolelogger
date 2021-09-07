@@ -1,12 +1,9 @@
 using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
-using Spectre.Console;
 using Vertical.SpectreLogger.Core;
 using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Options;
-using Vertical.SpectreLogger.Output;
 
 namespace Vertical.SpectreLogger
 {
@@ -18,6 +15,7 @@ namespace Vertical.SpectreLogger
         private readonly IOptions<SpectreLoggerOptions> _optionsProvider;
         private readonly IRendererPipeline _rendererPipeline;
         private readonly ScopeManager _scopeManager = new();
+        
         private readonly ConcurrentDictionary<string, ILogger> _cachedLoggers = new();
         
         /// <summary>
@@ -25,8 +23,7 @@ namespace Vertical.SpectreLogger
         /// </summary>
         public SpectreLoggerProvider(
             IOptions<SpectreLoggerOptions> optionsProvider,
-            IRendererPipeline rendererPipeline,
-            IConsoleWriter consoleWriter)
+            IRendererPipeline rendererPipeline)
         {
             _optionsProvider = optionsProvider;
             _rendererPipeline = rendererPipeline;
@@ -44,7 +41,8 @@ namespace Vertical.SpectreLogger
             return _cachedLoggers.GetOrAdd(categoryName, name => new SpectreLogger(
                 _rendererPipeline,
                 _optionsProvider.Value,
-                _scopeManager));
+                _scopeManager,
+                name));
         }
     }
 }

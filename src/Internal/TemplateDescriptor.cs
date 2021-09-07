@@ -49,8 +49,6 @@ namespace Vertical.SpectreLogger.Internal
             return
                 TemplateAttribute.ValueFromType(type)
                 ??
-                TemplatePatternAttribute.ValueFromType(type)
-                ??
                 throw new ArgumentException($"Type '{type}' does not have a template defined (use TemplateAttribute)");
         }
     }

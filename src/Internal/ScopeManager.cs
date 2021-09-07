@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using Vertical.SpectreLogger.Core;
+using Vertical.SpectreLogger.Formatting;
 
 namespace Vertical.SpectreLogger.Internal
 {
@@ -29,7 +30,7 @@ namespace Vertical.SpectreLogger.Internal
         internal IDisposable BeginScope<T>(T value)
         {
             var current = _localScope.Value;
-            var newScope = new LoggerScope(this, current, value);
+            var newScope = new LoggerScope(this, current, value ?? (object)NullValue.Default);
 
             _localScope.Value = newScope;
 
@@ -37,9 +38,8 @@ namespace Vertical.SpectreLogger.Internal
         }
 
         /// <summary>
-        /// Gets the deferred scope collection.
+        /// Gets the current scope values.
         /// </summary>
-        /// <returns><see cref="GetScopeValueCollection"/></returns>
-        internal ScopeValueCollection GetScopeValueCollection() => new(_localScope.Value);
+        internal IScopeValues GetValues() => ScopeValues.Create(_localScope.Value);
     }
 }

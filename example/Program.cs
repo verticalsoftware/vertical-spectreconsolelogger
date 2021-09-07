@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Serilog;
 using Spectre.Console;
 using Vertical.SpectreLogger;
 
@@ -33,10 +34,22 @@ namespace SpectreLoggerExample
         {
             var logger = LoggerFactory.Create(builder =>
             {
-                builder.AddSpectreConsole(options =>
-                {
-                });
+                builder
+                    //.AddSerilog(new LoggerConfiguration().WriteTo.Console().CreateLogger())
+                    .AddSpectreConsole(options =>
+                    {
+                        options.ConfigureProfile(LogLevel.Information, profile =>
+                        {
+                            profile.OutputTemplate = "[grey85][[{DateTime:T} [green3_1]Info[/]]] {Scopes}{Message}[/]";
+                        });
+                    })
+                    //.AddConsole()
+                    .SetMinimumLevel(LogLevel.Trace);
             }).CreateLogger<Profile>();
+
+            using var scope1 = logger.BeginScope("ConnectionId: {id}", Guid.NewGuid().ToString("N")[..8]);
+            using var scope2 = logger.BeginScope("User: {id}", "user@verttical.com");
+            
 
             var logLevels = new[]
             {
@@ -57,12 +70,12 @@ namespace SpectreLoggerExample
                     "   Reals:       {single}, {double}, {decimal}\n" +
                     "   Strings:     {string}, {char}\n" +
                     "   Boolean:     {true}, {false}\n" +
-                    "   Temporal:    {dateTime:u} {dateTimeOffset} {timespan}\n" +
+                    "   Temporal:    {dateTime:s} - {dateTimeOffset:s} - {timespan}\n" +
                     "   Identifiers: {guid}\n" +
                     "   Objects:     {object}\n" +
                     "   Tuples:      {tuple}\n" +
                     "   Null:        {null}",
-                    logLevel,
+                    logLevel.ToString(),
                     (short)10, 20, 30L,
                     1.5f, 2.5d, 3.5m,
                     "Hello, world!", 'h',

@@ -10,7 +10,7 @@ namespace Vertical.SpectreLogger.Options
     /// </summary>
     public class RendererOptionsCollection
     {
-        private readonly Dictionary<Type, IRendererOptions> _options = new();
+        private readonly Dictionary<Type, object> _options = new();
 
         internal RendererOptionsCollection()
         {
@@ -22,14 +22,14 @@ namespace Vertical.SpectreLogger.Options
         /// <param name="configure">Delegate that configures the provided object.</param>
         /// <typeparam name="TOptions">Options type.</typeparam>
         /// <exception cref="ArgumentNullException"><paramref name="configure"/> delegate is null</exception>
-        public void Configure<TOptions>(Action<TOptions> configure) where TOptions : IRendererOptions, new()
+        public void Configure<TOptions>(Action<TOptions> configure) where TOptions : new()
         {
             if (configure == null)
             {
                 throw new ArgumentNullException(nameof(configure));
             }
             
-            configure(GetValue<TOptions>());
+            configure(GetOptions<TOptions>());
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Vertical.SpectreLogger.Options
         /// </summary>
         /// <typeparam name="TOptions">Options type.</typeparam>
         /// <returns></returns>
-        public TOptions GetValue<TOptions>() where TOptions : IRendererOptions, new()
+        public TOptions GetOptions<TOptions>() where TOptions : new()
         {
             var type = typeof(TOptions);
 

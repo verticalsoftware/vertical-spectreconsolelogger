@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using Spectre.Console;
+using Vertical.SpectreLogger.Formatting;
 using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Templates;
@@ -23,6 +25,49 @@ namespace Vertical.SpectreLogger.Output
         public static void EnqueueLine(this IWriteBuffer buffer)
         {
             buffer.Enqueue(Environment.NewLine);
+        }
+
+        /// <summary>
+        /// Writes a template state value, considering it may be a FormattedLogValues instance.
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="profile"></param>
+        /// <param name="templateSegment"></param>
+        /// <param name="state">Value to evaluate</param>
+        public static void WriteTemplateValue(
+            this IWriteBuffer buffer,
+            LogLevelProfile profile,
+            TemplateSegment? templateSegment,
+            object? state)
+        {
+            if (state is not IReadOnlyList<KeyValuePair<string, object>> formattedLogValues)
+            {
+                buffer.WriteLogValue(profile, templateSegment, state ?? NullValue.Default);
+                return;
+            }
+
+            if (!formattedLogValues.TryGetValue("{OriginalFormat}", out var originalFormat))
+            {
+                buffer.WriteLogValue(profile, templateSegment, state);
+                return;
+            }
+
+            if (originalFormat is not string originalFormatString)
+            {
+                buffer.WriteLogValue(profile, templateSegment, state);
+                return;
+            }
+
+            TemplateString.Split(originalFormatString, (in TemplateSegment segment) =>
+            {
+                if (segment.IsTemplate && formattedLogValues.TryGetValue(segment.Key!, out var logValue))
+                {
+                    buffer.WriteLogValue(profile, segment, logValue ?? NullValue.Default);
+                    return;
+                }
+                
+                buffer.Write(segment.Value);
+            });
         }
         
         /// <summary>
@@ -56,6 +101,40 @@ namespace Vertical.SpectreLogger.Output
             }
         }
 
+        /// <summary>
+        /// Writes a destructured log value.
+        /// </summary>
+        /// <param name="buffer">Write buffer</param>
+        /// <param name="profile">The profile that contains the styles and formatting to apply</param>
+        /// <param name="value">Value to write</param>
+        public static void WriteDestructuredLogValue(
+            this IWriteBuffer buffer,
+            LogLevelProfile profile,
+            object value)
+        {
+            
+        }
+        
+        /// <summary>
+        /// Writes a log value to the buffer.
+        /// </summary>
+        /// <param name="buffer">Write buffer</param>
+        /// <param name="profile">The profile that contains the styles and formatting to apply</param>
+        /// <param name="templateSegment">The template segment</param>
+        /// <param name="value">The value to write</param>
+        /// <typeparam name="T">The value type</typeparam>
+        public static void WriteLogValueFormat<T>(
+            this IWriteBuffer buffer,
+            LogLevelProfile profile,
+            TemplateSegment? templateSegment,
+            T value)
+            where T : notnull
+        {
+            var valueFormatted = value.Format(profile.FormatProvider, templateSegment?.CompositeFormatSpan);
+
+            buffer.Write(valueFormatted.EscapeMarkup());
+        }
+
         private static string? WriteOpenMarkupTag<T>(
             IWriteBuffer buffer,
             LogLevelProfile profile, 
@@ -65,7 +144,9 @@ namespace Vertical.SpectreLogger.Output
             var markup =
                 profile.ValueStyles.GetValueOrDefault(value, null)
                 ??
-                profile.TypeStyles.GetValueOrDefault(value.GetType(), null);
+                profile.TypeStyles.GetValueOrDefault(value.GetType(), null)
+                ??
+                profile.DefaultLogValueStyle;
 
             if (markup == null)
                 return null;

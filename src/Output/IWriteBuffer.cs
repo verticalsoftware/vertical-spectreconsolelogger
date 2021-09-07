@@ -27,6 +27,12 @@ namespace Vertical.SpectreLogger.Output
         void Enqueue(string str);
 
         /// <summary>
+        /// Writes a character to the buffer.
+        /// </summary>
+        /// <param name="c">Character to write.</param>
+        void Write(char c);
+
+        /// <summary>
         /// Writes a string to the buffer.
         /// </summary>
         /// <param name="str">String to write</param>

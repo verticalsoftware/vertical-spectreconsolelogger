@@ -1,10 +1,8 @@
 using System;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.ObjectPool;
 using Vertical.SpectreLogger.Core;
 using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Options;
-using Vertical.SpectreLogger.Output;
 
 namespace Vertical.SpectreLogger
 {
@@ -13,15 +11,18 @@ namespace Vertical.SpectreLogger
         private readonly ILogEventFilter? _logEventFilter;
         private readonly IRendererPipeline _rendererPipeline;
         private readonly ScopeManager _scopeManager;
+        private readonly string _categoryName;
         private readonly SpectreLoggerOptions _options;
 
         internal SpectreLogger(
             IRendererPipeline rendererPipeline,
             SpectreLoggerOptions options,
-            ScopeManager scopeManager)
+            ScopeManager scopeManager,
+            string categoryName)
         {
             _rendererPipeline = rendererPipeline;
             _scopeManager = scopeManager;
+            _categoryName = categoryName;
             _options = options;
             _logEventFilter = _options.LogEventFilter;
         }
@@ -41,12 +42,15 @@ namespace Vertical.SpectreLogger
             }
 
             var profile = _options.LogLevelProfiles[logLevel];
+            var scopeValues = _scopeManager.GetValues();
             
             var eventInfo = new LogEventContext(
+                _categoryName,
                 logLevel,
                 eventId,
                 state,
                 exception,
+                scopeValues,
                 profile);
 
             if (_logEventFilter?.Filter(eventInfo) == true)

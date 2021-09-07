@@ -1,7 +1,5 @@
 using System;
 using System.Text;
-using Spectre.Console;
-using Vertical.SpectreLogger.Internal;
 
 namespace Vertical.SpectreLogger.Output
 {
@@ -42,6 +40,20 @@ namespace Vertical.SpectreLogger.Output
         }
 
         /// <inheritdoc />
+        public void Write(char c)
+        {
+            _buffer.Append(c);
+            ++LinePosition;
+
+            if (c != '\n') 
+                return;
+            
+            _buffer.Append(' ', Margin);
+            LinePosition = 0;
+        }
+
+
+        /// <inheritdoc />
         public void Write(string str) => Write(str, 0, str.Length);
 
         /// <inheritdoc />
@@ -57,16 +69,7 @@ namespace Vertical.SpectreLogger.Output
 
             for (var c = startIndex; c < pastLastIndex; c++)
             {
-                var ch = str[c];
-
-                _buffer.Append(ch);
-                ++LinePosition;
-                
-                if (ch == '\n')
-                {
-                    _buffer.Append(' ', Margin);
-                    LinePosition = 0;
-                } 
+               Write(str[c]);
             }
         }
 
