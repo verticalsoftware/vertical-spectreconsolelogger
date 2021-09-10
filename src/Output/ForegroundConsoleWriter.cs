@@ -2,23 +2,17 @@
 
 namespace Vertical.SpectreLogger.Output
 {
-    internal class ForegroundConsoleWriter : IConsoleWriter
+    internal class ForegroundConsoleWriter : ConsoleWriter, IConsoleWriter
     {
-        private readonly IAnsiConsole _console;
-
         /// <summary>
         /// Creates a new instance
         /// </summary>
         /// <param name="console">Console instance</param>
-        public ForegroundConsoleWriter(IAnsiConsole console)
+        public ForegroundConsoleWriter(IAnsiConsole console) : base(console)
         {
-            _console = console;
         }
-        
+
         /// <inheritdoc />
-        public void Write(string content)
-        {
-            _console.Markup(content);
-        }
+        public void Write(string content) => WriteToConsole(content);
     }
 }

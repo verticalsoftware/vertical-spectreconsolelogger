@@ -16,7 +16,7 @@ namespace Vertical.SpectreLogger.Internal
         public bool HasValues => false;
 
         /// <inheritdoc />
-        public IReadOnlyList<object> Items { get; } = Array.Empty<object>();
+        public IReadOnlyList<object> Values { get; } = Array.Empty<object>();
 
         /// <inheritdoc />
         public override string ToString() => "(empty)";

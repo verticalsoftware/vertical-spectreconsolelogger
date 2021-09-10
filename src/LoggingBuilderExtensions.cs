@@ -11,6 +11,13 @@ namespace Vertical.SpectreLogger
 {
     public static class LoggingBuilderExtensions
     {
+        /// <summary>
+        /// Adds the spectre console logging provider.
+        /// </summary>
+        /// <param name="builder">Logging builder instance</param>
+        /// <param name="configureBuilder">A delegate that receives an options that can control
+        /// how the logger renders events.</param>
+        /// <returns><paramref name="builder"/></returns>
         public static ILoggingBuilder AddSpectreConsole(
             this ILoggingBuilder builder,
             Action<SpectreLoggerBuilder>? configureBuilder = null)

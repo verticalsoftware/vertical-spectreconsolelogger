@@ -1,12 +1,10 @@
-using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using Shouldly;
 using Vertical.SpectreLogger.Reflection;
 using Xunit;
 
-namespace Vertical.SpectreLogger.Tests.Internal
+namespace Vertical.SpectreLogger.Tests.Reflection
 {
     public class TypeActivatorTests
     {

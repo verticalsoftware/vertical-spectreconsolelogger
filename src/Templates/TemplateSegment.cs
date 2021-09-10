@@ -8,6 +8,11 @@ namespace Vertical.SpectreLogger.Templates
     public sealed class TemplateSegment
     {
         /// <summary>
+        /// Gets the destructuring capture group.
+        /// </summary>
+        public const string DestructuringGroup = "_ds";
+        
+        /// <summary>
         /// Gets the inner template group.
         /// </summary>
         public const string InnerTemplateGroup = "_tmpl";
@@ -50,6 +55,12 @@ namespace Vertical.SpectreLogger.Templates
         /// formatting span.
         /// </summary>
         public const string FormatValueGroup = "_fm";
+
+        /// <summary>
+        /// Gets a template designed to indicate destructuring.
+        /// </summary>
+        internal static readonly TemplateSegment DestructureTemplate = new(
+            Regex.Match("@", $"(?<{DestructuringGroup}>@)"), "", 0, 0);
         
         internal TemplateSegment(
             Match? match,
@@ -79,9 +90,14 @@ namespace Vertical.SpectreLogger.Templates
         public string Value => Match?.Value ?? Source.Substring(StartIndex, Length);
 
         /// <summary>
+        /// Gets whether the destructure operator was specified.
+        /// </summary>
+        public bool HasDestructureSpecifier => Match?.Groups[DestructuringGroup].Success == true;
+
+        /// <summary>
         /// Gets the inner content of the template with the braces removed.
         /// </summary>
-        public string? InnerTemplate => Match?.Groups["_tmpl"].Value;
+        public string? InnerTemplate => Match?.Groups[InnerTemplateGroup].Value;
         
         /// <summary>
         /// Gets the template key.

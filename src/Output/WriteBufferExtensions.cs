@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Spectre.Console;
+using Vertical.SpectreLogger.Destructuring;
 using Vertical.SpectreLogger.Formatting;
 using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Options;
@@ -30,31 +31,33 @@ namespace Vertical.SpectreLogger.Output
         /// <summary>
         /// Writes a template state value, considering it may be a FormattedLogValues instance.
         /// </summary>
-        /// <param name="buffer"></param>
-        /// <param name="profile"></param>
-        /// <param name="templateSegment"></param>
+        /// <param name="buffer">Buffer</param>
+        /// <param name="profile">Log level profile</param>
+        /// <param name="destructureValues">Whether to destructure valuess</param>
         /// <param name="state">Value to evaluate</param>
         public static void WriteTemplateValue(
             this IWriteBuffer buffer,
             LogLevelProfile profile,
-            TemplateSegment? templateSegment,
+            bool destructureValues,
             object? state)
         {
+            var template = destructureValues ? TemplateSegment.DestructureTemplate : null;
+            
             if (state is not IReadOnlyList<KeyValuePair<string, object>> formattedLogValues)
             {
-                buffer.WriteLogValue(profile, templateSegment, state ?? NullValue.Default);
+                buffer.WriteLogValue(profile, template, state ?? NullValue.Default);
                 return;
             }
 
             if (!formattedLogValues.TryGetValue("{OriginalFormat}", out var originalFormat))
             {
-                buffer.WriteLogValue(profile, templateSegment, state);
+                buffer.WriteLogValue(profile, template, state);
                 return;
             }
 
             if (originalFormat is not string originalFormatString)
             {
-                buffer.WriteLogValue(profile, templateSegment, state);
+                buffer.WriteLogValue(profile, template, state);
                 return;
             }
 
@@ -85,6 +88,12 @@ namespace Vertical.SpectreLogger.Output
             T value)
             where T : notnull
         {
+            if (templateSegment?.HasDestructureSpecifier == true)
+            {
+                DestructuringWriter.Write(buffer, profile, value);
+                return;
+            }
+            
             var closeTag = WriteOpenMarkupTag(buffer, profile, value);
             var format = templateSegment?.CompositeFormatSpan ?? string.Empty;
             var formatString = "{0" + format + "}";
@@ -99,20 +108,6 @@ namespace Vertical.SpectreLogger.Output
             {
                 buffer.Write(closeTag);
             }
-        }
-
-        /// <summary>
-        /// Writes a destructured log value.
-        /// </summary>
-        /// <param name="buffer">Write buffer</param>
-        /// <param name="profile">The profile that contains the styles and formatting to apply</param>
-        /// <param name="value">Value to write</param>
-        public static void WriteDestructuredLogValue(
-            this IWriteBuffer buffer,
-            LogLevelProfile profile,
-            object value)
-        {
-            
         }
         
         /// <summary>

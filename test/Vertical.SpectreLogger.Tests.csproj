@@ -25,4 +25,8 @@
     <PackageReference Include="Shouldly" Version="4.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Internal" />
+  </ItemGroup>
+
 </Project>

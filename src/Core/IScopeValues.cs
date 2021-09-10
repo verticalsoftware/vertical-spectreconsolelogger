@@ -15,6 +15,6 @@ namespace Vertical.SpectreLogger.Core
         /// <summary>
         /// Gets the items in the collection;
         /// </summary>
-        IReadOnlyList<object> Items { get; }
+        IReadOnlyList<object> Values { get; }
     }
 }

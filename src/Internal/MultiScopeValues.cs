@@ -28,9 +28,9 @@ namespace Vertical.SpectreLogger.Internal
         public bool HasValues => true;
 
         /// <inheritdoc />
-        public IReadOnlyList<object> Items => _lazyCollection.Value;
+        public IReadOnlyList<object> Values => _lazyCollection.Value;
 
         /// <inheritdoc />
-        public override string ToString() => string.Join(" => ", Items);
+        public override string ToString() => string.Join(" => ", Values);
     }
 }

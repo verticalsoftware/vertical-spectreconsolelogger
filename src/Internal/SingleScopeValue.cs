@@ -7,16 +7,16 @@ namespace Vertical.SpectreLogger.Internal
     {
         internal SingleScopeValue(LoggerScope scope)
         {
-            Items = new[] {scope.Value};
+            Values = new[] {scope.Value};
         }
 
         /// <inheritdoc />
         public bool HasValues => true;
 
         /// <inheritdoc />
-        public IReadOnlyList<object> Items { get; }
+        public IReadOnlyList<object> Values { get; }
 
         /// <inheritdoc />
-        public override string ToString() => Items[0]?.ToString() ?? string.Empty;
+        public override string ToString() => Values[0]?.ToString() ?? string.Empty;
     }
 }

@@ -12,9 +12,11 @@ namespace Vertical.SpectreLogger.Templates
         private string? _controlPattern;
         private bool _widthFormatting;
         private bool _valueFormatting;
+        private bool _destructuring;
 
-        internal static readonly string SplitPattern = new TemplatePatternBuilder("@?[^,:{}>]+")
+        internal static readonly string SplitPattern = new TemplatePatternBuilder("[^,:{}>]+")
             {
+                _destructuring = true,
                 _controlPattern = "[^,:{}]+",
                 _widthFormatting = true,
                 _valueFormatting = true
@@ -33,14 +35,17 @@ namespace Vertical.SpectreLogger.Templates
         /// <exception cref="ArgumentException"><paramref name="keyPattern"/> contains an invalid character.</exception>
         public static TemplatePatternBuilder ForKey(string keyPattern)
         {
-            if (keyPattern.IndexOfAny(new[] {',', ':', '{', '}', '>'}) != -1)
-            {
-                throw new ArgumentException(
-                    "Key pattern cannot contain any of the follow: ',', ':', '{', '}', or '>'",
-                    nameof(keyPattern));
-            }
+            return new(keyPattern);
+        }
 
-            return new TemplatePatternBuilder(keyPattern);
+        /// <summary>
+        /// Adds a match group for the destructuring specifier.
+        /// </summary>
+        /// <returns>A reference to this instance.</returns>
+        public TemplatePatternBuilder AddDestructuring()
+        {
+            _destructuring = true;
+            return this;
         }
 
         /// <summary>
@@ -98,6 +103,14 @@ namespace Vertical.SpectreLogger.Templates
             builder.Append(">(?<");
             builder.Append(TemplateSegment.KeyGroup);
             builder.Append(">");
+
+            if (_destructuring)
+            {
+                builder.Append("(?<");
+                builder.Append(TemplateSegment.DestructuringGroup);
+                builder.Append(">@)?");
+            }
+            
             builder.Append(_keyPattern);
             builder.Append(")");
 

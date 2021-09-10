@@ -5,11 +5,10 @@ using Spectre.Console;
 
 namespace Vertical.SpectreLogger.Output
 {
-    internal class BackgroundConsoleWriter : IConsoleWriter, IDisposable
+    internal class BackgroundConsoleWriter : ConsoleWriter, IConsoleWriter, IDisposable
     {
         private const int MaxQueuedMessages = 1024;
         
-        private readonly IAnsiConsole _ansiConsole;
         private readonly BlockingCollection<string> _queue = new(MaxQueuedMessages);
         private readonly Thread _outputThread;
 
@@ -17,9 +16,8 @@ namespace Vertical.SpectreLogger.Output
         /// Creates a new instance of this type.
         /// </summary>
         /// <param name="ansiConsole">AnsiConsole</param>
-        public BackgroundConsoleWriter(IAnsiConsole ansiConsole)
+        public BackgroundConsoleWriter(IAnsiConsole ansiConsole) : base(ansiConsole)
         {
-            _ansiConsole = ansiConsole;
             _outputThread = new Thread(MessagePump)
             {
                 IsBackground = true,
@@ -34,7 +32,7 @@ namespace Vertical.SpectreLogger.Output
             {
                 foreach (var entry in _queue.GetConsumingEnumerable())
                 {
-                    _ansiConsole.Markup(entry);
+                    WriteToConsole(entry);
                 }
             }
             catch
@@ -69,7 +67,7 @@ namespace Vertical.SpectreLogger.Output
         {
             if (_queue.IsAddingCompleted)
             {
-                _ansiConsole.Markup(content);
+                WriteToConsole(content);
                 return;
             }
             

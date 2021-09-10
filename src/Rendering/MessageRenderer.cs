@@ -10,7 +10,7 @@ namespace Vertical.SpectreLogger.Rendering
         /// <inheritdoc />
         public void Render(IWriteBuffer buffer, in LogEventContext context)
         {
-            buffer.WriteTemplateValue(context.Profile, null, context.State);
+            buffer.WriteTemplateValue(context.Profile, destructureValues: false, context.State);
         }
     }
 }

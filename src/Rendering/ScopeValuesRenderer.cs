@@ -44,12 +44,12 @@ namespace Vertical.SpectreLogger.Rendering
                 buffer.Write(options.ContentBefore);
             }
 
-            var items = scopeValues.Items;
+            var items = scopeValues.Values;
             var length = items.Count;
 
             for (var c = 0; c < length; c++)
             {
-                buffer.WriteTemplateValue(profile, null, items[c]);
+                buffer.WriteTemplateValue(profile, destructureValues: true, items[c]);
 
                 if (options.ContentBetween != null && c != length - 1)
                 {

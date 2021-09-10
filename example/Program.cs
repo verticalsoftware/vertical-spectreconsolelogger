@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Serilog;
 using Spectre.Console;
 using Vertical.SpectreLogger;
 
@@ -48,8 +47,7 @@ namespace SpectreLoggerExample
             }).CreateLogger<Profile>();
 
             using var scope1 = logger.BeginScope("ConnectionId: {id}", Guid.NewGuid().ToString("N")[..8]);
-            using var scope2 = logger.BeginScope("User: {id}", "user@verttical.com");
-            
+            using var scope2 = logger.BeginScope(new[] {new KeyValuePair<string, object>("UserId", "@vertical.com")});
 
             var logLevels = new[]
             {
@@ -66,15 +64,16 @@ namespace SpectreLoggerExample
                 logger.Log(
                     logLevel,
                     "This is an example of a {logLevel} message. Sample parameters:\n" +
-                    "   Integers:    {short}, {int}, {long}\n" +
-                    "   Reals:       {single}, {double}, {decimal}\n" +
-                    "   Strings:     {string}, {char}\n" +
-                    "   Boolean:     {true}, {false}\n" +
-                    "   Temporal:    {dateTime:s} - {dateTimeOffset:s} - {timespan}\n" +
-                    "   Identifiers: {guid}\n" +
-                    "   Objects:     {object}\n" +
-                    "   Tuples:      {tuple}\n" +
-                    "   Null:        {null}",
+                    "   Integers:       {short}, {int}, {long}\n" +
+                    "   Reals:          {single}, {double}, {decimal}\n" +
+                    "   Strings:        {string}, chars: {char}\n" +
+                    "   Boolean:        {true}, {false}\n" +
+                    "   Temporal:       {dateTime:s} - {dateTimeOffset:s} - {timespan}\n" +
+                    "   Identifiers:    {guid}\n" +
+                    "   Objects:        {object}\n" +
+                    "   Tuples:         {tuple}\n" +
+                    "   Destructured:   {@destructured}\n" +
+                    "   Null:           {null}\n",
                     logLevel.ToString(),
                     (short)10, 20, 30L,
                     1.5f, 2.5d, 3.5m,
@@ -84,6 +83,7 @@ namespace SpectreLoggerExample
                     Guid.NewGuid(),
                     new{ message="Hello World!" },
                     (x: 10, y: 20, z: 30),
+                    new { x=10, y=20, z=30 },
                     null);
             }
         }
