@@ -78,6 +78,7 @@ namespace Vertical.SpectreLogger.Options
             ConfigureProfiles(profile =>
             {
                 profile.AddTypeFormatter<NullValue>((_, _, _) => "(null)");
+                profile.AddTypeFormatter<CategoryName>(new CategoryNameRenderer.DefaultFormatter());
                 profile.ConfigureRenderer<DateTimeRenderer.Options>(opt => opt.ValueFactory = () => DateTimeOffset.Now);
             });
         }

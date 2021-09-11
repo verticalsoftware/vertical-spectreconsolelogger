@@ -106,36 +106,4 @@ namespace SpectreLoggerExample
             return new Exception();
         }
     }
-    
-    public class CategoryNameFormatter : ICustomFormatter
-    {
-        /// <inheritdoc />
-        public string Format(string? format, object? arg, IFormatProvider? formatProvider)
-        {
-            if (arg == null)
-            {
-                return string.Empty;
-            }
-
-            if (format == null)
-            {
-                return arg.ToString();
-            }
-
-            var match = Regex.Match(format, @"T(\d)");
-
-            if (!match.Success)
-            {
-                return arg.ToString();
-            }
-
-            var maxParts = int.Parse(match.Groups[1].Value);
-            var categoryName = ((CategoryName) arg).Value;
-            var split = categoryName.Split('.');
-
-            return split.Length <= maxParts
-                ? categoryName
-                : string.Join('.', split.Reverse().Take(maxParts).Reverse());
-        }
-    }
 }

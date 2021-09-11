@@ -5,7 +5,7 @@ using Vertical.SpectreLogger.Templates;
 
 namespace Vertical.SpectreLogger.Rendering
 {
-    public class CategoryNameRenderer : ITemplateRenderer
+    public partial class CategoryNameRenderer : ITemplateRenderer
     {
         private readonly TemplateSegment _template;
 

@@ -12,7 +12,7 @@ namespace Vertical.SpectreLogger.Core
             LogLevel logLevel,
             EventId eventId,
             object? state,
-            Exception exception,
+            Exception? exception,
             IScopeValues scopeValues,
             LogLevelProfile profile)
         {
@@ -48,7 +48,7 @@ namespace Vertical.SpectreLogger.Core
         /// <summary>
         /// Gets the exception.
         /// </summary>
-        public Exception Exception { get; }
+        public Exception? Exception { get; }
 
         /// <summary>
         /// Gets the log event scope values.

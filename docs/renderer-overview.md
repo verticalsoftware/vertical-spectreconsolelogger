@@ -54,7 +54,7 @@ public class CategoryNameFormatter : ICustomFormatter
 }
 ```
 
-Then, register this formatter the log level profiles using the `CategoryName` pseudo-type (pseudo-types are types provided by the provider that are really just strings, but are encapsulated by specific types for registration).
+Then, register this formatter the log level profiles using the `CategoryName` value wrapper (value wrappers are types defined by the provider that are really just strings, but are encapsulated by specific types for formatter registration).
 
 ```csharp
 options.ConfigureProfiles(profile => profile.AddTypeFormatter<CategoryName>
