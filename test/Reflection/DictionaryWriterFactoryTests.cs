@@ -19,7 +19,7 @@ namespace Vertical.SpectreLogger.Tests.Reflection
                 [3] = "three"
             };
             
-            GenericDictionaryWriterFactory.TryCreate(dictionary.GetType(), out var function)
+            DictionaryWriterFactory.TryCreate(dictionary.GetType(), out var function)
                 .ShouldBeTrue();
 
             var writer = Substitute.For<IDestructuringWriter>();

@@ -10,6 +10,8 @@ namespace Vertical.SpectreLogger.Options
     {
         private void ConfigureDefaults()
         {
+            AddTemplateRenderers(typeof(SpectreLoggerBuilder).Assembly);
+            SetMinimumLevel(LogLevel.Information);
             WriteInForeground();
             UseConsole(AnsiConsole.Console);
 

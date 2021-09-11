@@ -29,10 +29,7 @@ namespace Vertical.SpectreLogger.Reflection
         
         internal static CompiledWriter? CreateWriter(Type type)
         {
-            if (GenericDictionaryWriterFactory.TryCreate(type, out var implementation))
-                return implementation!;
-
-            if (DictionaryWriterFactory.TryCreate(type, out implementation))
+            if (DictionaryWriterFactory.TryCreate(type, out var implementation))
                 return implementation!;
 
             if (EnumerableWriterFactory.TryCreate(type, out implementation))

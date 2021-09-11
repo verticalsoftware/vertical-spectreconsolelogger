@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -42,10 +43,21 @@ namespace Vertical.SpectreLogger.Options
         /// Sets an object that can filter log events from the rendering pipeline.
         /// </summary>
         /// <param name="eventFilter"></param>
-        /// <returns></returns>
+        /// <returns>A reference to this instance.</returns>
         public SpectreLoggerBuilder SetLogEventFilter(ILogEventFilter eventFilter)
         {
             Services.Configure<SpectreLoggerOptions>(opt => opt.LogEventFilter = eventFilter);
+            return this;
+        }
+
+        /// <summary>
+        /// Sets a delegate that filters log events from the rendering pipeline.
+        /// </summary>
+        /// <param name="filter">A <see cref="LogEventFilterDelegate"/></param>
+        /// <returns>A reference to this instance,.</returns>
+        public SpectreLoggerBuilder SetLogEventFilter(LogEventFilterDelegate filter)
+        {
+            Services.Configure<SpectreLoggerOptions>(opt => opt.LogEventFilter = new DelegatingLogEventFilter(filter));
             return this;
         }
 
@@ -90,13 +102,31 @@ namespace Vertical.SpectreLogger.Options
         /// </remarks>
         public SpectreLoggerBuilder ConfigureProfiles(Action<LogLevelProfile> configureProfile)
         {
-            Services.Configure<SpectreLoggerOptions>(options =>
+            return ConfigureProfiles(new[]
             {
-                foreach (var profile in options.LogLevelProfiles.Values)
-                {
-                    configureProfile(profile);
-                }
-            });
+                LogLevel.Trace,
+                LogLevel.Debug,
+                LogLevel.Information,
+                LogLevel.Warning,
+                LogLevel.Error,
+                LogLevel.Critical
+            }, configureProfile);
+        }
+
+        /// <summary>
+        /// Configures settings for the given log levels.
+        /// </summary>
+        /// <param name="logLevels">Log levels of the profiles to configure.</param>
+        /// <param name="configureProfile">Delegate that performs the configuration.</param>
+        /// <returns>A reference to this instance.</returns>
+        public SpectreLoggerBuilder ConfigureProfiles(IEnumerable<LogLevel> logLevels,
+            Action<LogLevelProfile> configureProfile)
+        {
+            foreach (var logLevel in logLevels)
+            {
+                ConfigureProfile(logLevel, configureProfile);
+            }
+
             return this;
         }
 
@@ -147,6 +177,17 @@ namespace Vertical.SpectreLogger.Options
                 }
             }
 
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the maximum number of pooled write buffers.
+        /// </summary>
+        /// <param name="count">Number of buffers to retain.</param>
+        /// <returns>A reference to this instance.</returns>
+        public SpectreLoggerBuilder SetPooledBufferCount(int count)
+        {
+            Services.Configure<SpectreLoggerOptions>(options => options.MaxPooledBuffers = count);
             return this;
         }
     }

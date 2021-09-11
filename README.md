@@ -23,13 +23,14 @@ logger.LogInformation("Hello world!");
 
 ## Features at a glance
 
-1. Customize the content of values being rendered using formatting functions.
-2. Customize how specific values or values of specific types are styled and decorated.
-3. Structure the output of log events using message templates.
-4. Customize at the granular level of detail how exceptions are rendered (limit stack frames, shorten file paths, shorten class names, etc.)
-5. Apply customizations to events of different log levels using formatting profiles.
-6. Extend the logger implementation with custom renderers.
+1. Decouples styling and formatting from logging input (e.g. don't change your logging, customize how the events are rendered).
+2. Define different customizations for *each log level*.
+3. Customize the styling and formatting of specific values or specific types of values.
+4. Destructure and output complex types in JSON(ish) notation.
+5. Customize the rendering completely using output templates.
+6. Extend the logger with your own renderers.
 
 ## Documentation
 
-[Configuring main options](docs/main-options.md)
+- [Basic Configuration](docs/basic-configuration.md)
+- [Output Templates](docs/output-template.md)

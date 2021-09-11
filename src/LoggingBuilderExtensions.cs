@@ -31,8 +31,6 @@ namespace Vertical.SpectreLogger
             services.AddSingleton<IRendererPipeline, RendererPipeline>();
             services.AddSingleton<ILoggerProvider, SpectreLoggerProvider>();
 
-            optionsBuilder.AddTemplateRenderers(typeof(LoggingBuilderExtensions).Assembly);
-            
             configureBuilder?.Invoke(optionsBuilder);
 
             return builder;

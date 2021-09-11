@@ -16,18 +16,7 @@ namespace Vertical.SpectreLogger.Tests.Templates
 
             Should.NotThrow(() => new Regex(pattern));
             
-            pattern.ShouldBe(@"(?<!{){(?<_tmpl>(?<_key>@?[^,:{}>]+)(?:>(?<_ctl>[^,:{}]+))?(?<_cfmt>(?<_wdspan>,(?<_wd>-?\d+))?(?<_fmspan>:(?<_fm>[^}]+))?))}");
-        }
-
-        [Theory]
-        [InlineData(',')]
-        [InlineData(':')]
-        [InlineData('>')]
-        [InlineData('{')]
-        [InlineData('}')]
-        public void ConstructorRejectsInvalidKeyName(char c)
-        {
-            Should.Throw<ArgumentException>(() => TemplatePatternBuilder.ForKey($"Has{c}"));
+            pattern.ShouldBe(@"(?<!{){(?<_tmpl>(?<_key>(?<_ds>@)?[^,:{}>]+)(?:>(?<_ctl>[^,:{}]+))?(?<_cfmt>(?<_wdspan>,(?<_wd>-?\d+))?(?<_fmspan>:(?<_fm>[^}]+))?))}");
         }
 
         [Theory, MemberData(nameof(Theories))]

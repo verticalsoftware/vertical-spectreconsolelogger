@@ -7,11 +7,11 @@ using Vertical.SpectreLogger.Reflection;
 
 namespace Vertical.SpectreLogger.Destructuring
 {
-    public class DestructuringWriter : IDestructuringWriter
+    /// <summary>
+    /// Handles rendering log values in a semi-JSON like format.
+    /// </summary>
+    internal class DestructuringWriter : IDestructuringWriter
     {
-        private static readonly ConcurrentDictionary<Type, CompiledWriter> 
-            CachedValueWriters = new();
-
         private readonly IWriteBuffer _buffer;
         private readonly LogLevelProfile _profile;
         private readonly DestructuringOptions _options;
@@ -85,8 +85,7 @@ namespace Vertical.SpectreLogger.Destructuring
 
         private void WriteValue(object value)
         {
-            var valueWriter = CachedValueWriters.GetOrAdd(value.GetType(), type => 
-                CompiledWriterFactory.CreateWriter(type) ?? WriteIntegralDelegate);
+            var valueWriter = CompiledWriterCache.GetInstance(value.GetType(), WriteIntegralDelegate);
 
             valueWriter(this, value);
         }

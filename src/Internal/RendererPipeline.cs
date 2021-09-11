@@ -27,14 +27,17 @@ namespace Vertical.SpectreLogger.Internal
             ITemplateRendererBuilder rendererBuilder,
             IConsoleWriter consoleWriter)
         {
-            _pipelines = optionsProvider
-                .Value
+            var options = optionsProvider.Value;
+            
+            _pipelines = options
                 .LogLevelProfiles
                 .ToDictionary(
                     entry => entry.Key, 
                     entry => CreatePipeline(rendererBuilder, entry.Value));
 
-            _bufferPool = new DefaultObjectPool<IWriteBuffer>(new WriteBufferPooledObjectPolicy(consoleWriter));
+            _bufferPool = new DefaultObjectPool<IWriteBuffer>(
+                new WriteBufferPooledObjectPolicy(consoleWriter),
+                options.MaxPooledBuffers);
         }
 
         /// <inheritdoc />

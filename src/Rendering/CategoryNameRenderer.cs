@@ -1,4 +1,5 @@
 ﻿using Vertical.SpectreLogger.Core;
+using Vertical.SpectreLogger.Formatting;
 using Vertical.SpectreLogger.Output;
 using Vertical.SpectreLogger.Templates;
 
@@ -27,7 +28,7 @@ namespace Vertical.SpectreLogger.Rendering
             buffer.WriteLogValueFormat(
                 context.Profile,
                 _template,
-                context.CategoryName);
+                new CategoryName(context.CategoryName));
         }
     }
 }

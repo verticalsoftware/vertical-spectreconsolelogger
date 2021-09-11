@@ -67,7 +67,7 @@ namespace Vertical.SpectreLogger.Tests.Destructuring
             
             DestructuringWriter.Write(buffer, profile, obj);
             
-            buffer.ToString().ShouldBe("[one, two, three]");
+            buffer.ToString().ShouldBe("[[one, two, three]]");
         }
 
         record Person(string Name, Person[]? Children)
