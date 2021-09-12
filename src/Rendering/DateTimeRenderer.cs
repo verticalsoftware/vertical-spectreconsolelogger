@@ -43,7 +43,7 @@ namespace Vertical.SpectreLogger.Rendering
                 .GetOptions<Options>()
                 .ValueFactory?.Invoke() ?? DateTimeOffset.Now;
             
-            buffer.WriteLogValueFormat(
+            buffer.WriteFormattedValue(
                 context.Profile,
                 _template,
                 renderValue);

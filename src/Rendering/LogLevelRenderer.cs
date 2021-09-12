@@ -56,7 +56,7 @@ namespace Vertical.SpectreLogger.Rendering
                 .LevelDisplayValues
                 .GetValueOrDefault(context.LogLevel, context.LogLevel.ToString()); 
                 
-            buffer.WriteLogValueFormat(context.Profile, _template, displayValue!);
+            buffer.WriteFormattedValue(context.Profile, _template, displayValue!);
         }
     }
 }

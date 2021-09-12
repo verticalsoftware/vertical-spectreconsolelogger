@@ -72,7 +72,7 @@ namespace Vertical.SpectreLogger.Output
                 buffer.Write(segment.Value);
             });
         }
-        
+
         /// <summary>
         /// Writes a log value to the buffer.
         /// </summary>
@@ -80,12 +80,14 @@ namespace Vertical.SpectreLogger.Output
         /// <param name="profile">The profile that contains the styles and formatting to apply</param>
         /// <param name="templateSegment">The template segment</param>
         /// <param name="value">The value to write</param>
+        /// <param name="writer">Optional action that commits values to the buffer</param>
         /// <typeparam name="T">The value type</typeparam>
         public static void WriteLogValue<T>(
             this IWriteBuffer buffer,
             LogLevelProfile profile,
             TemplateSegment? templateSegment,
-            T value)
+            T value,
+            Action<string>? writer = null)
             where T : notnull
         {
             if (templateSegment?.HasDestructureSpecifier == true)
@@ -102,23 +104,30 @@ namespace Vertical.SpectreLogger.Output
                 formatString,
                 value);
 
-            buffer.Write(valueFormatted.EscapeMarkup());
+            if (writer != null)
+            {
+                writer(valueFormatted.EscapeMarkup());
+            }
+            else
+            {
+                buffer.Write(valueFormatted.EscapeMarkup());
+            }
 
             if (closeTag != null)
             {
                 buffer.Write(closeTag);
             }
         }
-        
+
         /// <summary>
-        /// Writes a log value to the buffer.
+        /// Writes a log value to the buffer, only applying profile formatting.
         /// </summary>
         /// <param name="buffer">Write buffer</param>
         /// <param name="profile">The profile that contains the styles and formatting to apply</param>
         /// <param name="templateSegment">The template segment</param>
         /// <param name="value">The value to write</param>
         /// <typeparam name="T">The value type</typeparam>
-        public static void WriteLogValueFormat<T>(
+        public static void WriteFormattedValue<T>(
             this IWriteBuffer buffer,
             LogLevelProfile profile,
             TemplateSegment? templateSegment,
@@ -128,6 +137,37 @@ namespace Vertical.SpectreLogger.Output
             var valueFormatted = value.Format(profile.FormatProvider, templateSegment?.CompositeFormatSpan);
 
             buffer.Write(valueFormatted.EscapeMarkup());
+        }
+
+        /// <summary>
+        /// Writes a log value to the buffer, only applying style.
+        /// </summary>
+        /// <param name="buffer">Write buffer</param>
+        /// <param name="profile">The profile that contains the styles and formatting to apply</param>
+        /// <param name="value">The value to write</param>
+        /// <typeparam name="T">The value type</typeparam>
+        public static void WriteStyledValue<T>(
+            this IWriteBuffer buffer,
+            LogLevelProfile profile,
+            T value)
+            where T : notnull
+        {
+            var markup =
+                profile.TypeStyles.GetValueOrDefault(typeof(T), null)
+                ??
+                profile.DefaultLogValueStyle;
+
+            if (markup != null)
+            {
+                buffer.Write(markup);
+            }
+            
+            buffer.Write(value.ToString() ?? string.Empty);
+
+            if (markup != null)
+            {
+                buffer.Write("[/]");
+            }
         }
 
         private static string? WriteOpenMarkupTag<T>(

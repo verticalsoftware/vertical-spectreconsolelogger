@@ -25,10 +25,10 @@ namespace Vertical.SpectreLogger.Rendering
         /// <inheritdoc />
         public void Render(IWriteBuffer buffer, in LogEventContext context)
         {
-            buffer.WriteLogValueFormat(
+            buffer.WriteFormattedValue(
                 context.Profile,
                 _template,
-                new CategoryName(context.CategoryName));
+                new ValueType(context.CategoryName));
         }
     }
 }

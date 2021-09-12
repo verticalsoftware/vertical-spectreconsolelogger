@@ -12,7 +12,7 @@ Consider the `CategoryNameRenderer`. It supports width and output formatting, so
 {CategoryName,-25:C}
 ```
 
-Here, the category name will occupy a minimum of 25 character spaces, and be formatted in 'Compact' notation (just the class name).
+Here, the category name will be left aligned to 25 spaces, and be formatted in 'Compact' notation (just the class name).
 
 Each renderer has verbose documentation for the formatting it supports, so be sure to consult each one when the out-of-box behavior does not suit your needs.
 

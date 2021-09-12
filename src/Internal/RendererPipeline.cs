@@ -55,7 +55,11 @@ namespace Vertical.SpectreLogger.Internal
                 }
 
                 buffer.Margin = 0;
-                buffer.WriteLine();
+
+                if (buffer.LinePosition != 0)
+                {
+                    buffer.WriteLine();
+                }
             }
             finally
             {

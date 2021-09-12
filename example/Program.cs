@@ -40,15 +40,18 @@ namespace SpectreLoggerExample
                     //.AddSerilog(new LoggerConfiguration().WriteTo.Console().CreateLogger())
                     .AddSpectreConsole(options =>
                     {
-                        options.ConfigureProfile(LogLevel.Information, profile =>
+                        options.ConfigureProfile(LogLevel.Error, profile =>
                         {
-                            profile.OutputTemplate = "[grey85][[{DateTime:T} [green3_1]Info[/]]] {Scopes}{Message}[/]";
+                            profile.OutputTemplate = "[grey85][[{DateTime:T} [green3_1]Info[/]]] {Scopes}{Message}{NewLine+}{Exception}[/]";
                         });
                         options.SetLogEventFilter((in LogEventContext context) => context.EventId.Id == 100);
                     })
                     //.AddConsole()
                     .SetMinimumLevel(LogLevel.Trace);
             }).CreateLogger<Profile>();
+            
+            logger.LogError(GetException(), "An error has occurred and will be logged");
+
 
             using var scope1 = logger.BeginScope("ConnectionId: {id}", Guid.NewGuid().ToString("N")[..8]);
             using var scope2 = logger.BeginScope(new[] {new KeyValuePair<string, object>("UserId", "@vertical.com")});
@@ -77,7 +80,7 @@ namespace SpectreLoggerExample
                     "   Objects:        {object}\n" +
                     "   Tuples:         {tuple}\n" +
                     "   Destructured:   {@destructured}\n" +
-                    "   Null:           {null}\n",
+                    "   Null:           {null}",
                     logLevel.ToString(),
                     (short)10, 20, 30L,
                     1.5f, 2.5d, 3.5m,
@@ -90,6 +93,7 @@ namespace SpectreLoggerExample
                     new { x=10, y=20, z=30 },
                     null);
             }
+            
         }
 
         private static Exception GetException()

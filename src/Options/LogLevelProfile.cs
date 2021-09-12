@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Vertical.SpectreLogger.Formatting;
+using Vertical.SpectreLogger.Internal;
 
 namespace Vertical.SpectreLogger.Options
 {
@@ -12,7 +14,7 @@ namespace Vertical.SpectreLogger.Options
     {
         private ICustomFormatter? _formatter;
         private IFormatProvider? _formatProvider;
-        
+
         internal LogLevelProfile(LogLevel logLevel)
         {
             LogLevel = logLevel;
@@ -42,7 +44,7 @@ namespace Vertical.SpectreLogger.Options
         /// Gets a dictionary of markup to apply before a value of a specific type is rendered.
         /// </summary>
         public Dictionary<Type, string> TypeStyles { get; } = new();
-        
+
         /// <summary>
         /// Gets the style to apply before rendering a log value when no value or type
         /// style is matched.
@@ -63,5 +65,10 @@ namespace Vertical.SpectreLogger.Options
         /// Gets the format provider.
         /// </summary>
         internal IFormatProvider FormatProvider => _formatProvider ??= new MultiTypeFormatProvider(Formatter);
+
+        /// <summary>
+        /// Gets a cache of objects available internally.
+        /// </summary>
+        internal RuntimeCacheCollection RuntimeCache { get; } = new();
     }
 }
