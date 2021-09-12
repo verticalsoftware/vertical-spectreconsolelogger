@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text.RegularExpressions;
 using Vertical.SpectreLogger.Core;
 using Vertical.SpectreLogger.Options;
@@ -24,10 +25,10 @@ namespace Vertical.SpectreLogger.Rendering
 
             var profile = context.Profile;
             var options = profile.RendererOptions.GetOptions<Options>();
-            var stack = new Stack<(Exception exception, int level)>();
+            var stack = new Stack<(Exception exception, int level, int aggregateChildId)>();
             var count = 0;
             
-            stack.Push((rootException, 0));
+            stack.Push((rootException, 0, 0));
 
             while (stack.Count > 0)
             {
@@ -36,15 +37,16 @@ namespace Vertical.SpectreLogger.Rendering
                 switch (current)
                 {
                     case { exception: AggregateException ae } when options.UnwindAggregateExceptions:
+                        var childId = 0;
                         foreach (var item in ae.InnerExceptions)
                         {
-                            stack.Push((item, current.level + 1));
+                            stack.Push((item, current.level + 1, ++childId));
                         }
 
                         break;
                     
                     case { exception: { InnerException: { } }} when options.UnwindInnerExceptions:
-                        stack.Push((current.exception.InnerException, current.level));
+                        stack.Push((current.exception.InnerException, current.level, 0));
                         break;
                 }
 
@@ -60,12 +62,12 @@ namespace Vertical.SpectreLogger.Rendering
                         buffer.WriteLine();
                     }
                     
-                    PrintNameAndMessage(buffer, profile, exception);
+                    PrintNameAndMessage(buffer, profile, exception, current.aggregateChildId);
 
                     if (options.MaxStackFrames <= 0)
                         continue;
 
-                    PrintStackTrace(buffer, profile, exception, options, level);
+                    PrintStackTrace(buffer, profile, exception, options);
                 }
                 finally
                 {
@@ -79,10 +81,16 @@ namespace Vertical.SpectreLogger.Rendering
         private static void PrintNameAndMessage(
             IWriteBuffer buffer, 
             LogLevelProfile profile, 
-            Exception exception)
+            Exception exception,
+            int aggregateChildId)
         {
             buffer.WriteLogValue(profile, null, new ExceptionNameValue(exception.GetType()), value =>
             {
+                if (aggregateChildId > 0)
+                {
+                    buffer.Write("-> ");    
+                }
+                
                 buffer.Write(value);
                 buffer.Write(": ");
             });
@@ -94,8 +102,7 @@ namespace Vertical.SpectreLogger.Rendering
             IWriteBuffer buffer, 
             LogLevelProfile profile, 
             Exception exception, 
-            Options options, 
-            int level)
+            Options options)
         {
             if (string.IsNullOrWhiteSpace(exception.StackTrace))
                 return;
@@ -106,12 +113,18 @@ namespace Vertical.SpectreLogger.Rendering
 
                 var frames = exception.StackTrace.Split(StackFrameSplitStrings, StringSplitOptions.None);
                 var length = Math.Min(frames.Length, options.MaxStackFrames);
+                var hiddenCount = frames.Length - options.MaxStackFrames;
 
                 for (var c = 0; c < length; c++)
                 {
                     PrintStackFrame(buffer, profile, frames[c], options);
                 }
 
+                if (hiddenCount > 0)
+                {
+                    buffer.WriteLine();
+                    buffer.WriteStyledValue(profile, new MethodNameValue($"+{hiddenCount} more..."));
+                }
             }
             finally
             {
@@ -125,7 +138,9 @@ namespace Vertical.SpectreLogger.Rendering
             string frame, 
             Options options)
         {
-            var frameMatch = Regex.Match(frame, @"at (?<_method>[^(]+)\((?<_sig>.+)?\)(?<_src> in (?<_file>.+)(?::line (?<_line>\d+)))?");
+            var frameMatch = Regex.Match(
+                frame, 
+                @"at (?<_method>[^(]+)\((?<_sig>.+)?\)(?<_src> in (?<_file>.+)(?::line (?<_line>\d+)))?");
 
             buffer.WriteLine();
             buffer.WriteLogValue(profile, null, new MethodNameValue(frameMatch.Groups["_method"].Value), method =>
@@ -148,7 +163,7 @@ namespace Vertical.SpectreLogger.Rendering
             if (!(source.Success && options.ShowSourcePaths))
                 return;
 
-            PrintSource(buffer, profile, frameMatch, options);
+            PrintSourcePath(buffer, profile, frameMatch, options);
         }
 
 
@@ -187,21 +202,30 @@ namespace Vertical.SpectreLogger.Rendering
             }
         }
         
-        private static void PrintSource(
+        private static void PrintSourcePath(
             IWriteBuffer buffer, 
             LogLevelProfile profile, 
             Match frameMatch, 
             Options options)
         {
-            var file = frameMatch.Groups["_file"].Value;
+            var path = frameMatch.Groups["_file"].Value;
+            var directory = Path.GetDirectoryName(path) ?? string.Empty;
+            var file = Path.GetFileName(path);
             var hasLineNumber = int.TryParse(frameMatch.Groups["_line"].Value, out var line);
-            
-            buffer.WriteLogValue(profile, null, new SourcePathValue(file), value =>
+
+            buffer.WriteLogValue(profile, null, new SourceDirectoryValue(directory), value =>
             {
                 buffer.Write(" in ");
-                buffer.Write(value);
+                
+                if (directory.Length > 0)
+                {
+                    buffer.Write(value);
+                    buffer.Write(Path.DirectorySeparatorChar);
+                }
+                
+                buffer.WriteLogValue(profile, null, new SourceFileValue(file));
 
-                if (hasLineNumber && options.ShowSourceLocations)
+                if (hasLineNumber)
                 {
                     buffer.Write(":line ");
                 }
@@ -209,7 +233,7 @@ namespace Vertical.SpectreLogger.Rendering
 
             if (!(hasLineNumber && options.ShowSourceLocations))
                 return;
-            
+
             buffer.WriteLogValue(profile, null, new SourceLocationValue(line));
         }
     }

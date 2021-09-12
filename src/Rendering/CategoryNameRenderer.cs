@@ -28,7 +28,7 @@ namespace Vertical.SpectreLogger.Rendering
             buffer.WriteFormattedValue(
                 context.Profile,
                 _template,
-                new ValueType(context.CategoryName));
+                new Value(context.CategoryName));
         }
     }
 }

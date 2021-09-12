@@ -14,7 +14,7 @@ namespace Vertical.SpectreLogger.Tests.Rendering
         [Theory, MemberData(nameof(Theories))]
         public void FormatReturnsExpected(string? format, string arg, string expected)
         {
-            _testInstance.Format(format, new CategoryNameRenderer.ValueType(arg), null).ShouldBe(expected);
+            _testInstance.Format(format, new CategoryNameRenderer.Value(arg), null).ShouldBe(expected);
         }
 
         public static IEnumerable<object?[]> Theories => new[]

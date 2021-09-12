@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using Vertical.SpectreLogger.Formatting;
+﻿using Vertical.SpectreLogger.Formatting;
 using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Output;
 using Vertical.SpectreLogger.Reflection;
@@ -105,8 +103,11 @@ namespace Vertical.SpectreLogger.Destructuring
 
             if (key != null)
             {
-                _buffer.Write(key);
-                _buffer.Write(": ");
+                _buffer.WriteLogValue(_profile, null, new DestructuredKeyValue(key), k =>
+                {
+                    _buffer.Write(k);
+                    _buffer.Write(": ");
+                });
             }
 
             if (_availableDepth < 0)

@@ -30,9 +30,14 @@ namespace Vertical.SpectreLogger.Rendering
             internal ParameterNameValue(string name) : base(name) {}
         }
 
-        public sealed class SourcePathValue : ValueWrapper<string>
+        public sealed class SourceDirectoryValue : ValueWrapper<string>
         {
-            internal SourcePathValue(string path) : base(path) {}
+            internal SourceDirectoryValue(string path) : base(path) {}
+        }
+
+        public sealed class SourceFileValue : ValueWrapper<string>
+        {
+            internal SourceFileValue(string file) : base(file) {}
         }
 
         public sealed class SourceLocationValue : ValueWrapper<int>

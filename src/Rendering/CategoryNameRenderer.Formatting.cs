@@ -9,16 +9,17 @@ namespace Vertical.SpectreLogger.Rendering
         /// <summary>
         /// Wrapping type for the category name.
         /// </summary>
-        public class ValueType : ValueWrapper<string>
+        public class Value : ValueWrapper<string>
         {
-            internal ValueType(string value) : base(value)
+            internal Value(string value) : base(value)
             {
             }
         }
         
         /// <summary>
-        /// Custom
+        /// Custom formatter for category name.
         /// </summary>
+        [TypeFormatter(typeof(Value))]
         public class DefaultFormatter : ICustomFormatter
         {
             /// <inheritdoc />
@@ -29,7 +30,7 @@ namespace Vertical.SpectreLogger.Rendering
                     return string.Empty;
                 }
 
-                var categoryName = ((ValueType) arg).Value;
+                var categoryName = ((Value) arg).Value;
 
                 if (format == null)
                 {

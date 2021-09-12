@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
 using Vertical.SpectreLogger;
-using Vertical.SpectreLogger.Core;
-using Vertical.SpectreLogger.Formatting;
+using Vertical.SpectreLogger.Options;
+using Vertical.SpectreLogger.Rendering;
 
 namespace SpectreLoggerExample
 {
@@ -34,25 +33,21 @@ namespace SpectreLoggerExample
         
         static void Main(string[] args)
         {
+            Console.Clear();
+            
             var logger = LoggerFactory.Create(builder =>
             {
                 builder
                     //.AddSerilog(new LoggerConfiguration().WriteTo.Console().CreateLogger())
                     .AddSpectreConsole(options =>
                     {
-                        options.ConfigureProfile(LogLevel.Error, profile =>
-                        {
-                            profile.OutputTemplate = "[grey85][[{DateTime:T} [green3_1]Info[/]]] {Scopes}{Message}{NewLine+}{Exception}[/]";
-                        });
-                        options.SetLogEventFilter((in LogEventContext context) => context.EventId.Id == 100);
+                        options.ConfigureProfiles(p => p.ConfigureRenderer<ExceptionRenderer.Options>(
+                            opt => opt.ShowParameterNames = false));
                     })
                     //.AddConsole()
                     .SetMinimumLevel(LogLevel.Trace);
             }).CreateLogger<Profile>();
             
-            logger.LogError(GetException(), "An error has occurred and will be logged");
-
-
             using var scope1 = logger.BeginScope("ConnectionId: {id}", Guid.NewGuid().ToString("N")[..8]);
             using var scope2 = logger.BeginScope(new[] {new KeyValuePair<string, object>("UserId", "@vertical.com")});
 
@@ -70,6 +65,7 @@ namespace SpectreLoggerExample
             {
                 logger.Log(
                     logLevel,
+                    GetException(),
                     "This is an example of a {logLevel} message. Sample parameters:\n" +
                     "   Integers:       {short}, {int}, {long}\n" +
                     "   Reals:          {single}, {double}, {decimal}\n" +

@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using Vertical.SpectreLogger.Core;
 using Vertical.SpectreLogger.Formatting;
 
@@ -7,6 +10,40 @@ namespace Vertical.SpectreLogger.Options
 {
     public static class LogLevelProfileExtensions
     {
+        /// <summary>
+        /// Adds type formatters to the configuration that are decorated with
+        /// <see cref="TypeFormatterAttribute"/>
+        /// </summary>
+        /// <param name="profile">Log level profile</param>
+        /// <param name="assembly">The assembly to scan for formatters</param>
+        /// <returns><see cref="LogLevelProfile"/></returns>
+        /// <exception cref="InvalidOperationException">One of the discovered types could not be created.</exception>
+        public static LogLevelProfile AddTypeFormatters(
+            this LogLevelProfile profile,
+            Assembly? assembly = null)
+        {
+            var formatterTypes = (assembly ?? Assembly.GetCallingAssembly())
+                .ExportedTypes
+                .Select(type => (type, attribute: type.GetCustomAttribute<TypeFormatterAttribute>()))
+                .Where(item => item.attribute != null);
+
+            foreach (var item in formatterTypes)
+            {
+                try
+                {
+                    profile.AddTypeFormatter(item.type, (ICustomFormatter) Activator.CreateInstance(item.type));
+                }
+                catch (Exception exception)
+                {
+                    throw new InvalidOperationException(
+                        $"Could not create an instance of formatter type {item.type}",
+                        exception);
+                }
+            }
+
+            return profile;
+        }
+        
         /// <summary>
         /// Associates an <see cref="ICustomFormatter"/> instance with the given type.
         /// </summary>
@@ -57,7 +94,7 @@ namespace Vertical.SpectreLogger.Options
         /// <param name="types">The types to associate the formatter to.</param>
         /// <param name="formatter">The custom formatter instance.</param>
         /// <returns><see cref="LogLevelProfile"/></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="type"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="types"/> is null.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="formatter"/> is null.</exception>
         public static LogLevelProfile AddTypeFormatter(
             this LogLevelProfile profile,
