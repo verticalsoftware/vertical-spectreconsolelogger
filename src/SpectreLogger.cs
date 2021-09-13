@@ -53,7 +53,7 @@ namespace Vertical.SpectreLogger
                 scopeValues,
                 profile);
 
-            if (_logEventFilter?.Filter(eventInfo) == true)
+            if (!(_logEventFilter?.Filter(eventInfo)).GetValueOrDefault(true))
                 return;
             
             _rendererPipeline.Render(eventInfo);

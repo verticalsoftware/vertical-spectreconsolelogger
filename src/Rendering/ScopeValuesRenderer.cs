@@ -37,7 +37,7 @@ namespace Vertical.SpectreLogger.Rendering
                 return;
 
             var profile = context.Profile;
-            var options = profile.RendererOptions.GetOptions<Options>();
+            var options = profile.ConfiguredOptions.GetOptions<Options>();
 
             if (options.ContentBefore != null)
             {

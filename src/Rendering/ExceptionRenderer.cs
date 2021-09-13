@@ -24,7 +24,7 @@ namespace Vertical.SpectreLogger.Rendering
                 return;
 
             var profile = context.Profile;
-            var options = profile.RendererOptions.GetOptions<Options>();
+            var options = profile.ConfiguredOptions.GetOptions<Options>();
             var stack = new Stack<(Exception exception, int level, int aggregateChildId)>();
             var count = 0;
             
@@ -217,7 +217,7 @@ namespace Vertical.SpectreLogger.Rendering
             {
                 buffer.Write(" in ");
                 
-                if (directory.Length > 0)
+                if (value.Length > 0)
                 {
                     buffer.Write(value);
                     buffer.Write(Path.DirectorySeparatorChar);

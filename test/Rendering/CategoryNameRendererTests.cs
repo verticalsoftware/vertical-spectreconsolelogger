@@ -23,9 +23,9 @@ namespace Vertical.SpectreLogger.Tests.Rendering
             new object?[]{ null, "", "" },
             new object?[]{ "C", "Logger", "Logger" },
             new object?[]{ "C", "System.Logger", "Logger" },
-            new object?[]{ "C1", "System.Logger", "Logger" },
-            new object?[]{ "C2", "System.Logger", "System.Logger" },
-            new object?[]{ "C2", "System.Logging.Logger", "Logging.Logger" }
+            new object?[]{ "S1", "System.Logger", "Logger" },
+            new object?[]{ "S2", "System.Logger", "System.Logger" },
+            new object?[]{ "S2", "System.Logging.Logger", "Logging.Logger" }
         };
     }
 }

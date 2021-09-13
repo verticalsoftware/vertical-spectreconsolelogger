@@ -135,7 +135,7 @@ namespace Vertical.SpectreLogger.Options
             ConfigureProfiles(profile =>
             {
                 profile.AddTypeFormatters();
-                profile.ConfigureRenderer<DateTimeRenderer.Options>(opt => opt.ValueFactory = () => DateTimeOffset.Now);
+                profile.ConfigureOptions<DateTimeRenderer.Options>(opt => opt.ValueFactory = () => DateTimeOffset.Now);
             });
         }
     }

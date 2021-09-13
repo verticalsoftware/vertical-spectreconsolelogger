@@ -37,7 +37,7 @@ namespace Vertical.SpectreLogger.Rendering
                     return categoryName;
                 }
 
-                var formatPattern = Regex.Match(format, @"([C])(\d+)?");
+                var formatPattern = Regex.Match(format, @"([CS])(\d+)?");
                 
                 var countParam = formatPattern.Groups[2].Success
                     ? int.Parse(formatPattern.Groups[2].Value)
@@ -55,7 +55,7 @@ namespace Vertical.SpectreLogger.Rendering
                         var dot = categoryName.LastIndexOf('.');
                         return dot > -1 && dot < categoryName.Length ? categoryName.Substring(dot+1) : categoryName;
                     
-                    case "C":
+                    case "S" when countParam.HasValue:
                         // Compact formatting with max parts
                         var index = categoryName.Length;
                         while (countParam!.Value > 0 && index >= 0)

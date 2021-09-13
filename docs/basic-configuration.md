@@ -26,11 +26,11 @@ var loggerFactory = LoggerFactory
 
 > 💡 Note
 > 
-> In all of the example hereafter, assume the `options` object is a `SpectreLoggerBuilder` instance.
+> In all of the examples hereafter, assume the `options` object is a `SpectreLoggerBuilder` instance.
 
 ### Setting the minimum log event level.
 
-The provider will not display any log events introduced that are of less of a severity than a configured value. By default, the provider sets the minimum level to `LogLevel.Information`.
+The provider will not display any log events introduced that are of less of a severity than the configured value. By default, the provider sets the minimum level to `LogLevel.Information`.
 
 ```csharp
 // Trace & debug events are not displayed
@@ -50,24 +50,24 @@ public class MyLogEventFilter : ILogEventFilter
         if (eventContext.EventId.Id == 100)
         {
             // Don't display
-            return true;
+            return false;
         }
         
         // Don't filter
-        return false;
+        return true;
      }
 }
 ```
-
-> 💡 Note
-> 
-> It is recommended that you use these log filtering events to customize output particular to console logging. Otherwise, consider using the default filtering mechanisms available in the Microsoft logging implementation to ensure consistent policies across your application's logging infrastructure.
 
 For more simple scenarios, filtering can be handled by a delegate.
 
 ```csharp
 options.SetLogEventFilter((in LogEventContext context) => context.EventId.Id == 100);
 ```
+
+> 💡 Note
+> 
+> It is recommended that you use these log filtering events to customize output particular to console logging. Otherwise, consider using the default filtering mechanisms available in the Microsoft logging implementation to ensure consistent policies across your application's logging infrastructure.
 
 ### Configuring log level profiles
 
@@ -110,10 +110,10 @@ options.WriteInBackground();
 
 ### Controlling the number of buffers
 
-The logging provider pools write buffers to try to reduce garbage collection (defaults to 5 buffers). You can decrease or increase this value depending on the needs of your application and how multi-threaded it is. If your application primarily operates on a single thread, a single buffer is all that is needed, while thread-intensive applications may make use of additional buffers efficiently.
+The logging provider pools write buffers to try to reuse string builders (defaults to 5 buffers). You can decrease or increase this value depending on the needs of your application and how multi-threaded it is. If your application primarily operates on a single thread, a single buffer is all that is needed, while thread-intensive applications may make use of additional buffers efficiently.
 
 ```csharp
 // Set buffers to 1 for a single-threaded application
-options.
+options.MaxPooledBuffers = 3;
 ```
 

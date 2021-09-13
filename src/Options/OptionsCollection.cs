@@ -8,11 +8,11 @@ namespace Vertical.SpectreLogger.Options
     /// <summary>
     /// Manages options for renderer types.
     /// </summary>
-    public class RendererOptionsCollection
+    public class OptionsCollection
     {
         private readonly Dictionary<Type, object> _options = new();
 
-        internal RendererOptionsCollection()
+        internal OptionsCollection()
         {
         }
         

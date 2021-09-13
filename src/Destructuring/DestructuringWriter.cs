@@ -23,7 +23,7 @@ namespace Vertical.SpectreLogger.Destructuring
         {
             _buffer = buffer;
             _profile = profile;
-            _options = profile.RendererOptions.GetOptions<DestructuringOptions>();
+            _options = profile.ConfiguredOptions.GetOptions<DestructuringOptions>();
             _availableDepth = depth.GetValueOrDefault(_options.MaxDepth);
         }
 

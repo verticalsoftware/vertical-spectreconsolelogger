@@ -61,8 +61,9 @@ namespace Vertical.SpectreLogger.Output
         {
             if (_queue.Length > 0)
             {
-                _buffer.Append(_queue);
+                var queued = _queue.ToString();
                 _queue.Clear();
+                Write(queued);
             }
 
             var pastLastIndex = startIndex + length;

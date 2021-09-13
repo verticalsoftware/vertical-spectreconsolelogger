@@ -71,10 +71,6 @@ options.ConfigureProfiles(profile => profile.AddTypeFormatter<Customer>((format,
 
 Secondly, you may decorate `ICustomFormatter` implementations with the `TypeFormatter` attribute and call a single method to register them all with assembly scanning.
 
-> ⚠️Important
-> 
-> Make sure your type can be created by activation (e.g. has a parameterless public default constructor).
-
 ```csharp
 [TypeFormatter(typeof(Customer))]
 public class CustomerFormatter : ICustomFormatter
@@ -87,4 +83,10 @@ public class CustomerFormatter : ICustomFormatter
 options.ConfigureProfiles(profile => profile.AddTypeFormatters());
 ```
 
-Since `ICustomFormatter` is being used, you can also extend the functionality with format strings - see [Composite Formatting](https://docs.microsoft.com/en-us/dotnet/api/system.icustomformatter?view=net-5.0).
+> ⚠️Important
+>
+> Make sure your type can be created by activation (e.g. has a parameterless public default constructor).
+
+> 💡 Note
+> 
+> Since `ICustomFormatter` is being used, you can also extend the functionality with format strings - see [Composite Formatting](https://docs.microsoft.com/en-us/dotnet/api/system.icustomformatter?view=net-5.0).

@@ -98,7 +98,7 @@ namespace Vertical.SpectreLogger.Tests.Destructuring
                 });
 
             var profile = new LogLevelProfile(LogLevel.Information);
-            profile.ConfigureRenderer<DestructuringOptions>(opt => opt.MaxDepth = 3);
+            profile.ConfigureOptions<DestructuringOptions>(opt => opt.MaxDepth = 3);
 
             var buffer = new WriteBuffer(Substitute.For<IConsoleWriter>());
             DestructuringWriter.Write(buffer, profile, obj);

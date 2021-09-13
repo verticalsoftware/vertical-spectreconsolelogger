@@ -39,7 +39,7 @@ namespace Vertical.SpectreLogger.Rendering
         {
             var renderValue = context
                 .Profile
-                .RendererOptions
+                .ConfiguredOptions
                 .GetOptions<Options>()
                 .ValueFactory?.Invoke() ?? DateTimeOffset.Now;
             

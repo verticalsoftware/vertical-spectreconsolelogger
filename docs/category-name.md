@@ -10,6 +10,14 @@ Prints the category name of the logger.
 {CategoryName[,alignment][:format-string]}
 ```
 
+### Example
+
+The following example would print the category name using compact-class notation:
+
+```
+{CategoryName:C}
+```
+
 ### Parameters
 
 |Parameter|Description|
@@ -23,9 +31,13 @@ The format string for this renderer currently supports two notations:
 
 |Format|Description|
 |---|---|
-|`C`|Prints the class name only, or the last segment of the logger name assuming it can be split by the `.` character. Example: `Microsoft.Extensions.Logging.ILogger` would print `ILogger`.
-|`C<d>`|Where `d` is the number of segments in the class name to print, beginning at the end of the name. Example: `C2` applied to `Microsoft.Extensions.Logging.ILogger` would print `Logging.ILogger`.
+|`C`|Prints the class name part of the category name (e.g.`Logger` -> `Logger`, `Microsoft.Extensions.Logging.ILogger` -> `ILogger`).|
+|`S<count>`|Prints a subset of the category name by splitting it into segments between the dot (.) characters and printing only the last number of segments indicated by a numeric specifier (e.g. for category `Microsoft.Extensions.Logging.Ilogger`, `S1` -> `Ilogger`, `S2` -> `Logging.Ilogger`, etc.) 
 
-> 💡 Note
-> 
-> You can assume complete control of formatting by registering a formatter for the `CategoryName` value wrapper type (see [Rendering Overview](./renderer-overview.md)).
+### Value Wrapping Types
+
+The following type can be formatted & styled:
+
+|Type|Description|
+|---|---|
+|`CategoryNameRenderer.Value`|Represents the category name|

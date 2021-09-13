@@ -8,7 +8,7 @@ namespace Vertical.SpectreLogger.Rendering
     /// <summary>
     /// Controls the margin in the template rendering.
     /// </summary>
-    [Template(@"{Margin(?<_mode>[+->])(?<_value>\d+)}")]
+    [Template(@"{Margin(?<_mode>[+-=])(?<_value>\d+)}")]
     public class MarginControlRenderer : ITemplateRenderer
     {
         private readonly string _mode;

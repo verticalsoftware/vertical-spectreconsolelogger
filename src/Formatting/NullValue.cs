@@ -26,7 +26,7 @@ namespace Vertical.SpectreLogger.Formatting
         public sealed class Formatter : ICustomFormatter
         {
             /// <inheritdoc />
-            public string Format(string format, object arg, IFormatProvider formatProvider) => "(null)";
+            public string Format(string? format, object? arg, IFormatProvider? formatProvider) => "(null)";
         }
     }
 }

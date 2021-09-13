@@ -54,7 +54,7 @@ namespace Vertical.SpectreLogger.Options
         /// <summary>
         /// Gets a dictionary of option objects for renderers.
         /// </summary>
-        public RendererOptionsCollection RendererOptions { get; } = new();
+        public OptionsCollection ConfiguredOptions { get; } = new();
 
         /// <summary>
         /// Gets the custom formatter.

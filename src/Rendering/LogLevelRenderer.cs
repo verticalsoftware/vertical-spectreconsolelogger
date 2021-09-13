@@ -22,25 +22,6 @@ namespace Vertical.SpectreLogger.Rendering
             .Build();
 
         /// <summary>
-        /// Options for <see cref="LogLevelRenderer"/>
-        /// </summary>
-        public sealed class Options
-        {
-            /// <summary>
-            /// Gets the names to display for log levels.
-            /// </summary>
-            public Dictionary<LogLevel, string> LevelDisplayValues { get; } = new()
-            {
-                [LogLevel.Trace] = "Trc",
-                [LogLevel.Debug] = "Dbg",
-                [LogLevel.Information] = "Inf",
-                [LogLevel.Warning] = "Wrn",
-                [LogLevel.Error] = "Err",
-                [LogLevel.Critical] = "Crt"
-            };
-        }
-
-        /// <summary>
         /// Creates a new instance.
         /// </summary>
         /// <param name="template">The matching template segment.</param>
@@ -49,14 +30,7 @@ namespace Vertical.SpectreLogger.Rendering
         /// <inheritdoc />
         public void Render(IWriteBuffer buffer, in LogEventContext context)
         {
-            var displayValue = context
-                .Profile
-                .RendererOptions
-                .GetOptions<Options>()
-                .LevelDisplayValues
-                .GetValueOrDefault(context.LogLevel, context.LogLevel.ToString()); 
-                
-            buffer.WriteFormattedValue(context.Profile, _template, displayValue!);
+            buffer.WriteLogValue(context.Profile, _template, context.LogLevel);
         }
     }
 }

@@ -10,6 +10,12 @@ Prints the value of `DateTimeOffset.Now`, or the value returned by a factory reg
 {DateTime[,alignment][:format-string]}
 ```
 
+### Example
+
+```
+{DateTime:yyyy/MM/dd hh:mm:ss}
+```
+
 ### Parameters
 
 |Parameter|Description|
@@ -26,7 +32,7 @@ This renderer defines an `Options` type. You can customize the date/time value r
 
 options.ConfigureProfiles(profile =>
     {
-        profile.ConfigureRenderer<DateTimeRenderer.Options>(renderer =>
+        profile.ConfigureOptions<DateTimeRenderer.Options>(renderer =>
             renderer.ValueFactory = () => DateTimeOffset.UtcNow);
     });
 ```

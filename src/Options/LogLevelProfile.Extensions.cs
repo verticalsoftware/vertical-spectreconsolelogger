@@ -31,7 +31,8 @@ namespace Vertical.SpectreLogger.Options
             {
                 try
                 {
-                    profile.AddTypeFormatter(item.type, (ICustomFormatter) Activator.CreateInstance(item.type));
+                    var instance = (ICustomFormatter) Activator.CreateInstance(item.type)!;
+                    profile.AddTypeFormatter(item.type, instance);
                 }
                 catch (Exception exception)
                 {
@@ -260,7 +261,7 @@ namespace Vertical.SpectreLogger.Options
         /// <typeparam name="TOptions">Options type.</typeparam>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="configureOptions"/> is null.</exception>
-        public static LogLevelProfile ConfigureRenderer<TOptions>(
+        public static LogLevelProfile ConfigureOptions<TOptions>(
             this LogLevelProfile profile,
             Action<TOptions> configureOptions)
             where TOptions : new()
@@ -270,7 +271,7 @@ namespace Vertical.SpectreLogger.Options
                 throw new ArgumentNullException(nameof(configureOptions));
             }
             
-            profile.RendererOptions.Configure(configureOptions);
+            profile.ConfiguredOptions.Configure(configureOptions);
             return profile;
         }
     }
