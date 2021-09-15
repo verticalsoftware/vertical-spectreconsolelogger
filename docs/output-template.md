@@ -38,8 +38,8 @@ After configuration but before logging startup, the provider will build an effic
 Configure the output template for profiles by setting the `OutputTemplate` property.
 
 ```csharp
-options.ConfigureProfile(LogLevel.Information, profile => 
-    {
-        profile.OutputTemplate = "[grey85][[{DateTime:T} [green3_1]Info[/]]] {Message}{NewLine+}{Exception}[/]"));
-    });
+config.ConfigureProfile(LogLevel.Information, profile => 
+{
+    profile.OutputTemplate = "[grey85][[{DateTime:T} [green3_1]Info[/]]] {Message}{NewLine+}{Exception}[/]"));
+});
 ```

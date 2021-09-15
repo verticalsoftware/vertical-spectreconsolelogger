@@ -53,7 +53,7 @@ public class CustomerFormatter : ICustomFormatter
 
 // Register the formatter during configuration.
 
-options.ConfigureProfiles(profile => profile.AddTypeFormatter<Customer>(new CustomerFormatter()));
+config.ConfigureProfiles(profile => profile.AddTypeFormatter<Customer>(new CustomerFormatter()));
 ```
 
 There are additional tools to make custom formatting less burdensome. First, instead of having to define an implementation of `ICustomFormatter`, you can register a delegate instead. The following example produces the same behavior
@@ -62,11 +62,11 @@ There are additional tools to make custom formatting less burdensome. First, ins
 // Using a formatting delegate - note no additional registration
 // is necessary.
 
-options.ConfigureProfiles(profile => profile.AddTypeFormatter<Customer>((format, object, IFormatProvider) => 
-    {
-        var customer = (Customer)arg;            
-        return $"Id={customer.Id}, Name={customer.Name}";
-    });
+config.ConfigureProfiles(profile => profile.AddTypeFormatter<Customer>((format, object, IFormatProvider) => 
+{
+    var customer = (Customer)arg;            
+    return $"Id={customer.Id}, Name={customer.Name}";
+});
 ```
 
 Secondly, you may decorate `ICustomFormatter` implementations with the `TypeFormatter` attribute and call a single method to register them all with assembly scanning.
@@ -80,7 +80,7 @@ public class CustomerFormatter : ICustomFormatter
 
 // Registration
 
-options.ConfigureProfiles(profile => profile.AddTypeFormatters());
+config.ConfigureProfiles(profile => profile.AddTypeFormatters());
 ```
 
 > ⚠️Important

@@ -30,9 +30,9 @@ This renderer defines an `Options` type. You can customize the date/time value r
 ```csharp
 // Use DateTimeOffset.UtcNow instead of local time:
 
-options.ConfigureProfiles(profile =>
-    {
-        profile.ConfigureOptions<DateTimeRenderer.Options>(renderer =>
-            renderer.ValueFactory = () => DateTimeOffset.UtcNow);
-    });
+config.ConfigureProfiles(profile =>
+{
+    profile.ConfigureOptions<DateTimeRenderer.Options>(renderer =>
+        renderer.ValueFactory = () => DateTimeOffset.UtcNow);
+});
 ```

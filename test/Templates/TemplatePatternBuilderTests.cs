@@ -46,15 +46,15 @@ namespace Vertical.SpectreLogger.Tests.Templates
             {
                 TemplatePatternBuilder.ForKey("Template")
                     .AddControlGroup(@"\d+")
-                    .AddWidthFormatting(),
+                    .AddAlignmentGroup(),
                 @"(?<!{){(?<_tmpl>(?<_key>Template)(?:>(?<_ctl>\d+))?(?<_cfmt>(?<_wdspan>,(?<_wd>-?\d+))?))}"
             },
             new object[]
             {
                 TemplatePatternBuilder.ForKey("Template")
                     .AddControlGroup(@"\d+")
-                    .AddWidthFormatting()
-                    .AddValueFormatting(),
+                    .AddAlignmentGroup()
+                    .AddFormattingGroup(),
                 @"(?<!{){(?<_tmpl>(?<_key>Template)(?:>(?<_ctl>\d+))?(?<_cfmt>(?<_wdspan>,(?<_wd>-?\d+))?(?<_fmspan>:(?<_fm>[^}]+))?))}"
             }
         };

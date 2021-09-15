@@ -42,9 +42,11 @@ namespace SpectreLoggerExample
                     //.AddConsole()
                     .AddSpectreConsole(options =>
                     {
+                        options.AddTemplateRenderers();
                         options.ConfigureProfiles(profile =>
                         {
-                            profile.OutputTemplate = "{LogLevel}: {CategoryName}{Margin=6}{NewLine}{Message}{NewLine+}{Exception}";
+                            profile.OutputTemplate = "{LogLevel}/{MemoryUsage}: {CategoryName}{Margin=6}{NewLine}{Message}{NewLine+}{Exception}";
+                            profile.AddTypeFormatters();
                         });
                         options.ConfigureProfile(LogLevel.Trace, profile => profile
                             .AddTypeFormatter<LogLevel>(((fmt, obj, provider) => "trce"))

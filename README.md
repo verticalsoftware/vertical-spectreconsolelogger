@@ -47,4 +47,6 @@ logger.LogInformation("Hello world!");
   - [NewLine](docs/newline.md)
   - [Scope](docs/scope-value.md)
   - [Scopes](docs/scopes-value)
+- Advanced Topics
+  - [Advanced Configuration](docs/advanced-config.md)
   

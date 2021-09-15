@@ -13,17 +13,17 @@ Examples:
 ```csharp
 
 // Print all strings in orange
-options.ConfigureProfiles(profile => profile.AddTypeStyle<string>("[orange3]"));
+config.ConfigureProfiles(profile => profile.AddTypeStyle<string>("[orange3]"));
 
 // Print all strings in orange in Debug events only
-options.ConfigureProfile(LogLevel.Debug, profile => profile.AddTyleStyle<string>("[orange3"));
+config.ConfigureProfile(LogLevel.Debug, profile => profile.AddTyleStyle<string>("[orange3"));
 
 // Print all numbers in magenta (see the Types class for more groups)
-options.ConfigureProfiles(profile => profile.AddTypeStyle(Types.Numerics, "[magenta1]")); 
+config.ConfigureProfiles(profile => profile.AddTypeStyle(Types.Numerics, "[magenta1]")); 
 
 // Print boolean values in green and red
-options.ConfigureProfiles(profile => profile.AddValueStyle(false, "[red1]"));
-options.ConfigureProfiles(profile => profile.AddValueStyle(true, "[palegreen3]"));
+config.ConfigureProfiles(profile => profile.AddValueStyle(false, "[red1]"));
+config.ConfigureProfiles(profile => profile.AddValueStyle(true, "[palegreen3]"));
 
 ```
 

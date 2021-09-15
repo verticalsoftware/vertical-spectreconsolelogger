@@ -20,17 +20,17 @@ The provider solves this by wrapping these intrinsic values in specific types. T
 Example: You want to make sure all category names are capitalized, but category names are strings. The `CategoryNameRenderer` will not send a `string` to the formatting system, it will send an instance of the `CatgegoryNameRenderer.Value` type which simply encapsulates the string. Therefore, could implement the requirement as follows:
 
 ```csharp
-options.ConfigureProfiles(profile =>
+config.ConfigureProfiles(profile =>
+{
+    profile.AddTypeFormatter<CategoryNameRenderer.Value>((format, obj, provider) =>
     {
-        profile.AddTypeFormatter<CategoryNameRenderer.Value>((format, obj, provider) =>
-        {
-            // (use Humainzer instead...)            
-            var categoryName = (CategoryNameRenderer.Value)obj;
-            return char.IsLower(categoryName[0])
-                ? char.ToUpper(categoryName[0]) + categoryName[1..]
-                : categoryName;
-        });
+        // (use Humainzer instead...)            
+        var categoryName = (CategoryNameRenderer.Value)obj;
+        return char.IsLower(categoryName[0])
+            ? char.ToUpper(categoryName[0]) + categoryName[1..]
+            : categoryName;
     });
+});
 ```
 
 The same principal is also applied to associating markup styles to types.
@@ -58,11 +58,11 @@ public sealed class FailedMessage
 }
 
 // Configure how they are styled...
-options.ConfigureProfiles(profile =>
-    {
-        profile.AddTypeStyle<OkMessage>("[green1]");
-        profile.AddTypeStyle<FailedMessage>("[red1]");
-    });
+config.ConfigureProfiles(profile =>
+{
+    profile.AddTypeStyle<OkMessage>("[green1]");
+    profile.AddTypeStyle<FailedMessage>("[red1]");
+});
     
 // Then in logging...
 logger.LogInformation("{ok} - the record was saved successfully", OkMessage.Value);
@@ -75,13 +75,13 @@ Some renderers provide advanced capabilities which would be difficult to configu
 ```csharp
 // Configure how exceptions are rendered
 
-options.ConfigureProfiles(profile =>
-    {
-        profile.ConfigureOptions<ExceptionRenderer.Options>(renderer =>
-            {
-                renderer.MaxStackFrames = 5;
-                renderer.UnwindAggregateExceptions = true;
-                // ...
-            });
-    });
+config.ConfigureProfiles(profile =>
+{
+    profile.ConfigureOptions<ExceptionRenderer.Options>(renderer =>
+        {
+            renderer.MaxStackFrames = 5;
+            renderer.UnwindAggregateExceptions = true;
+            // ...
+        });
+});
 ```

@@ -165,7 +165,7 @@ namespace Vertical.SpectreLogger.Options
         /// </summary>
         /// <param name="assembly">The assembly to scan. If not provided, the calling assembly is used.</param>
         /// <returns>A reference to this instance</returns>
-        public SpectreLoggerBuilder AddTemplateRenderers(Assembly? assembly)
+        public SpectreLoggerBuilder AddTemplateRenderers(Assembly? assembly = null)
         {
             assembly ??= Assembly.GetCallingAssembly();
 

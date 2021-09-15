@@ -34,6 +34,6 @@ You can control certain aspects of destructuring by configuring the `Destructuri
 ### Example
 
 ```csharp
-options.ConfigureProfiles(profile => profile.ConfigureOptions<DestructuringOptions>(
+config.ConfigureProfiles(profile => profile.ConfigureOptions<DestructuringOptions>(
     destructuring => destructuring.MaxDepth = 3));
 ```

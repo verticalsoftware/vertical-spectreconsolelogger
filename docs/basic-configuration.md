@@ -16,17 +16,17 @@ All configuration is done during the setup phase and is accessible when calling 
 ```csharp
 var loggerFactory = LoggerFactory
     .Create(buidler => 
+    {
+        builder.AddSpectreConsole(config =>
         {
-            builder.AddSpectreConsole(options =>
-                {
-                    // TODO: Customize the logger here
-                });
+            // TODO: Customize the logger here
         });
+    });
 ```
 
 > 💡 Note
 > 
-> In all of the examples hereafter, assume the `options` object is a `SpectreLoggerBuilder` instance.
+> In all of the examples hereafter, assume the `config` object is a `SpectreLoggerBuilder` instance.
 
 ### Setting the minimum log event level.
 
@@ -35,7 +35,7 @@ The provider will not display any log events introduced that are of less of a se
 ```csharp
 // Trace & debug events are not displayed
 
-options.SetMinimumLevel(LogLevel.Information);
+config.SetMinimumLevel(LogLevel.Information);
 ```
 
 ### Filtering log events using a service.
@@ -62,7 +62,7 @@ public class MyLogEventFilter : ILogEventFilter
 For more simple scenarios, filtering can be handled by a delegate.
 
 ```csharp
-options.SetLogEventFilter((in LogEventContext context) => context.EventId.Id == 100);
+config.SetLogEventFilter((in LogEventContext context) => context.EventId.Id == 100);
 ```
 
 > 💡 Note
@@ -77,43 +77,27 @@ Log level profiles are discussed in great detail in specific renderer documentat
 
 ```csharp
 // Configure the profile of a single level
-options.ConfigureProfile(LogLevel.Information, profile => 
-    {
-        // TODO: Configure
-    });
+config.ConfigureProfile(LogLevel.Information, profile => 
+{
+    // TODO: Configure
+});
     
 // Configure multiple profiles with the same settings
-options.ConfigureProfiles(new[]{LogLevel.Trace, LogLevel.Debug}, profile =>
-    {
-        // TODO: Configure
-    });
+config.ConfigureProfiles(new[]{LogLevel.Trace, LogLevel.Debug}, profile =>
+{
+    // TODO: Configure
+});
     
 // Configure all profiles with the same settings
 optiosn.ConfigureProfiles(profile =>
-    {
-        // TODO: Configure
-    });
+{
+    // TODO: Configure
+});
 ```
 
 > ☑️ Tip
 > 
 > Configure profiles from the least specific to the most specific. Keep in mind you can overwrite settings made in previous configuration calls.
 
-### Controlling the output thread
 
-By default, the logging provider will render marked up content to the `AnsiConsole` on the calling thread. This means the thread will be blocked for the logging event cycle. In most situations this is acceptable. If you need the rendering cycle to not block the calling thread for performance reasons, enact the background thread mode.
-
-```csharp
-// Render events in the background
-options.WriteInBackground();
-```
-
-### Controlling the number of buffers
-
-The logging provider pools write buffers to try to reuse string builders (defaults to 5 buffers). You can decrease or increase this value depending on the needs of your application and how multi-threaded it is. If your application primarily operates on a single thread, a single buffer is all that is needed, while thread-intensive applications may make use of additional buffers efficiently.
-
-```csharp
-// Set buffers to 1 for a single-threaded application
-options.MaxPooledBuffers = 3;
-```
 

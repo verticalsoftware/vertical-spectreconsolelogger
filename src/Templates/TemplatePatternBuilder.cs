@@ -72,7 +72,7 @@ namespace Vertical.SpectreLogger.Templates
         /// Adds a pattern for width formatting.
         /// </summary>
         /// <returns>A reference to this instance.</returns>
-        public TemplatePatternBuilder AddWidthFormatting()
+        public TemplatePatternBuilder AddAlignmentGroup()
         {
             _widthFormatting = true;
             return this;
@@ -82,7 +82,7 @@ namespace Vertical.SpectreLogger.Templates
         /// Adds a pattern for value formatting.
         /// </summary>
         /// <returns>A reference to this instance.</returns>
-        public TemplatePatternBuilder AddValueFormatting()
+        public TemplatePatternBuilder AddFormattingGroup()
         {
             _valueFormatting = true;
             return this;
