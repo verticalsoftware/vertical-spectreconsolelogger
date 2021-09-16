@@ -34,10 +34,10 @@ The format string for this renderer currently supports two notations:
 |`C`|Prints the class name part of the category name (e.g.`Logger` -> `Logger`, `Microsoft.Extensions.Logging.ILogger` -> `ILogger`).|
 |`S<count>`|Prints a subset of the category name by splitting it into segments between the dot (.) characters and printing only the last number of segments indicated by a numeric specifier (e.g. for category `Microsoft.Extensions.Logging.Ilogger`, `S1` -> `Ilogger`, `S2` -> `Logging.Ilogger`, etc.) 
 
-### Value Wrapping Types
+### Value Types
 
-The following type can be formatted & styled:
+The following type(s) can be formatted & styled:
 
 |Type|Description|
 |---|---|
-|`CategoryNameRenderer.Value`|Represents the category name|
+|`System.Diagnostics.ActivityTraceId`|Represents the category name|

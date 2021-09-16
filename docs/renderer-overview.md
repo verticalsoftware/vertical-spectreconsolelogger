@@ -12,7 +12,7 @@ The placeholder syntax shows the token pattern you need to include in an output 
 
 If the renderer supports custom formatting, a table of format codes with their specifiers and a description is listed.
 
-### Value Wrapping Types
+### Value Types
 
 The logging provider framework associates formatting with specific types, but this can be problematic because most of the values are intrinsic types such as strings and integers which can be ambiguous with other values.
 The provider solves this by wrapping these intrinsic values in specific types. Therefore, when you wish to custom format values like the log level or the category name, you associate your formatter with the wrapper type and not the intrinsic type.

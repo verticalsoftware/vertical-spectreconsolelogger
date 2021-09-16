@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Vertical.SpectreLogger.Core;
 
-namespace Vertical.SpectreLogger.Internal
+namespace Vertical.SpectreLogger.Scopes
 {
     internal sealed class SingleScopeValue : IScopeValues
     {

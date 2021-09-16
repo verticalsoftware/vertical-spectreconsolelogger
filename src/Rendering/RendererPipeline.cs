@@ -4,12 +4,12 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
 using Vertical.SpectreLogger.Core;
+using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Output;
-using Vertical.SpectreLogger.Rendering;
 using Vertical.SpectreLogger.Templates;
 
-namespace Vertical.SpectreLogger.Internal
+namespace Vertical.SpectreLogger.Rendering
 {
     internal sealed class RendererPipeline : IRendererPipeline
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace Vertical.SpectreLogger.Internal
+namespace Vertical.SpectreLogger.Scopes
 {
     internal sealed class LoggerScope : IDisposable
     {

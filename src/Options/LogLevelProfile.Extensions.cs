@@ -32,7 +32,7 @@ namespace Vertical.SpectreLogger.Options
                 try
                 {
                     var instance = (ICustomFormatter) Activator.CreateInstance(item.type)!;
-                    profile.AddTypeFormatter(item.type, instance);
+                    profile.AddTypeFormatter(item.attribute!.Type, instance);
                 }
                 catch (Exception exception)
                 {

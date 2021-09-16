@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Serilog;
 using Spectre.Console;
 using Vertical.SpectreLogger;
 using Vertical.SpectreLogger.Options;
-using Vertical.SpectreLogger.Rendering;
 
 namespace SpectreLoggerExample
 {
@@ -34,39 +35,16 @@ namespace SpectreLoggerExample
         static void Main(string[] args)
         {
             Console.Clear();
+
+            var activity = new Activity("program");
+            activity.Start();
             
             var logger = LoggerFactory.Create(builder =>
             {
                 builder
-                    //.AddSerilog(new LoggerConfiguration().WriteTo.Console().CreateLogger())
+                    //.AddSerilog(new LoggerConfiguration().MinimumLevel.Verbose().WriteTo.Console().CreateLogger())
                     //.AddConsole()
-                    .AddSpectreConsole(options =>
-                    {
-                        options.AddTemplateRenderers();
-                        options.ConfigureProfiles(profile =>
-                        {
-                            profile.OutputTemplate = "{LogLevel}/{MemoryUsage}: {CategoryName}{Margin=6}{NewLine}{Message}{NewLine+}{Exception}";
-                            profile.AddTypeFormatters();
-                        });
-                        options.ConfigureProfile(LogLevel.Trace, profile => profile
-                            .AddTypeFormatter<LogLevel>(((fmt, obj, provider) => "trce"))
-                            .AddTypeStyle<LogLevel>("[grey35]"));
-                        options.ConfigureProfile(LogLevel.Debug, profile => profile
-                            .AddTypeFormatter<LogLevel>(((fmt, obj, provider) => "dbug"))
-                            .AddTypeStyle<LogLevel>("[grey46]"));
-                        options.ConfigureProfile(LogLevel.Information, profile => profile
-                            .AddTypeFormatter<LogLevel>(((fmt, obj, provider) => "info"))
-                            .AddTypeStyle<LogLevel>("[green]"));
-                        options.ConfigureProfile(LogLevel.Warning, profile => profile
-                            .AddTypeFormatter<LogLevel>(((fmt, obj, provider) => "warn"))
-                            .AddTypeStyle<LogLevel>("[gold3_1]"));
-                        options.ConfigureProfile(LogLevel.Error, profile => profile
-                            .AddTypeFormatter<LogLevel>(((fmt, obj, provider) => "fail"))
-                            .AddTypeStyle<LogLevel>("[red1]"));
-                        options.ConfigureProfile(LogLevel.Critical, profile => profile
-                            .AddTypeFormatter<LogLevel>(((fmt, obj, provider) => "crit"))
-                            .AddTypeStyle<LogLevel>("[white on red1]"));
-                    })
+                    .AddSpectreConsole(config => config.UseSerilogConsoleStyle())
                     .SetMinimumLevel(LogLevel.Trace);
             }).CreateLogger<Profile>();
             

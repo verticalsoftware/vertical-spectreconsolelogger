@@ -9,15 +9,16 @@ using Vertical.SpectreLogger.Core;
 using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Output;
 using Vertical.SpectreLogger.Reflection;
+using Vertical.SpectreLogger.Templates;
 
 namespace Vertical.SpectreLogger.Options
 {
     /// <summary>
     /// Object used to configure the logger.
     /// </summary>
-    public partial class SpectreLoggerBuilder
+    public partial class SpectreLoggingBuilder
     {
-        internal SpectreLoggerBuilder(IServiceCollection services)
+        internal SpectreLoggingBuilder(IServiceCollection services)
         {
             Services = services;
             ConfigureDefaults();
@@ -33,7 +34,7 @@ namespace Vertical.SpectreLogger.Options
         /// </summary>
         /// <param name="logLevel">Log level.</param>
         /// <returns>A reference to this instance.</returns>
-        public SpectreLoggerBuilder SetMinimumLevel(LogLevel logLevel)
+        public SpectreLoggingBuilder SetMinimumLevel(LogLevel logLevel)
         {
             Services.Configure<SpectreLoggerOptions>(opt => opt.MinimumLogLevel = logLevel);
             return this;
@@ -44,7 +45,7 @@ namespace Vertical.SpectreLogger.Options
         /// </summary>
         /// <param name="eventFilter"></param>
         /// <returns>A reference to this instance.</returns>
-        public SpectreLoggerBuilder SetLogEventFilter(ILogEventFilter eventFilter)
+        public SpectreLoggingBuilder SetLogEventFilter(ILogEventFilter eventFilter)
         {
             Services.Configure<SpectreLoggerOptions>(opt => opt.LogEventFilter = eventFilter);
             return this;
@@ -55,7 +56,7 @@ namespace Vertical.SpectreLogger.Options
         /// </summary>
         /// <param name="filter">A <see cref="LogEventFilterDelegate"/></param>
         /// <returns>A reference to this instance,.</returns>
-        public SpectreLoggerBuilder SetLogEventFilter(LogEventFilterDelegate filter)
+        public SpectreLoggingBuilder SetLogEventFilter(LogEventFilterDelegate filter)
         {
             Services.Configure<SpectreLoggerOptions>(opt => opt.LogEventFilter = new DelegatingLogEventFilter(filter));
             return this;
@@ -65,7 +66,7 @@ namespace Vertical.SpectreLogger.Options
         /// Writes event data to the console on a background thread.
         /// </summary>
         /// <returns>A reference to this instance.</returns>
-        public SpectreLoggerBuilder WriteInBackground()
+        public SpectreLoggingBuilder WriteInBackground()
         {
             Services.Replace(ServiceDescriptor.Singleton<IConsoleWriter, BackgroundConsoleWriter>());
             return this;
@@ -75,7 +76,7 @@ namespace Vertical.SpectreLogger.Options
         /// Writes event data to the console on the calling thread.
         /// </summary>
         /// <returns>A reference to this instance.</returns>
-        public SpectreLoggerBuilder WriteInForeground()
+        public SpectreLoggingBuilder WriteInForeground()
         {
             Services.Replace(ServiceDescriptor.Singleton<IConsoleWriter, ForegroundConsoleWriter>());
             return this;
@@ -86,7 +87,7 @@ namespace Vertical.SpectreLogger.Options
         /// </summary>
         /// <param name="console">The console to output log events to.</param>
         /// <returns>A reference to this instance.</returns>
-        public SpectreLoggerBuilder UseConsole(IAnsiConsole console)
+        public SpectreLoggingBuilder UseConsole(IAnsiConsole console)
         {
             Services.AddSingleton(console);
             return this;
@@ -100,7 +101,7 @@ namespace Vertical.SpectreLogger.Options
         /// <remarks>
         /// This method calls the configuration delegate for each log level profile.
         /// </remarks>
-        public SpectreLoggerBuilder ConfigureProfiles(Action<LogLevelProfile> configureProfile)
+        public SpectreLoggingBuilder ConfigureProfiles(Action<LogLevelProfile> configureProfile)
         {
             return ConfigureProfiles(new[]
             {
@@ -119,7 +120,7 @@ namespace Vertical.SpectreLogger.Options
         /// <param name="logLevels">Log levels of the profiles to configure.</param>
         /// <param name="configureProfile">Delegate that performs the configuration.</param>
         /// <returns>A reference to this instance.</returns>
-        public SpectreLoggerBuilder ConfigureProfiles(IEnumerable<LogLevel> logLevels,
+        public SpectreLoggingBuilder ConfigureProfiles(IEnumerable<LogLevel> logLevels,
             Action<LogLevelProfile> configureProfile)
         {
             foreach (var logLevel in logLevels)
@@ -136,7 +137,7 @@ namespace Vertical.SpectreLogger.Options
         /// <param name="logLevel">Log level.</param>
         /// <param name="configureProfile">Delegate that performs the configuration.</param>
         /// <returns>A reference to this instance</returns>
-        public SpectreLoggerBuilder ConfigureProfile(LogLevel logLevel, Action<LogLevelProfile> configureProfile)
+        public SpectreLoggingBuilder ConfigureProfile(LogLevel logLevel, Action<LogLevelProfile> configureProfile)
         {
             Services.Configure<SpectreLoggerOptions>(options => configureProfile(options.LogLevelProfiles[logLevel]));
             return this;
@@ -147,7 +148,7 @@ namespace Vertical.SpectreLogger.Options
         /// </summary>
         /// <param name="rendererType">Type that implements <see cref="ITemplateRenderer"/>.</param>
         /// <returns>A reference to this instance</returns>
-        public SpectreLoggerBuilder AddTemplateRenderer(Type rendererType)
+        public SpectreLoggingBuilder AddTemplateRenderer(Type rendererType)
         {
             Services.AddSingleton(new TemplateDescriptor(rendererType));
             return this;
@@ -158,14 +159,14 @@ namespace Vertical.SpectreLogger.Options
         /// </summary>
         /// <typeparam name="T">Type that implements <see cref="ITemplateRenderer"/></typeparam>
         /// <returns>A reference to this instance</returns>
-        public SpectreLoggerBuilder AddTemplateRenderer<T>() where T : ITemplateRenderer => AddTemplateRenderer(typeof(T));
+        public SpectreLoggingBuilder AddTemplateRenderer<T>() where T : ITemplateRenderer => AddTemplateRenderer(typeof(T));
 
         /// <summary>
         /// Adds all public template renderers found in an assembly.
         /// </summary>
         /// <param name="assembly">The assembly to scan. If not provided, the calling assembly is used.</param>
         /// <returns>A reference to this instance</returns>
-        public SpectreLoggerBuilder AddTemplateRenderers(Assembly? assembly = null)
+        public SpectreLoggingBuilder AddTemplateRenderers(Assembly? assembly = null)
         {
             assembly ??= Assembly.GetCallingAssembly();
 
@@ -185,7 +186,7 @@ namespace Vertical.SpectreLogger.Options
         /// </summary>
         /// <param name="count">Number of buffers to retain.</param>
         /// <returns>A reference to this instance.</returns>
-        public SpectreLoggerBuilder SetPooledBufferCount(int count)
+        public SpectreLoggingBuilder SetPooledBufferCount(int count)
         {
             Services.Configure<SpectreLoggerOptions>(options => options.MaxPooledBuffers = count);
             return this;

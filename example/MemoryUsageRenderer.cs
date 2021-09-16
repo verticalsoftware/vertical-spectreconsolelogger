@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Vertical.SpectreLogger.Core;
 using Vertical.SpectreLogger.Formatting;
@@ -47,30 +48,25 @@ namespace SpectreLoggerExample
             /// <inheritdoc />
             public string Format(string format, object arg, IFormatProvider formatProvider)
             {
-                var value = ((Value) arg)!.Value;
                 var patternMatch = Regex.Match(format ?? string.Empty, @"(?<units>[BMG])(?<precision>\d+)?");
-                var precision = patternMatch.Groups["precision"].Success
-                    ? $":D{patternMatch.Groups["precision"].Value}"
-                    : string.Empty;
-
-                switch (patternMatch.Groups["units"].Value)
+                var precision = patternMatch.Groups["precision"].Value;
+                var units = patternMatch.Groups["units"].Value;
+                var value = ((Value) arg).Value;
+                var convertedValue = units switch
                 {
-                    case "M":
-                        return string.Format("{0" + precision + "}MB", value/1000);
-                    
-                    case "G":
-                        return string.Format("{0" + precision + "}GB", value / 1000000);
-                    
-                    default:
-                        return $"{value}B";
-                }
+                    "M" => value * 0.0000009537,
+                    "G" => value * 0.0000000009,
+                    _ => value
+                };
+
+                return convertedValue.ToString($"F{precision}") + units;
             }
         }
 
         /// <inheritdoc />
         public void Render(IWriteBuffer buffer, in LogEventContext context)
         {
-            buffer.WriteLogValue(context.Profile, _template, new Value(Environment.WorkingSet));
+            buffer.WriteLogValue(context.Profile, _template, new Value(Process.GetCurrentProcess().PrivateMemorySize64));
         }
     }
 }

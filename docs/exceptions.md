@@ -14,7 +14,7 @@ Prints an exception to the console if available in the log event.
 
 None
 
-### Value Wrapping Types
+### Value Types
 
 The following types can be formatted & styled:
 

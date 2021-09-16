@@ -2,12 +2,12 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Options;
 using Vertical.SpectreLogger.Core;
+using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Reflection;
-using Vertical.SpectreLogger.Rendering;
 using Vertical.SpectreLogger.Templates;
 
-namespace Vertical.SpectreLogger.Internal
+namespace Vertical.SpectreLogger.Rendering
 {
     internal class TemplateRendererBuilder : ITemplateRendererBuilder
     {
@@ -36,6 +36,8 @@ namespace Vertical.SpectreLogger.Internal
             {
                 rendererList.Add(SelectRenderer(segment));
             });
+            
+            rendererList.Add(EndEventRenderer.Default);
 
             return rendererList;
         }
@@ -63,9 +65,6 @@ namespace Vertical.SpectreLogger.Internal
                     match,
                     _options
                 };
-
-                parameters.Add(match);
-                parameters.Add(segment);
                 
                 return (ITemplateRenderer)TypeActivator.CreateInstance(descriptor.ImplementationType, parameters);
             }

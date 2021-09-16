@@ -40,6 +40,7 @@ logger.LogInformation("Hello world!");
   - [Destructured Output](docs/destructuring.md)
 - Output Template Renderers
   - [Renderers Overview](docs/renderer-overview.md)
+  - [ActivityId](docs/activity-id.md)    
   - [CategoryName](docs/category-name.md)
   - [DateTime](docs/date-time.md)
   - [Exception](docs/exceptions.md)
@@ -47,6 +48,7 @@ logger.LogInformation("Hello world!");
   - [NewLine](docs/newline.md)
   - [Scope](docs/scope-value.md)
   - [Scopes](docs/scopes-value)
+  - [ThreadId](docs/thread-id.md)
 - Advanced Topics
   - [Advanced Configuration](docs/advanced-config.md)
   

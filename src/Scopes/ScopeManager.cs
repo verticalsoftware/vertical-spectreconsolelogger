@@ -3,7 +3,7 @@ using System.Threading;
 using Vertical.SpectreLogger.Core;
 using Vertical.SpectreLogger.Formatting;
 
-namespace Vertical.SpectreLogger.Internal
+namespace Vertical.SpectreLogger.Scopes
 {
     /// <summary>
     /// Manages logging scopes.

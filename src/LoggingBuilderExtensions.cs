@@ -5,6 +5,8 @@ using Spectre.Console;
 using Vertical.SpectreLogger.Core;
 using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Options;
+using Vertical.SpectreLogger.Rendering;
+using Vertical.SpectreLogger.Scopes;
 using Vertical.SpectreLogger.Templates;
 
 namespace Vertical.SpectreLogger
@@ -20,16 +22,22 @@ namespace Vertical.SpectreLogger
         /// <returns><paramref name="builder"/></returns>
         public static ILoggingBuilder AddSpectreConsole(
             this ILoggingBuilder builder,
-            Action<SpectreLoggerBuilder>? configureBuilder = null)
+            Action<SpectreLoggingBuilder>? configureBuilder = null)
         {
             var services = builder.Services;
-            var optionsBuilder = new SpectreLoggerBuilder(services);
+            var optionsBuilder = new SpectreLoggingBuilder(services);
             
             services.AddTransient<ITemplateRendererBuilder, TemplateRendererBuilder>();
             services.AddSingleton(AnsiConsole.Console);
             services.AddSingleton<ScopeManager>();
             services.AddSingleton<IRendererPipeline, RendererPipeline>();
             services.AddSingleton<ILoggerProvider, SpectreLoggerProvider>();
+
+            optionsBuilder
+                .AddTemplateRenderers()
+                .WriteInForeground()
+                .UseConsole(AnsiConsole.Console)
+                .SetMinimumLevel(LogLevel.Information);
 
             configureBuilder?.Invoke(optionsBuilder);
 

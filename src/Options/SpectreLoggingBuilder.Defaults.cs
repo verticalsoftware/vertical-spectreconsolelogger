@@ -1,24 +1,17 @@
-﻿using System;
-using Microsoft.Extensions.Logging;
-using Spectre.Console;
+﻿using Microsoft.Extensions.Logging;
 using Vertical.SpectreLogger.Destructuring;
 using Vertical.SpectreLogger.Formatting;
 using Vertical.SpectreLogger.Rendering;
 
 namespace Vertical.SpectreLogger.Options
 {
-    public partial class SpectreLoggerBuilder
+    public partial class SpectreLoggingBuilder
     {
         private void ConfigureDefaults()
         {
-            AddTemplateRenderers(typeof(SpectreLoggerBuilder).Assembly);
-            SetMinimumLevel(LogLevel.Information);
-            WriteInForeground();
-            UseConsole(AnsiConsole.Console);
-
             ConfigureProfile(LogLevel.Trace, profile =>
             {
-                profile.OutputTemplate = "[grey35][[{DateTime:T} Trc]] {Message}{NewLine+}{Exception}[/]";
+                profile.OutputTemplate = "[grey35][[{DateTime:T} Trce]] {Message}{NewLine+}{Exception}[/]";
                 profile.DefaultLogValueStyle = "[grey46]";
                 profile
                     .AddTypeStyle<ExceptionRenderer.MethodNameValue>("[grey35]")
@@ -29,7 +22,7 @@ namespace Vertical.SpectreLogger.Options
             
             ConfigureProfile(LogLevel.Debug, profile =>
             {
-                profile.OutputTemplate = "[grey46][[{DateTime:T} Dbg]] {Message}{NewLine+}{Exception}[/]";
+                profile.OutputTemplate = "[grey46][[{DateTime:T} Dbug]] {Message}{NewLine+}{Exception}[/]";
                 profile
                     .AddTypeStyle(Types.Numerics, "[darkviolet]")
                     .AddTypeStyle(Types.Characters, "[darkorange3]")
@@ -56,7 +49,7 @@ namespace Vertical.SpectreLogger.Options
                     .AddTypeStyle(Types.Characters, "[gold3_1]")
                     .AddTypeStyle(Types.Temporal, "[steelblue3]")
                     .AddTypeStyle<ExceptionRenderer.ExceptionNameValue>("[grey85]")
-                    .AddTypeStyle<ExceptionRenderer.ExceptionMessageValue>("[gold3_1]")
+                    .AddTypeStyle<ExceptionRenderer.ExceptionMessageValue>("[darkorange3]")
                     .AddTypeStyle<ExceptionRenderer.MethodNameValue>("[grey42]")
                     .AddTypeStyle<ExceptionRenderer.ParameterTypeValue>("[grey42]")
                     .AddTypeStyle<ExceptionRenderer.ParameterNameValue>("[slateblue3]")
@@ -71,13 +64,13 @@ namespace Vertical.SpectreLogger.Options
             
             ConfigureProfile(LogLevel.Warning, profile =>
             {
-                profile.OutputTemplate = "[grey85][[{DateTime:T} [gold1]Wrn[/]]] {Message}{NewLine+}{Exception}[/]";
+                profile.OutputTemplate = "[grey85][[{DateTime:T} [gold1]Warn[/]]] {Message}{NewLine+}{Exception}[/]";
                 profile
                     .AddTypeStyle(Types.Numerics, "[magenta3_2]")
                     .AddTypeStyle(Types.Characters, "[gold3_1]")
                     .AddTypeStyle(Types.Temporal, "[steelblue3]")
                     .AddTypeStyle<ExceptionRenderer.ExceptionNameValue>("[grey85]")
-                    .AddTypeStyle<ExceptionRenderer.ExceptionMessageValue>("[gold3_1]")
+                    .AddTypeStyle<ExceptionRenderer.ExceptionMessageValue>("[darkorange3]")
                     .AddTypeStyle<ExceptionRenderer.MethodNameValue>("[grey42]")
                     .AddTypeStyle<ExceptionRenderer.ParameterTypeValue>("[grey42]")
                     .AddTypeStyle<ExceptionRenderer.ParameterNameValue>("[slateblue3]")
@@ -92,13 +85,13 @@ namespace Vertical.SpectreLogger.Options
             
             ConfigureProfile(LogLevel.Error, profile =>
             {
-                profile.OutputTemplate = "[grey85][[{DateTime:T} [red1]Err[/]]] {Message}{NewLine+}{Exception}[/]";
+                profile.OutputTemplate = "[grey85][[{DateTime:T} [red1]Fail[/]]] {Message}{NewLine+}{Exception}[/]";
                 profile
                     .AddTypeStyle(Types.Numerics, "[magenta3_2]")
                     .AddTypeStyle(Types.Characters, "[gold3_1]")
                     .AddTypeStyle(Types.Temporal, "[steelblue3]")
                     .AddTypeStyle<ExceptionRenderer.ExceptionNameValue>("[grey85]")
-                    .AddTypeStyle<ExceptionRenderer.ExceptionMessageValue>("[gold3_1]")
+                    .AddTypeStyle<ExceptionRenderer.ExceptionMessageValue>("[darkorange3]")
                     .AddTypeStyle<ExceptionRenderer.MethodNameValue>("[grey42]")
                     .AddTypeStyle<ExceptionRenderer.ParameterTypeValue>("[grey42]")
                     .AddTypeStyle<ExceptionRenderer.ParameterNameValue>("[slateblue3]")
@@ -113,13 +106,13 @@ namespace Vertical.SpectreLogger.Options
             
             ConfigureProfile(LogLevel.Critical, profile =>
             {
-                profile.OutputTemplate = "[[[red1]{DateTime:T}[/] [white on red1]Crt[/]]] [red3] {Message}{NewLine+}{Exception}[/]";
+                profile.OutputTemplate = "[[[red1]{DateTime:T}[/] [white on red1]Crit[/]]] [red3] {Message}{NewLine+}{Exception}[/]";
                 profile
                     .AddTypeStyle(Types.Numerics, "[magenta3_2]")
                     .AddTypeStyle(Types.Characters, "[gold3_1]")
                     .AddTypeStyle(Types.Temporal, "[steelblue3]")
                     .AddTypeStyle<ExceptionRenderer.ExceptionNameValue>("[grey85]")
-                    .AddTypeStyle<ExceptionRenderer.ExceptionMessageValue>("[gold3_1]")
+                    .AddTypeStyle<ExceptionRenderer.ExceptionMessageValue>("[darkorange3]")
                     .AddTypeStyle<ExceptionRenderer.MethodNameValue>("[grey42]")
                     .AddTypeStyle<ExceptionRenderer.ParameterTypeValue>("[grey42]")
                     .AddTypeStyle<ExceptionRenderer.ParameterNameValue>("[slateblue3]")
@@ -135,7 +128,6 @@ namespace Vertical.SpectreLogger.Options
             ConfigureProfiles(profile =>
             {
                 profile.AddTypeFormatters();
-                profile.ConfigureOptions<DateTimeRenderer.Options>(opt => opt.ValueFactory = () => DateTimeOffset.Now);
             });
         }
     }

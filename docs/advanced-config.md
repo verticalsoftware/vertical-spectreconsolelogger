@@ -1,5 +1,9 @@
 # Advanced Configuration
 
+## Overview
+
+The following sections details some uncommon but useful configuration settings.
+
 ### Controlling the output thread
 
 By default, the logging provider will render marked up content to the `AnsiConsole` on the calling thread. This means the thread will be blocked for the logging event cycle. In most situations this is acceptable. If you need the rendering cycle to not block the calling thread for performance reasons, enact the background thread mode.

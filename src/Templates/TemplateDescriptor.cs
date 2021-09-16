@@ -1,10 +1,8 @@
 using System;
-using System.Reflection;
 using Vertical.SpectreLogger.Core;
 using Vertical.SpectreLogger.Reflection;
-using Vertical.SpectreLogger.Templates;
 
-namespace Vertical.SpectreLogger.Internal
+namespace Vertical.SpectreLogger.Templates
 {
     /// <summary>
     /// Represents the descriptor of a <see cref="ITemplateRenderer"/>

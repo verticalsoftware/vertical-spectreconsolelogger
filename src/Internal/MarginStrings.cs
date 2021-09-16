@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Vertical.SpectreLogger.Internal
 {
+    /// <summary>
+    /// Maintains a cache of strings used for margin padding.
+    /// </summary>
     internal sealed class MarginStrings
     {
         internal static readonly MarginStrings Instance = new MarginStrings();
@@ -11,7 +14,7 @@ namespace Vertical.SpectreLogger.Internal
         {
         }
 
-        private readonly object _theLock = new object();
+        private readonly object _theLock = new();
         private readonly Dictionary<int, string> _cachedStrings = new();
 
         /// <summary>

@@ -34,32 +34,7 @@ This renderer does not output content, but more controls future writes to the co
 You want the logger to behave like Microsoft's console logger. This can be accomplished by customizing the output template and the log level formatting.
 
 ```csharp
-config.ConfigureProfiles(profile =>
-{
-    profile.OutputTemplate = "{LogLevel}: {CategoryName}{Margin=6}{NewLine}{Message}{NewLine+}{Exception}";
-});
-    
-config.ConfigureProfile(LogLevel.Trace, profile => profile
-    .AddTypeFormatter<LogLevel>(((fmt, obj, provider) => "trce"))
-    .AddTypeStyle<LogLevel>("[grey35]"));
-    
-config.ConfigureProfile(LogLevel.Debug, profile => profile
-    .AddTypeFormatter<LogLevel>(((fmt, obj, provider) => "dbug"))
-    .AddTypeStyle<LogLevel>("[grey46]"));
-    
-config.ConfigureProfile(LogLevel.Information, profile => profile
-    .AddTypeFormatter<LogLevel>(((fmt, obj, provider) => "info"))
-    .AddTypeStyle<LogLevel>("[green]"));
-    
-config.ConfigureProfile(LogLevel.Warning, profile => profile
-    .AddTypeFormatter<LogLevel>(((fmt, obj, provider) => "warn"))
-    .AddTypeStyle<LogLevel>("[gold3_1]"));
-    
-config.ConfigureProfile(LogLevel.Error, profile => profile
-    .AddTypeFormatter<LogLevel>(((fmt, obj, provider) => "fail"))
-    .AddTypeStyle<LogLevel>("[red1]"));
-    
-config.ConfigureProfile(LogLevel.Critical, profile => profile
-    .AddTypeFormatter<LogLevel>(((fmt, obj, provider) => "crit"))
-    .AddTypeStyle<LogLevel>("[white on red1]"));
+config.ConfigureProfiles(profile => 
+    profile.OutputTemplate = "{LogLevel}: {CategoryName}{Margin=6}{NewLine}{Message}{NewLine+}{Exception}"
+);
 ```

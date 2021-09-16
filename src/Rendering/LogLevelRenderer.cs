@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using Microsoft.Extensions.Logging;
 using Vertical.SpectreLogger.Core;
-using Vertical.SpectreLogger.Internal;
+using Vertical.SpectreLogger.Formatting;
 using Vertical.SpectreLogger.Output;
 using Vertical.SpectreLogger.Templates;
 
@@ -18,8 +18,28 @@ namespace Vertical.SpectreLogger.Rendering
         public static readonly string Template = TemplatePatternBuilder
             .ForKey("LogLevel")
             .AddAlignmentGroup()
-            .AddFormattingGroup()
             .Build();
+
+        [TypeFormatter(typeof(LogLevel))]
+        public class Formatter : ICustomFormatter
+        {
+            /// <inheritdoc />
+            public string Format(string? format, object? arg, IFormatProvider? formatProvider)
+            {
+                var logLevel = (LogLevel) (arg ?? LogLevel.None);
+
+                return logLevel switch
+                {
+                    LogLevel.Trace => "Trce",
+                    LogLevel.Debug => "Dbug",
+                    LogLevel.Information => "Info",
+                    LogLevel.Warning => "Warn",
+                    LogLevel.Error => "Fail",
+                    LogLevel.Critical => "Crit",
+                    _ => string.Empty
+                };
+            }
+        }
 
         /// <summary>
         /// Creates a new instance.

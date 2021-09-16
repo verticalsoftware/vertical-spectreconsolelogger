@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Vertical.SpectreLogger.Core;
 using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Options;
+using Vertical.SpectreLogger.Scopes;
 
 namespace Vertical.SpectreLogger
 {

@@ -36,3 +36,11 @@ config.ConfigureProfiles(profile =>
         renderer.ValueFactory = () => DateTimeOffset.UtcNow);
 });
 ```
+
+### Value Types
+
+The following type(s) can be formatted & styled:
+
+|Type|Description|
+|---|---|
+|`System.DateTimeOffset`|Represents the category name|
