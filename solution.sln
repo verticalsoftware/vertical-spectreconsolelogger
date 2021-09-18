@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vertical.SpectreLogger", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vertical.SpectreLogger.Tests", "test\Vertical.SpectreLogger.Tests.csproj", "{748C91F2-B6F5-4EED-9A9C-8672A367387D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpectreLoggerExample", "example\SpectreLoggerExample.csproj", "{385A7785-C57C-43A2-9B28-2F6968DBEF05}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,17 +44,5 @@ Global
 		{748C91F2-B6F5-4EED-9A9C-8672A367387D}.Release|x64.Build.0 = Release|Any CPU
 		{748C91F2-B6F5-4EED-9A9C-8672A367387D}.Release|x86.ActiveCfg = Release|Any CPU
 		{748C91F2-B6F5-4EED-9A9C-8672A367387D}.Release|x86.Build.0 = Release|Any CPU
-		{385A7785-C57C-43A2-9B28-2F6968DBEF05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{385A7785-C57C-43A2-9B28-2F6968DBEF05}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{385A7785-C57C-43A2-9B28-2F6968DBEF05}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{385A7785-C57C-43A2-9B28-2F6968DBEF05}.Debug|x64.Build.0 = Debug|Any CPU
-		{385A7785-C57C-43A2-9B28-2F6968DBEF05}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{385A7785-C57C-43A2-9B28-2F6968DBEF05}.Debug|x86.Build.0 = Debug|Any CPU
-		{385A7785-C57C-43A2-9B28-2F6968DBEF05}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{385A7785-C57C-43A2-9B28-2F6968DBEF05}.Release|Any CPU.Build.0 = Release|Any CPU
-		{385A7785-C57C-43A2-9B28-2F6968DBEF05}.Release|x64.ActiveCfg = Release|Any CPU
-		{385A7785-C57C-43A2-9B28-2F6968DBEF05}.Release|x64.Build.0 = Release|Any CPU
-		{385A7785-C57C-43A2-9B28-2F6968DBEF05}.Release|x86.ActiveCfg = Release|Any CPU
-		{385A7785-C57C-43A2-9B28-2F6968DBEF05}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
