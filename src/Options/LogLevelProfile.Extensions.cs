@@ -64,29 +64,6 @@ namespace Vertical.SpectreLogger.Options
             
             return profile;
         }
-        
-        /// <summary>
-        /// Associates an <see cref="ICustomFormatter"/> instance with the given type.
-        /// </summary>
-        /// <param name="profile">Log level profile</param>
-        /// <param name="type">The type to associate the formatter to.</param>
-        /// <param name="formatter">The custom formatter delegate.</param>
-        /// <returns><see cref="LogLevelProfile"/></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="type"/> is null.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="formatter"/> is null.</exception>
-        public static LogLevelProfile AddTypeFormatter(
-            this LogLevelProfile profile,
-            Type type, 
-            ValueFormatter formatter)
-        {
-            var delegateFormatter = new DelegateBackingFormatter(
-                formatter ?? throw new ArgumentNullException(nameof(formatter)));
-            
-            profile.TypeFormatters[type ?? throw new ArgumentNullException(nameof(type))] =
-                 delegateFormatter;
-            
-            return profile;
-        }
 
         /// <summary>
         /// Associates an <see cref="ICustomFormatter"/> instance with the given types.
@@ -122,11 +99,11 @@ namespace Vertical.SpectreLogger.Options
         public static LogLevelProfile AddTypeFormatter(
             this LogLevelProfile profile,
             IEnumerable<Type> types,
-            ValueFormatter formatter)
+            Func<string?, object, IFormatProvider?, string> formatter)
         {
             foreach (var type in types ?? throw new ArgumentNullException(nameof(types)))
             {
-                profile.AddTypeFormatter(type, formatter);
+                profile.AddTypeFormatter(type, new ProviderFormatter<object>(formatter));
             }
 
             return profile;
@@ -153,15 +130,33 @@ namespace Vertical.SpectreLogger.Options
         /// </summary>
         /// <param name="profile">Log level profile</param>
         /// <typeparam name="T">The type to associate the formatter to.</typeparam>
-        /// <param name="formatter">The formatter delegate.</param>
+        /// <param name="formatter">The delegate that accepts the format, value, and format provider and returns
+        /// the formatted string.</param>
         /// <returns><see cref="LogLevelProfile"/></returns>
         /// <exception cref="ArgumentNullException"><paramref name="formatter"/> is null.</exception>
         public static LogLevelProfile AddTypeFormatter<T>(
             this LogLevelProfile profile,
-            ValueFormatter formatter)
+            Func<string?, T, string> formatter)
             where T : notnull
         {
-            return profile.AddTypeFormatter(typeof(T), formatter);
+            return profile.AddTypeFormatter(typeof(T), new ValueFormatter<T>(formatter));
+        }
+        
+        /// <summary>
+        /// Associates an <see cref="ICustomFormatter"/> instance with the given type.
+        /// </summary>
+        /// <param name="profile">Log level profile</param>
+        /// <typeparam name="T">The type to associate the formatter to.</typeparam>
+        /// <param name="formatter">The delegate that accepts the format, value, and format provider and returns
+        /// the formatted string.</param>
+        /// <returns><see cref="LogLevelProfile"/></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="formatter"/> is null.</exception>
+        public static LogLevelProfile AddTypeFormatter<T>(
+            this LogLevelProfile profile,
+            Func<string?, T, IFormatProvider?, string> formatter)
+            where T : notnull
+        {
+            return profile.AddTypeFormatter(typeof(T), new ProviderFormatter<T>(formatter));
         }
 
         /// <summary>

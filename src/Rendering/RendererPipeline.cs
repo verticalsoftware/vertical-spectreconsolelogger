@@ -53,13 +53,6 @@ namespace Vertical.SpectreLogger.Rendering
                 {
                     renderers[c].Render(buffer, logEventContext);
                 }
-
-                buffer.Margin = 0;
-
-                if (buffer.LinePosition != 0)
-                {
-                    buffer.WriteLine();
-                }
             }
             finally
             {

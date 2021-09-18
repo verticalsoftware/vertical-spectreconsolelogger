@@ -23,6 +23,19 @@ namespace Vertical.SpectreLogger.Output
             buffer.Write(Environment.NewLine);                
         }
 
+        /// <summary>
+        /// Writes a newline only if the current line position is past
+        /// the set margin.
+        /// </summary>
+        /// <param name="buffer">Buffer</param>
+        public static void WriteLinePastMargin(this IWriteBuffer buffer)
+        {
+            if (buffer.LinePosition > buffer.Margin)
+            {
+                buffer.WriteLine();
+            }
+        }
+
         public static void EnqueueLine(this IWriteBuffer buffer)
         {
             buffer.Enqueue(Environment.NewLine);

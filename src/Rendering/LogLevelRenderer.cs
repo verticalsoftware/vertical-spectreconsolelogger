@@ -17,7 +17,7 @@ namespace Vertical.SpectreLogger.Rendering
         [Template] 
         public static readonly string Template = TemplatePatternBuilder
             .ForKey("LogLevel")
-            .AddAlignmentGroup()
+            .AddAlignment()
             .Build();
 
         [TypeFormatter(typeof(LogLevel))]

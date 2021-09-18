@@ -44,7 +44,7 @@ namespace SpectreLoggerExample
                 builder
                     //.AddSerilog(new LoggerConfiguration().MinimumLevel.Verbose().WriteTo.Console().CreateLogger())
                     //.AddConsole()
-                    .AddSpectreConsole(config => config.UseSerilogConsoleStyle())
+                    .AddSpectreConsole()
                     .SetMinimumLevel(LogLevel.Trace);
             }).CreateLogger<Profile>();
             

@@ -49,7 +49,8 @@ namespace Vertical.SpectreLogger.Output
                 return;
             
             _buffer.Append(' ', Margin);
-            LinePosition = 0;
+            
+            LinePosition = Margin;
         }
 
 

@@ -24,8 +24,8 @@ namespace Vertical.SpectreLogger.Rendering
         [Template()]
         public static readonly string Template = TemplatePatternBuilder
             .ForKey("Date[Tt]ime")
-            .AddAlignmentGroup()
-            .AddFormattingGroup()
+            .AddAlignment()
+            .AddFormatting()
             .Build();
             
         /// <summary>

@@ -12,8 +12,8 @@ namespace Vertical.SpectreLogger.Rendering
         [Template]
         public static readonly string Template = TemplatePatternBuilder
             .ForKey("CategoryName")
-            .AddAlignmentGroup()
-            .AddFormattingGroup()
+            .AddAlignment()
+            .AddFormatting()
             .Build();
 
         /// <summary>

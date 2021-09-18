@@ -21,8 +21,8 @@ namespace Vertical.SpectreLogger.Rendering
         [Template] 
         public static readonly string Template = TemplatePatternBuilder
             .ForKey(@"Scope=(?<_scope>[\d\w_]+)")
-            .AddFormattingGroup()
-            .AddAlignmentGroup()
+            .AddFormatting()
+            .AddAlignment()
             .Build();
 
         /// <summary>

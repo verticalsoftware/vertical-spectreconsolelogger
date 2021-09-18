@@ -2,12 +2,11 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Options;
 using Vertical.SpectreLogger.Core;
-using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Reflection;
-using Vertical.SpectreLogger.Templates;
+using Vertical.SpectreLogger.Rendering;
 
-namespace Vertical.SpectreLogger.Rendering
+namespace Vertical.SpectreLogger.Templates
 {
     internal class TemplateRendererBuilder : ITemplateRendererBuilder
     {

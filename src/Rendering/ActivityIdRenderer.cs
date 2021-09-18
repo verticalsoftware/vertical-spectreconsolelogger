@@ -13,7 +13,7 @@ namespace Vertical.SpectreLogger.Rendering
         [Template]
         public static readonly string Template = TemplatePatternBuilder
             .ForKey("ActivityId")
-            .AddAlignmentGroup()
+            .AddAlignment()
             .Build();
         
         /// <inheritdoc />

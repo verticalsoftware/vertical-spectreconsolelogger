@@ -10,6 +10,7 @@ namespace Vertical.SpectreLogger.Templates
     {
         private readonly string _keyPattern;
         private string? _controlPattern;
+        private bool _controlPatternOptional;
         private bool _widthFormatting;
         private bool _valueFormatting;
         private bool _destructuring;
@@ -52,11 +53,13 @@ namespace Vertical.SpectreLogger.Templates
         /// Adds a pattern for a control group.
         /// </summary>
         /// <param name="controlPattern">Pattern to allow in the control group.</param>
+        /// <param name="isOptional">Whether the control pattern must be matched.</param>
         /// <returns>A reference to this instance.</returns>
         /// <exception cref="ArgumentException"><paramref name="controlPattern"/> contains an invalid character.</exception>
-        public TemplatePatternBuilder AddControlGroup(string controlPattern)
+        public TemplatePatternBuilder AddControlPattern(string controlPattern, bool isOptional = true)
         {
             _controlPattern = controlPattern ?? throw new ArgumentNullException(nameof(controlPattern));
+            _controlPatternOptional = isOptional;
             
             if (controlPattern.IndexOfAny(new[] {',', ':', '{', '}', '>'}) != -1)
             {
@@ -72,7 +75,7 @@ namespace Vertical.SpectreLogger.Templates
         /// Adds a pattern for width formatting.
         /// </summary>
         /// <returns>A reference to this instance.</returns>
-        public TemplatePatternBuilder AddAlignmentGroup()
+        public TemplatePatternBuilder AddAlignment()
         {
             _widthFormatting = true;
             return this;
@@ -82,7 +85,7 @@ namespace Vertical.SpectreLogger.Templates
         /// Adds a pattern for value formatting.
         /// </summary>
         /// <returns>A reference to this instance.</returns>
-        public TemplatePatternBuilder AddFormattingGroup()
+        public TemplatePatternBuilder AddFormatting()
         {
             _valueFormatting = true;
             return this;
@@ -116,11 +119,16 @@ namespace Vertical.SpectreLogger.Templates
 
             if (_controlPattern != null)
             {
-                builder.Append("(?:>(?<");
+                builder.Append("(?:(?<");
                 builder.Append(TemplateSegment.ControlGroup);
                 builder.Append(">");
                 builder.Append(_controlPattern);
-                builder.Append("))?");
+                builder.Append("))");
+
+                if (_controlPatternOptional)
+                {
+                    builder.Append("?");
+                }
             }
 
             if (_widthFormatting || _valueFormatting)

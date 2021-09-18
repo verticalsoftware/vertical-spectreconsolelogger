@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Vertical.SpectreLogger.Core;
 using Vertical.SpectreLogger.Formatting;
 using Vertical.SpectreLogger.Output;
@@ -14,20 +15,28 @@ namespace Vertical.SpectreLogger.Rendering
         [Template]
         public static readonly string Template = TemplatePatternBuilder
             .ForKey("ThreadId")
-            .AddAlignmentGroup()
+            .AddAlignment()
             .Build();
         
         /// <summary>
         /// Wraps the thread value.
         /// </summary>
-        public class Value : ValueWrapper<int>
+        public class Value : ValueWrapper<Thread>
         {
             /// <summary>
             /// Creates a new instance of this type. The thread id is automatically assigned.
             /// </summary>
-            public Value() : base(Thread.CurrentThread.ManagedThreadId)
+            public Value() : base(Thread.CurrentThread)
             {
             }
+        }
+
+        [TypeFormatter(typeof(Thread))]
+        public class DefaultFormatter : ICustomFormatter
+        {
+            /// <inheritdoc />
+            public string Format(string? format, object? arg, IFormatProvider? formatProvider) =>
+                ((Thread) arg!).ManagedThreadId.ToString();
         }
 
         /// <inheritdoc />
