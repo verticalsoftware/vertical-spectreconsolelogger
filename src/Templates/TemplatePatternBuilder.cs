@@ -19,6 +19,7 @@ namespace Vertical.SpectreLogger.Templates
             {
                 _destructuring = true,
                 _controlPattern = "[^,:{}]+",
+                _controlPatternOptional = true,
                 _widthFormatting = true,
                 _valueFormatting = true
             }

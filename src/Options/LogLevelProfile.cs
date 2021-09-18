@@ -12,6 +12,7 @@ namespace Vertical.SpectreLogger.Options
     /// </summary>
     public class LogLevelProfile
     {
+        private readonly string _internalId = Guid.NewGuid().ToString("N");
         private ICustomFormatter? _formatter;
         private IFormatProvider? _formatProvider;
 
@@ -70,5 +71,8 @@ namespace Vertical.SpectreLogger.Options
         /// Gets a cache of objects available internally.
         /// </summary>
         internal RuntimeCacheCollection RuntimeCache { get; } = new();
+
+        /// <inheritdoc />
+        public override string ToString() => LogLevel.ToString();
     }
 }

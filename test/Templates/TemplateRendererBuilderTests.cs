@@ -59,7 +59,6 @@ namespace Vertical.SpectreLogger.Tests.Templates
         {
             var pipeline = _testInstance.GetRenderers("{name}{address}");
 
-            pipeline.Count.ShouldBe(2);
             pipeline[0].ShouldBeOfType<NameRenderer>();
             pipeline[1].ShouldBeOfType<AddressRenderer>();
         }
@@ -69,7 +68,6 @@ namespace Vertical.SpectreLogger.Tests.Templates
         {
             var pipeline = _testInstance.GetRenderers("my name is {name}!");
 
-            pipeline.Count.ShouldBe(3);
             pipeline[0].ShouldBeOfType<StaticSpanRenderer>();
             pipeline[1].ShouldBeOfType<NameRenderer>();
             pipeline[2].ShouldBeOfType<StaticSpanRenderer>();
@@ -80,7 +78,7 @@ namespace Vertical.SpectreLogger.Tests.Templates
         {
             var pipeline = _testInstance.GetRenderers("{id}");
 
-            pipeline.Single().ShouldBeOfType<IdRenderer>();
+            pipeline.First().ShouldBeOfType<IdRenderer>();
         }
 
         [Fact]
@@ -88,10 +86,16 @@ namespace Vertical.SpectreLogger.Tests.Templates
         {
             var pipeline = _testInstance.GetRenderers("{unknown}");
 
-            var renderer = pipeline.Single();
+            var renderer = pipeline.First();
             
             renderer.ShouldBeOfType<StaticSpanRenderer>();
             renderer.VerifyOutput(default, "{unknown}");
+        }
+
+        [Fact]
+        public void GetRenderersShouldReturnEndEvent()
+        {
+            _testInstance.GetRenderers(string.Empty).Single().ShouldBeOfType<EndEventRenderer>();
         }
     }
 }

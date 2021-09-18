@@ -16,4 +16,4 @@ The following type can be formatted & styled (the default formatter prints the `
 
 | Type                      | Description                     |
 | ------------------------- | ------------------------------- |
-| `System.Threading.Thread` | Represents the captured thread. |
+| `ThreadIdRenderer.Value` | Represents the captured thread. |

@@ -18,8 +18,8 @@ namespace SpectreLoggerExample
         /// </summary>
         [Template] public static readonly string Template = TemplatePatternBuilder
             .ForKey("MemoryUsage")
-            .AddAlignmentGroup()
-            .AddFormattingGroup()
+            .AddAlignment()
+            .AddFormatting()
             .Build();
 
         /// <summary>

@@ -17,7 +17,7 @@ namespace Exceptions
             var logger = LoggerFactory
                 .Create(logging => logging.AddSpectreConsole(specLogger =>
                 {
-                    specLogger.ConfigureProfiles(profile =>
+                    specLogger.ConfigureProfile(LogLevel.Error, profile =>
                     {
                         profile.ConfigureOptions<ExceptionRenderer.Options>(opt =>
                         {

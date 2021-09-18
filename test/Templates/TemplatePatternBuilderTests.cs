@@ -16,7 +16,7 @@ namespace Vertical.SpectreLogger.Tests.Templates
 
             Should.NotThrow(() => new Regex(pattern));
             
-            pattern.ShouldBe(@"(?<!{){(?<_tmpl>(?<_key>(?<_ds>@)?[^,:{}>]+)(?:>(?<_ctl>[^,:{}]+))?(?<_cfmt>(?<_wdspan>,(?<_wd>-?\d+))?(?<_fmspan>:(?<_fm>[^}]+))?))}");
+            pattern.ShouldBe(@"(?<!{){(?<_tmpl>(?<_key>(?<_ds>@)?[^,:{}>]+)(?:(?<_ctl>[^,:{}]+))?(?<_cfmt>(?<_wdspan>,(?<_wd>-?\d+))?(?<_fmspan>:(?<_fm>[^}]+))?))}");
         }
 
         [Theory, MemberData(nameof(Theories))]
@@ -39,23 +39,23 @@ namespace Vertical.SpectreLogger.Tests.Templates
             new object[]
             {
                 TemplatePatternBuilder.ForKey("Template")
-                    .AddControlGroup(@"\d+"),
-                @"(?<!{){(?<_tmpl>(?<_key>Template)(?:>(?<_ctl>\d+))?)}"
+                    .AddControlPattern(@"\d+"),
+                @"(?<!{){(?<_tmpl>(?<_key>Template)(?:(?<_ctl>\d+))?)}"
             },
             new object[]
             {
                 TemplatePatternBuilder.ForKey("Template")
-                    .AddControlGroup(@"\d+")
-                    .AddAlignmentGroup(),
-                @"(?<!{){(?<_tmpl>(?<_key>Template)(?:>(?<_ctl>\d+))?(?<_cfmt>(?<_wdspan>,(?<_wd>-?\d+))?))}"
+                    .AddControlPattern(@"\d+")
+                    .AddAlignment(),
+                @"(?<!{){(?<_tmpl>(?<_key>Template)(?:(?<_ctl>\d+))?(?<_cfmt>(?<_wdspan>,(?<_wd>-?\d+))?))}"
             },
             new object[]
             {
                 TemplatePatternBuilder.ForKey("Template")
-                    .AddControlGroup(@"\d+")
-                    .AddAlignmentGroup()
-                    .AddFormattingGroup(),
-                @"(?<!{){(?<_tmpl>(?<_key>Template)(?:>(?<_ctl>\d+))?(?<_cfmt>(?<_wdspan>,(?<_wd>-?\d+))?(?<_fmspan>:(?<_fm>[^}]+))?))}"
+                    .AddControlPattern(@"\d+")
+                    .AddAlignment()
+                    .AddFormatting(),
+                @"(?<!{){(?<_tmpl>(?<_key>Template)(?:(?<_ctl>\d+))?(?<_cfmt>(?<_wdspan>,(?<_wd>-?\d+))?(?<_fmspan>:(?<_fm>[^}]+))?))}"
             }
         };
     }

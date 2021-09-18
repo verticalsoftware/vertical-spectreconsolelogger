@@ -8,7 +8,7 @@ In the following example we'll be building a renderer that generates an incremen
 
 ## Basic Implementation
 
-There are only two requirements for a basic implementation. We need to create a class that implements `ITemplateRenderer`, and we need that class to expose the placeholder so it can be matched in the output template.
+There are only two requirements for a basic implementation. We need to create a class that implements `ITemplateRenderer`, and we need that class to define the placeholder so it can be matched in the output template.
 
 For this example, let's assume there is a type called `IncrementingId`. It simply encapsulates a 128-bit identitifer that increments for every new value that is instantiated. The snippet below creates a renderer for this type.
 
@@ -42,9 +42,9 @@ With no other modifications, each log event will now generate and render the val
 
 ### Supporting Alignment
 
-If you determine that the value printed by the it is suitable for output alignment (consumer can specify alignment in the output template, e.g. `{IncrementingId,-24}`), the matching template defined by the renderer must be modified.
+If you determine that the value printed by the renderer is suitable for output alignment (consumer can specify alignment in the output template, e.g. `{IncrementingId,-24}`), the matching template defined by the renderer must be modified.
 
-Under the hood, the provider builds the rendering pipeline by using regular expressions to match the different segments of the output template. The framework will pattern match the renderer template with the output template. Therefore, what's defined in the template is a regular expression pattern. The logging provider unwinds the matches into the `TemplateSegment` type. The reason for this is to provide consistency in naming capture groups and more importantly, rendering values with alignment and formatting consistently.
+Under the hood, the provider builds the rendering pipeline by using regular expressions to match the different segments of the output template. The framework will pattern match the renderer template with the output template. Therefore, what's defined in the template is a regular expression pattern. The logging provider wraps the matches into the `TemplateSegment` type. The reason for this is to provide consistency in naming capture groups and more importantly, rendering values with alignment and formatting consistently.
 
 Let's change how the template is presented by the renderer. Also, we'll ask for the `TemplateSegment` to be injected to our renderer.
 
@@ -112,7 +112,7 @@ With this change in place, we can now specific formatting in an output template:
 
 ### Adding a custom control pattern
 
-You can add an pattern that will be placed right after your template key that can either be optional or not and will be captured independently from the key.
+You can add a pattern that will be placed right after your template key that can either be optional or not and will be captured independently from the key.
 
 ```csharp
 public class IncrementingIdRenderer : ITemplateRenderer
@@ -137,4 +137,10 @@ public class IncrementingIdRenderer : ITemplateRenderer
         // Render differently based on splatSpecified
     }
 }
+
 ```
+
+### Further reading
+
+The best way to learn the full features with examples of `ITemplateRenderer` are to dig into the logging provider source code. The out-of-box renderers can be found in the the `/Rendering` subfolder.
+

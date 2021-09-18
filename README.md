@@ -38,7 +38,7 @@ logger.LogInformation("Hello world!");
   - [Formatting Log Values](docs/formatting.md)
   - [Styling Log Values](docs/styling.md)
   - [Destructured Output](docs/destructuring.md)
-- Output Template Renderers
+- Output Renderers
   - [Renderers Overview](docs/renderer-overview.md)
   - [ActivityId](docs/activity-id.md)    
   - [CategoryName](docs/category-name.md)
@@ -51,4 +51,5 @@ logger.LogInformation("Hello world!");
   - [ThreadId](docs/thread-id.md)
 - Advanced Topics
   - [Advanced Configuration](docs/advanced-config.md)
+  
   

@@ -261,11 +261,6 @@ namespace Vertical.SpectreLogger.Options
             Action<TOptions> configureOptions)
             where TOptions : new()
         {
-            if (configureOptions == null)
-            {
-                throw new ArgumentNullException(nameof(configureOptions));
-            }
-            
             profile.ConfiguredOptions.Configure(configureOptions);
             return profile;
         }
