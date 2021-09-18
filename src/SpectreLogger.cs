@@ -1,69 +1,75 @@
 using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
 using Microsoft.Extensions.Logging;
+using Vertical.SpectreLogger.Core;
 using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Options;
-using Vertical.SpectreLogger.Output;
-using Vertical.SpectreLogger.Rendering;
+using Vertical.SpectreLogger.Scopes;
 
 namespace Vertical.SpectreLogger
 {
     public class SpectreLogger : ILogger
     {
-        private readonly SpectreLoggerProvider _provider;
-        private readonly SpectreLoggerOptions _options;
-        private readonly IWriteBufferFactory _writeBufferFactory;
+        private readonly ILogEventFilter? _logEventFilter;
+        private readonly IRendererPipeline _rendererPipeline;
+        private readonly ScopeManager _scopeManager;
         private readonly string _categoryName;
-        private readonly ITemplateRendererBuilder _rendererBuilder;
+        private readonly SpectreLoggerOptions _options;
 
-        public SpectreLogger(SpectreLoggerProvider provider,
-            SpectreLoggerOptions options, 
-            IWriteBufferFactory writeBufferFactory,
-            ITemplateRendererBuilder rendererBuilder,
+        internal SpectreLogger(
+            IRendererPipeline rendererPipeline,
+            SpectreLoggerOptions options,
+            ScopeManager scopeManager,
             string categoryName)
         {
-            _provider = provider;
-            _options = options;
-            _writeBufferFactory = writeBufferFactory;
+            _rendererPipeline = rendererPipeline;
+            _scopeManager = scopeManager;
             _categoryName = categoryName;
-            _rendererBuilder = rendererBuilder;
+            _options = options;
+            _logEventFilter = _options.LogEventFilter;
         }
         
         /// <inheritdoc />
-        public void Log<TState>(LogLevel logLevel, 
+        public void Log<TState>(
+            LogLevel logLevel, 
             EventId eventId, 
             TState state, 
             Exception exception, 
             Func<TState, Exception, string> formatter)
         {
-            if (!IsEnabled(logLevel))
-                return;
-
-            var buffer = _writeBufferFactory.GetInstance();
-
-            var eventInfo = new LogEventInfo(_categoryName, 
-                logLevel, 
-                eventId, 
-                state, 
-                exception,
-                state.AsFormattedLogValues(),
-                _provider.Scopes,
-                _options.FormattingProfiles[logLevel]);
-            
-            foreach (var templateFormatter in _rendererBuilder.GetRenderers(logLevel))
+            if (ReferenceEquals(null, state))
             {
-                templateFormatter.Render(buffer, ref eventInfo);
+                // Nothing to render?
+                return;
             }
+
+            var profile = _options.LogLevelProfiles[logLevel];
+            var scopeValues = _scopeManager.GetValues();
             
-            buffer.Flush();
+            var eventInfo = new LogEventContext(
+                _categoryName,
+                logLevel,
+                eventId,
+                state,
+                exception,
+                scopeValues,
+                profile);
+
+            if (!(_logEventFilter?.Filter(eventInfo)).GetValueOrDefault(true))
+                return;
+            
+            _rendererPipeline.Render(eventInfo);
         }
-        
-        /// <inheritdoc />
-        public bool IsEnabled(LogLevel logLevel) => logLevel != LogLevel.None && logLevel >= _options.MinimumLevel;
 
         /// <inheritdoc />
-        public IDisposable BeginScope<TState>(TState state) => _provider.BeginLoggerScope(state);
+        public bool IsEnabled(LogLevel logLevel)
+        {
+            return logLevel > LogLevel.None && logLevel >= _options.MinimumLogLevel;
+        }
+
+        /// <inheritdoc />
+        public IDisposable BeginScope<TState>(TState state)
+        {
+            return _scopeManager.BeginScope(state);
+        }
     }
 }

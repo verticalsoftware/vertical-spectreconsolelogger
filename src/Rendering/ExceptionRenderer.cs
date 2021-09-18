@@ -1,180 +1,254 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text.RegularExpressions;
-using Spectre.Console;
-using Vertical.SpectreLogger.Internal;
+using Vertical.SpectreLogger.Core;
 using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Output;
+using Vertical.SpectreLogger.Templates;
 
 namespace Vertical.SpectreLogger.Rendering
 {
-    /// <summary>
-    /// Renders exceptions.
-    /// </summary>
-    [Template(MyTemplate)]
-    public class ExceptionRenderer : ITemplateRenderer
+    public partial class ExceptionRenderer : ITemplateRenderer
     {
-        private static readonly string[] StackFrameSplitValues = {Environment.NewLine};
+        private static readonly char[] SignatureSplitChars = {' ', ','};
+        private static readonly string[] StackFrameSplitStrings = {Environment.NewLine};
 
-        private const string MyTemplate = "{Exception(:(?<options>[^}]+))?}";
+        [Template]
+        public static readonly string Template = TemplatePatternBuilder
+            .ForKey("Exception")
+            .AddControlPattern("\\+")
+            .Build();
 
-        private readonly string _templateContext;
+        private readonly bool _newLine;
 
-        public ExceptionRenderer(string templateContext)
-        {
-            _templateContext = templateContext;
-        }
-
+        public ExceptionRenderer(TemplateSegment template) => _newLine = "+" == template.ControlCode;
+            
         /// <inheritdoc />
-        public void Render(IWriteBuffer buffer, ref LogEventInfo eventInfo)
+        public void Render(IWriteBuffer buffer, in LogEventContext context)
         {
-            var exception = eventInfo.Exception;
-
-            if (exception == null)
+            var rootException = context.Exception;
+            
+            if (rootException == null)
                 return;
-            
-            var profile = eventInfo.FormattingProfile;
-            var options = profile.GetRenderingOptions<ExceptionRenderingOptions>()
-                          ?? SpectreLoggerOptions
-                              .Default
-                              .FormattingProfiles[profile.LogLevel]
-                              .GetRenderingOptions<ExceptionRenderingOptions>()!;
-            var format = Regex
-                .Match(_templateContext, MyTemplate)
-                .Groups["options"]
-                .Value;
 
-            if (format.Contains("NewLine"))
+            if (_newLine)
             {
-                buffer.WriteLine();
-            }
-
-            if (options.StackFrameMarkup != null)
-            {
-                buffer.WriteMarkup(options.StackFrameMarkup);
+                buffer.WriteLinePastMargin();
             }
             
-            RenderInternal(buffer, profile, options, 1, new[]{exception});
+            var profile = context.Profile;
+            var options = profile.ConfiguredOptions.GetOptions<Options>();
+            var stack = new Stack<(Exception exception, int level, int aggregateChildId)>();
+            var count = 0;
+            
+            stack.Push((rootException, 0, 0));
 
-            if (options.StackFrameMarkup != null)
+            while (stack.Count > 0)
             {
-                buffer.WriteMarkupClose();
-            }
-        }
+                var current = stack.Pop();
 
-        private void RenderInternal(IWriteBuffer buffer,
-            FormattingProfile profile,
-            ExceptionRenderingOptions options,
-            int indent,
-            IEnumerable<Exception> exceptions)
-        {
-            foreach (var exception in exceptions)
-            {
-                RenderInternal(buffer, options, indent, exception);
-
-                if (options.UnwindAggregateExceptions && exception is AggregateException aggregateException)
+                switch (current)
                 {
-                    RenderInternal(buffer, 
-                        profile, 
-                        options, 
-                        indent + 1, 
-                        aggregateException.InnerExceptions);
-                }
-            }
-        }
+                    case { exception: AggregateException ae } when options.UnwindAggregateExceptions:
+                        var childId = 0;
+                        foreach (var item in ae.InnerExceptions)
+                        {
+                            stack.Push((item, current.level + 1, ++childId));
+                        }
 
-        private void RenderInternal(IWriteBuffer buffer, 
-            ExceptionRenderingOptions options,
-            int indent,
-            Exception exception)
-        {
-            var type = exception.GetType();
-            var exceptionName = options.ExceptionNameFormatter?.Invoke(type) ?? type.FullName!;
-            
-            // Render the exception name
-            buffer.Write(exceptionName.EscapeMarkup(), options.ExceptionNameMarkup);
-            
-            buffer.Write(": ");
-            
-            // Render the message
-            buffer.Write(exception.Message.EscapeMarkup(), options.ExceptionMessageMarkup);
-
-            var stackFrames = exception
-                .StackTrace?
-                .Split(StackFrameSplitValues, StringSplitOptions.None);
-
-            if (stackFrames == null)
-                return;
-
-            foreach (var stackFrame in stackFrames.Take(options.MaxStackFrames))
-            {
-                buffer.WriteLine();
-                buffer.WriteWhitespace(options.StackFrameIndentChars * indent);
-                RenderStackFrame(buffer, options, stackFrame);
-            }
-        }
-
-        private void RenderStackFrame(IWriteBuffer buffer, 
-            ExceptionRenderingOptions options,
-            string stackFrame)
-        {
-            var stackFrameInfo = StackFrameParser.Parse(stackFrame);
-            var methodName = stackFrameInfo.MethodName.Replace('[', '<').Replace(']', '>');
-            var formattedMethodName = options.MethodNameFormatter?.Invoke(methodName) ?? methodName;
-
-            buffer.Write("  at ");
-            buffer.Write(formattedMethodName.EscapeMarkup(), options.MethodNameMarkup);
-
-            RenderParameters(buffer, options, stackFrameInfo);
-
-            if (!options.RenderSourcePaths)
-                return;
-            
-            buffer.Write(" in ");
-
-            var path = options.SourcePathFormatter?.Invoke(stackFrameInfo.SourcePath) ?? stackFrameInfo.SourcePath;
-
-            buffer.Write(path.EscapeMarkup(), options.SourcePathMarkup);
-            
-            buffer.Write(":line ");
-            buffer.Write(stackFrameInfo.SourceLineNumber.ToString(), options.SourceLineNumberMarkup);
-        }
-
-        private static void RenderParameters(IWriteBuffer buffer, 
-            ExceptionRenderingOptions options,
-            StackFrameInfo stackFrameInfo)
-        {
-            if (!options.RenderParameterNames && !options.RenderParameterTypes)
-                return;
-            
-            buffer.Write('(');
-
-            var separator = string.Empty;
-
-            foreach (var (type, name) in stackFrameInfo.Parameters)
-            {
-                buffer.Write(separator);
-                
-                if (options.RenderParameterTypes)
-                {
-                    buffer.Write(type.EscapeMarkup(), options.ParameterTypeMarkup);
+                        break;
+                    
+                    case { exception: { InnerException: { } }} when options.UnwindInnerExceptions:
+                        stack.Push((current.exception.InnerException, current.level, 0));
+                        break;
                 }
 
-                if (options.RenderParameterNames)
+                var exception = current.exception;
+                var level = current.level;
+
+                buffer.Margin += options.StackFrameIndent * level;
+
+                try
                 {
-                    if (options.RenderParameterTypes)
+                    if (count > 0)
                     {
-                        buffer.WriteWhitespace();    
+                        buffer.WriteLine();
                     }
                     
-                    buffer.Write(name.EscapeMarkup(), options.ParameterNameMarkup);
+                    PrintNameAndMessage(buffer, profile, exception, current.aggregateChildId);
+
+                    if (options.MaxStackFrames <= 0)
+                        continue;
+
+                    PrintStackTrace(buffer, profile, exception, options);
+                }
+                finally
+                {
+                    buffer.Margin -= options.StackFrameIndent * level;
                 }
 
-                separator = ", ";
+                count++;
             }
+        }
+
+        private static void PrintNameAndMessage(
+            IWriteBuffer buffer, 
+            LogLevelProfile profile, 
+            Exception exception,
+            int aggregateChildId)
+        {
+            buffer.WriteLogValue(profile, null, new ExceptionNameValue(exception.GetType()), value =>
+            {
+                if (aggregateChildId > 0)
+                {
+                    buffer.Write("-> ");    
+                }
+                
+                buffer.Write(value);
+                buffer.Write(": ");
+            });
             
-            buffer.Write(')');
+            buffer.WriteLogValue(profile, null, new ExceptionMessageValue(exception.Message));
+        }
+
+        private static void PrintStackTrace(
+            IWriteBuffer buffer, 
+            LogLevelProfile profile, 
+            Exception exception, 
+            Options options)
+        {
+            if (string.IsNullOrWhiteSpace(exception.StackTrace))
+                return;
+            
+            try
+            {
+                buffer.Margin += options.StackFrameIndent;
+
+                var frames = exception.StackTrace.Split(StackFrameSplitStrings, StringSplitOptions.None);
+                var length = Math.Min(frames.Length, options.MaxStackFrames);
+                var hiddenCount = frames.Length - options.MaxStackFrames;
+
+                for (var c = 0; c < length; c++)
+                {
+                    PrintStackFrame(buffer, profile, frames[c], options);
+                }
+
+                if (hiddenCount > 0)
+                {
+                    buffer.WriteLine();
+                    buffer.WriteStyledValue(profile, new MethodNameValue($"+{hiddenCount} more..."));
+                }
+            }
+            finally
+            {
+                buffer.Margin -= options.StackFrameIndent;
+            }
+        }
+
+        private static void PrintStackFrame(
+            IWriteBuffer buffer, 
+            LogLevelProfile profile, 
+            string frame, 
+            Options options)
+        {
+            var frameMatch = Regex.Match(
+                frame, 
+                @"at (?<_method>[^(]+)\((?<_sig>.+)?\)(?<_src> in (?<_file>.+)(?::line (?<_line>\d+)))?");
+
+            buffer.WriteLine();
+            buffer.WriteLogValue(profile, null, new MethodNameValue(frameMatch.Groups["_method"].Value), method =>
+            {
+                buffer.Write("at ");
+                buffer.Write(method);
+                buffer.Write("(");
+
+                var signature = frameMatch.Groups["_sig"];
+                if (signature.Success)
+                {
+                    PrintParameters(buffer, profile, signature, options);
+                }
+
+                buffer.Write(")");
+            });
+
+            var source = frameMatch.Groups["_src"];
+            
+            if (!(source.Success && options.ShowSourcePaths))
+                return;
+
+            PrintSourcePath(buffer, profile, frameMatch, options);
+        }
+
+
+        private static void PrintParameters(
+            IWriteBuffer buffer, 
+            LogLevelProfile profile, 
+            Group signatureGroup, 
+            Options options)
+        {
+            var signatureWords = signatureGroup.Value.Split(SignatureSplitChars, StringSplitOptions.RemoveEmptyEntries);
+            var length = signatureWords.Length;
+
+            for (var c = 0; c < length; c += 2)
+            {
+                if (c != 0)
+                {
+                    buffer.Write(", ");    
+                }
+                
+                var spaceChar = false;
+
+                if (options.ShowParameterTypes)
+                {
+                    buffer.WriteLogValue(profile, null, new ParameterTypeValue(signatureWords[c]));
+                    spaceChar = true;
+                }
+
+                if (options.ShowParameterNames)
+                {
+                    if (spaceChar)
+                    {
+                        buffer.Write(' ');
+                    }
+                    buffer.WriteLogValue(profile, null, new ParameterNameValue(signatureWords[c+1]));
+                }
+            }
+        }
+        
+        private static void PrintSourcePath(
+            IWriteBuffer buffer, 
+            LogLevelProfile profile, 
+            Match frameMatch, 
+            Options options)
+        {
+            var path = frameMatch.Groups["_file"].Value;
+            var directory = Path.GetDirectoryName(path) ?? string.Empty;
+            var file = Path.GetFileName(path);
+            var hasLineNumber = int.TryParse(frameMatch.Groups["_line"].Value, out var line);
+
+            buffer.WriteLogValue(profile, null, new SourceDirectoryValue(directory), value =>
+            {
+                buffer.Write(" in ");
+                
+                if (value.Length > 0)
+                {
+                    buffer.Write(value);
+                    buffer.Write(Path.DirectorySeparatorChar);
+                }
+                
+                buffer.WriteLogValue(profile, null, new SourceFileValue(file));
+
+                if (hasLineNumber)
+                {
+                    buffer.Write(":line ");
+                }
+            });
+
+            if (!(hasLineNumber && options.ShowSourceLocations))
+                return;
+
+            buffer.WriteLogValue(profile, null, new SourceLocationValue(line));
         }
     }
 }

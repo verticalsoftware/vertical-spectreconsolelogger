@@ -1,39 +1,33 @@
-using System;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
+using Vertical.SpectreLogger.Core;
 using Vertical.SpectreLogger.Output;
+using Vertical.SpectreLogger.Templates;
 
 namespace Vertical.SpectreLogger.Rendering
 {
-    /// <summary>
-    /// Renderer that writes newlines to the buffer.
-    /// </summary>
-    [Template(MyTemplate)]
+    [Template(@"{New[Ll]ine(?<_q>\+)?}")]
     public class NewLineRenderer : ITemplateRenderer
     {
-        private const string MyTemplate = @"{NewLine(:(\d+))?}";
-        private readonly int _indent;
+        private readonly bool _queueNewLine; 
 
-        public NewLineRenderer(string? templateContext = null)
+        /// <summary>
+        /// Creates a new instance of this type.
+        /// </summary>
+        public NewLineRenderer(Match match)
         {
-            if (templateContext == null)
-                return;
-            
-            var match = Regex.Match(templateContext, MyTemplate);
-
-            if (int.TryParse(match.Groups[2].Value, out var i))
-            {
-                _indent = i;
-            }
+            _queueNewLine = match.Groups["_q"].Success;
         }
-
+        
         /// <inheritdoc />
-        public void Render(IWriteBuffer buffer, ref LogEventInfo eventInfo)
+        public void Render(IWriteBuffer buffer, in LogEventContext context)
         {
-            buffer.WriteLine();
-
-            if (_indent > 0)
+            if (_queueNewLine)
             {
-                buffer.WriteWhitespace(_indent);
+                buffer.EnqueueLine();
+            }
+            else
+            {
+                buffer.WriteLine();
             }
         }
     }

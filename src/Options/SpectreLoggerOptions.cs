@@ -1,31 +1,46 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
+using Vertical.SpectreLogger.Core;
+using Vertical.SpectreLogger.Internal;
 
 namespace Vertical.SpectreLogger.Options
 {
-    /// <summary>
-    /// Defines options for the logger.
-    /// </summary>
     public class SpectreLoggerOptions
     {
-        internal static readonly SpectreLoggerOptions Default = new();
+        private int _maxPooledBuffers = 5;
         
         /// <summary>
-        /// Creates a new instance of this type.
+        /// Gets or sets the minimum log level.
         /// </summary>
-        public SpectreLoggerOptions()
-        {
-            SpectreLoggerDefaults.ConfigureDefaults(this);    
-        }
+        public LogLevel MinimumLogLevel { get; set; } = LogLevel.Information;
         
         /// <summary>
-        /// Gets or sets the minimum log level for events to be output to the console.
+        /// Gets or sets an object that controls log event filtering.
         /// </summary>
-        public LogLevel MinimumLevel { get; set; } = LogLevel.Information;
+        public ILogEventFilter? LogEventFilter { get; set; }
+        
+        /// <summary>
+        /// Gets the log level profiles.
+        /// </summary>
+        public IReadOnlyDictionary<LogLevel, LogLevelProfile> LogLevelProfiles { get; } =
+            new Dictionary<LogLevel, LogLevelProfile>
+            {
+                [LogLevel.Trace] = new(LogLevel.Trace),
+                [LogLevel.Debug] = new(LogLevel.Debug),
+                [LogLevel.Information] = new(LogLevel.Information),
+                [LogLevel.Warning] = new(LogLevel.Warning),
+                [LogLevel.Error] = new(LogLevel.Error),
+                [LogLevel.Critical] = new(LogLevel.Critical)
+            };
 
         /// <summary>
-        /// Gets or sets the formatting profiles.
+        /// Gets or sets the maximum number of pooled buffers.
         /// </summary>
-        public Dictionary<LogLevel, FormattingProfile> FormattingProfiles { get; } = new();
+        public int MaxPooledBuffers
+        {
+            get => _maxPooledBuffers;
+            set => _maxPooledBuffers = Math.Max(1, value);
+        }
     }
 }

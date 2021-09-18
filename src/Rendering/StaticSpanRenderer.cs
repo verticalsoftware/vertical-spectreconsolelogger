@@ -1,26 +1,21 @@
-using System;
-using System.Text;
-using Spectre.Console;
+using Vertical.SpectreLogger.Core;
 using Vertical.SpectreLogger.Output;
 
 namespace Vertical.SpectreLogger.Rendering
 {
-    /// <summary>
-    /// Internal renderer that writes static strings to the buffer.
-    /// </summary>
-    internal class StaticSpanRenderer : ITemplateRenderer
+    internal sealed class StaticSpanRenderer : ITemplateRenderer
     {
-        private readonly string _span;
+        private readonly string _content;
 
-        internal StaticSpanRenderer(string span)
+        internal StaticSpanRenderer(string content)
         {
-            _span = span.EscapeMarkup();
+            _content = content;
         }
-
+        
         /// <inheritdoc />
-        public void Render(IWriteBuffer buffer, ref LogEventInfo eventInfo)
+        public void Render(IWriteBuffer buffer, in LogEventContext context)
         {
-            buffer.Write(_span);
+            buffer.Write(_content, 0, _content.Length);
         }
     }
 }

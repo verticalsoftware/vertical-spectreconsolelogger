@@ -1,27 +1,58 @@
 using System;
-using Vertical.SpectreLogger.Options;
 
 namespace Vertical.SpectreLogger.Output
 {
     /// <summary>
-    /// Represents an object that buffers output to the console.
+    /// Provides an interface for writing content.
     /// </summary>
-    public interface IWriteBuffer : IDisposable
+    public interface IWriteBuffer
     {
         /// <summary>
-        /// Appends a string.
+        /// Gets the number of characters to indent anytime a newline character is
+        /// encountered.
         /// </summary>
-        /// <param name="str">Content to render.</param>
-        void Append(string str);
+        int Margin { get; set; }
+        
+        /// <summary>
+        /// Gets the number of characters that have been written since the last
+        /// new line character.
+        /// </summary>
+        int LinePosition { get; }
 
         /// <summary>
-        /// Appends a single character.
+        /// Enqueues characters that are not written until any other characters
+        /// are written.
         /// </summary>
-        /// <param name="c">Character to append</param>
-        void Append(char c);
+        /// <param name="str">String value</param>
+        void Enqueue(string str);
 
         /// <summary>
-        /// Flushes the content to the target.
+        /// Writes a character to the buffer.
+        /// </summary>
+        /// <param name="c">Character to write.</param>
+        void Write(char c);
+
+        /// <summary>
+        /// Writes a string to the buffer.
+        /// </summary>
+        /// <param name="str">String to write</param>
+        void Write(string str);
+
+        /// <summary>
+        /// Writes a string or string portion.
+        /// </summary>
+        /// <param name="str">String value</param>
+        /// <param name="startIndex">Starting index</param>
+        /// <param name="length">Number of characters to write</param>
+        void Write(string str, int startIndex, int length);
+        
+        /// <summary>
+        /// Gets the length of the buffer.
+        /// </summary>
+        int Length { get; }
+        
+        /// <summary>
+        /// Flushes the content of the buffer to an underlying output. 
         /// </summary>
         void Flush();
     }

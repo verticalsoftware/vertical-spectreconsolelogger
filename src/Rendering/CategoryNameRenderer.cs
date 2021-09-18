@@ -1,29 +1,34 @@
-using Spectre.Console;
-using Vertical.SpectreLogger.Internal;
-using Vertical.SpectreLogger.MatchableTypes;
+﻿using Vertical.SpectreLogger.Core;
+using Vertical.SpectreLogger.Formatting;
 using Vertical.SpectreLogger.Output;
+using Vertical.SpectreLogger.Templates;
 
 namespace Vertical.SpectreLogger.Rendering
 {
-    /// <summary>
-    /// Renders the category name.
-    /// </summary>
-    [Template("{CategoryName}")]
-    public class CategoryNameRenderer : ITemplateRenderer
+    public partial class CategoryNameRenderer : ITemplateRenderer
     {
+        private readonly TemplateSegment _template;
+
+        [Template]
+        public static readonly string Template = TemplatePatternBuilder
+            .ForKey("CategoryName")
+            .AddAlignment()
+            .AddFormatting()
+            .Build();
+
+        /// <summary>
+        /// Creates a new instance of this type.
+        /// </summary>
+        /// <param name="template">Matching segment from the output template.</param>
+        public CategoryNameRenderer(TemplateSegment template) => _template = template;
+        
         /// <inheritdoc />
-        public void Render(IWriteBuffer buffer, ref LogEventInfo eventInfo)
+        public void Render(IWriteBuffer buffer, in LogEventContext context)
         {
-            if (string.IsNullOrWhiteSpace(eventInfo.CategoryName))
-                return;
-
-            var categoryName = eventInfo.CategoryName;
-
-            var profile = eventInfo.FormattingProfile;
-            var formatted = profile.ValueFormatters.GetValueOrDefault(typeof(CategoryName))?
-                .Invoke(categoryName) ?? categoryName;
-
-            buffer.Write(formatted.EscapeMarkup());
+            buffer.WriteFormattedValue(
+                context.Profile,
+                _template,
+                new Value(context.CategoryName));
         }
     }
 }

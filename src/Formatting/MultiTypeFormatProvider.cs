@@ -1,0 +1,26 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace Vertical.SpectreLogger.Formatting
+{
+    /// <summary>
+    /// Represents a provider that returns a <see cref="MultiTypeFormatter"/>
+    /// </summary>
+    internal class MultiTypeFormatProvider : IFormatProvider
+    {
+        private readonly ICustomFormatter _typeFormatter;
+
+        internal MultiTypeFormatProvider(ICustomFormatter typeTypeFormatter)
+        {
+            _typeFormatter = typeTypeFormatter;
+        }
+        
+        /// <inheritdoc />
+        public object? GetFormat(Type? formatType)
+        {
+            return typeof(ICustomFormatter) == formatType
+                ? _typeFormatter
+                : null;
+        }
+    }
+}
