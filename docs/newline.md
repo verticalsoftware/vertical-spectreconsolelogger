@@ -7,14 +7,12 @@ Inserts or enqueues a line break in event output.
 ### Placeholder Syntax
 
 ```
-{NewLine[+]}
+{NewLine}
 ```
 
 ### Parameters
 
-|Parameter|Description|
-|---|---|
-|`+`|Enqueues the new line, such that it is written to the output before any other non new-line character is written. If no other characters are written in the current log event, the new line is ignored.|
+None
 
 ### Remarks
 
@@ -23,6 +21,6 @@ Use this renderer to control event output that spans multiple lines. For instanc
 ### Example
 
 ```
-info/{CategoryName}: {Message}{NewLine+}{Exception}
+info/{CategoryName}: {Message}{NewLine}{Exception}
 ```
 

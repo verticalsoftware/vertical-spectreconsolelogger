@@ -10,7 +10,7 @@ Prints the log level of the current event.
 {LogLevel[,alignment]}
 ```
 
-### Value Types
+### Emitted Types
 
 The following type(s) can be formatted & styled:
 

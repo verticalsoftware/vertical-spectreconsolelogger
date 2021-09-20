@@ -58,7 +58,7 @@ namespace OutOfBoxStyles
             {
                 logger.Log(
                     logLevel,
-                    GetException(),
+                    null,
                     "This is an example of a {logLevel} message. Sample type output:\n" +
                     "   Integers:       {short}, {int}, {long}\n" +
                     "   Reals:          {single}, {double}, {decimal}\n" +

@@ -108,6 +108,11 @@ namespace Vertical.SpectreLogger.Templates
         /// Gets the template control code.
         /// </summary>
         public string? ControlCode => Match?.Groups[ControlGroup].Value;
+
+        /// <summary>
+        /// Gets whether the control code group was matched.
+        /// </summary>
+        public bool ControlCodeMatched => Match?.Groups[ControlGroup].Success == true;
         
         /// <summary>
         /// Gets the format group value.

@@ -11,7 +11,7 @@ namespace Vertical.SpectreLogger.Rendering
 
         [Template]
         public static readonly string Template = TemplatePatternBuilder
-            .ForKey("CategoryName")
+            .ForKey("[Cc]ategory[Nn]ame")
             .AddAlignment()
             .AddFormatting()
             .Build();
@@ -25,7 +25,7 @@ namespace Vertical.SpectreLogger.Rendering
         /// <inheritdoc />
         public void Render(IWriteBuffer buffer, in LogEventContext context)
         {
-            buffer.WriteFormattedValue(
+            buffer.WriteLogValue(
                 context.Profile,
                 _template,
                 new Value(context.CategoryName));

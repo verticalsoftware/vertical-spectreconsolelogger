@@ -12,7 +12,6 @@ namespace Vertical.SpectreLogger.Options
     /// </summary>
     public class LogLevelProfile
     {
-        private readonly string _internalId = Guid.NewGuid().ToString("N");
         private ICustomFormatter? _formatter;
         private IFormatProvider? _formatProvider;
 

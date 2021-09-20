@@ -23,7 +23,7 @@ namespace Vertical.SpectreLogger.Rendering
         
         [Template()]
         public static readonly string Template = TemplatePatternBuilder
-            .ForKey("Date[Tt]ime")
+            .ForKey("[Dd]ate[Tt]ime")
             .AddAlignment()
             .AddFormatting()
             .Build();
@@ -43,7 +43,7 @@ namespace Vertical.SpectreLogger.Rendering
                 .GetOptions<Options>()
                 .ValueFactory?.Invoke() ?? DateTimeOffset.Now;
             
-            buffer.WriteFormattedValue(
+            buffer.WriteLogValue(
                 context.Profile,
                 _template,
                 renderValue);

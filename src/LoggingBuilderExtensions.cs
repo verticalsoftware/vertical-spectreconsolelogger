@@ -5,6 +5,7 @@ using Spectre.Console;
 using Vertical.SpectreLogger.Core;
 using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Options;
+using Vertical.SpectreLogger.Output;
 using Vertical.SpectreLogger.Rendering;
 using Vertical.SpectreLogger.Scopes;
 using Vertical.SpectreLogger.Templates;
@@ -32,6 +33,7 @@ namespace Vertical.SpectreLogger
             services.AddSingleton<ScopeManager>();
             services.AddSingleton<IRendererPipeline, RendererPipeline>();
             services.AddSingleton<ILoggerProvider, SpectreLoggerProvider>();
+            services.AddTransient<IWriteBuffer, WriteBuffer>();
 
             optionsBuilder
                 .AddTemplateRenderers()

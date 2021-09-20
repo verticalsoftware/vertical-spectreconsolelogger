@@ -9,21 +9,12 @@ using Vertical.SpectreLogger.Templates;
 
 namespace Vertical.SpectreLogger.Rendering
 {
+    [Template("{Exception}")]
     public partial class ExceptionRenderer : ITemplateRenderer
     {
         private static readonly char[] SignatureSplitChars = {' ', ','};
         private static readonly string[] StackFrameSplitStrings = {Environment.NewLine};
 
-        [Template]
-        public static readonly string Template = TemplatePatternBuilder
-            .ForKey("Exception")
-            .AddControlPattern("\\+")
-            .Build();
-
-        private readonly bool _newLine;
-
-        public ExceptionRenderer(TemplateSegment template) => _newLine = "+" == template.ControlCode;
-            
         /// <inheritdoc />
         public void Render(IWriteBuffer buffer, in LogEventContext context)
         {
@@ -31,11 +22,6 @@ namespace Vertical.SpectreLogger.Rendering
             
             if (rootException == null)
                 return;
-
-            if (_newLine)
-            {
-                buffer.WriteLinePastMargin();
-            }
             
             var profile = context.Profile;
             var options = profile.ConfiguredOptions.GetOptions<Options>();

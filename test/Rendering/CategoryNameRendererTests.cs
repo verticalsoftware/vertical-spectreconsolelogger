@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using Shouldly;
 using Vertical.SpectreLogger.Formatting;
 using Vertical.SpectreLogger.Rendering;
+using Vertical.SpectreLogger.Tests.Infrastructure;
 using Xunit;
 
 namespace Vertical.SpectreLogger.Tests.Rendering
@@ -10,6 +12,16 @@ namespace Vertical.SpectreLogger.Tests.Rendering
     public class CategoryNameRendererTests
     {
         private readonly ICustomFormatter _testInstance = new CategoryNameRenderer.DefaultFormatter();
+
+        [Fact]
+        public void RenderWritesExpectedValue()
+        {
+            RendererTestHarness.RunScenario(
+                config => config.ConfigureProfiles(p => p.OutputTemplate = "{CategoryName}"),
+                logger => logger.LogInformation(""),
+                $@"^\[\w+\]{nameof(CategoryNameRendererTests)}\[/\]$",
+                nameof(CategoryNameRendererTests));
+        }
         
         [Theory, MemberData(nameof(Theories))]
         public void FormatReturnsExpected(string? format, string arg, string expected)

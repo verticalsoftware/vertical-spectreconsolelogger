@@ -15,6 +15,11 @@ namespace Vertical.SpectreLogger.Options
         internal OptionsCollection()
         {
         }
+
+        /// <summary>
+        /// Clears all options from the collection.
+        /// </summary>
+        public void Clear() => _options.Clear();
         
         /// <summary>
         /// Configures an options object for a renderer type.
