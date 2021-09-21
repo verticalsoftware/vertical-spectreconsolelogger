@@ -36,11 +36,6 @@ namespace Vertical.SpectreLogger.Output
             }
         }
 
-        public static void EnqueueLine(this IWriteBuffer buffer)
-        {
-            buffer.Enqueue(Environment.NewLine);
-        }
-
         /// <summary>
         /// Writes a template state value, considering it may be a FormattedLogValues instance.
         /// </summary>

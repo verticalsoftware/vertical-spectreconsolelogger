@@ -9,9 +9,9 @@ namespace Vertical.SpectreLogger.Output
     internal class WriteBuffer : IWriteBuffer
     {
         private readonly IConsoleWriter _consoleWriter;
-        private readonly StringBuilder _queue = new();
         private readonly StringBuilder _buffer = new();
         private int _margin;
+        private char _lastChar;
 
         /// <summary>
         /// Creates a new instance of this type.
@@ -32,25 +32,21 @@ namespace Vertical.SpectreLogger.Output
 
         /// <inheritdoc />
         public int LinePosition { get; private set; }
-
-        /// <inheritdoc />
-        public void Enqueue(string str)
-        {
-            _queue.Append(str);
-        }
-
+        
         /// <inheritdoc />
         public void Write(char c)
         {
+            if (_lastChar == '\n' && Margin > 0)
+            {
+                // Set the margin
+                _buffer.Append(' ', Margin);
+                LinePosition = Margin;
+            }
+            
             _buffer.Append(c);
-            ++LinePosition;
+            _lastChar = c;
 
-            if (c != '\n') 
-                return;
-            
-            _buffer.Append(' ', Margin);
-            
-            LinePosition = Margin;
+            LinePosition = c == '\n' ? 0 : LinePosition + 1;
         }
 
 
@@ -60,13 +56,6 @@ namespace Vertical.SpectreLogger.Output
         /// <inheritdoc />
         public void Write(string str, int startIndex, int length)
         {
-            if (_queue.Length > 0)
-            {
-                var queued = _queue.ToString();
-                _queue.Clear();
-                Write(queued);
-            }
-
             var pastLastIndex = startIndex + length;
 
             for (var c = startIndex; c < pastLastIndex; c++)
@@ -83,7 +72,6 @@ namespace Vertical.SpectreLogger.Output
         {
             _consoleWriter.Write(_buffer.ToString());
             _buffer.Clear();
-            _queue.Clear();
             _margin = 0;
         }
 

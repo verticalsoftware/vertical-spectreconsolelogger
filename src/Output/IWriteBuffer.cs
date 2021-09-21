@@ -20,13 +20,6 @@ namespace Vertical.SpectreLogger.Output
         int LinePosition { get; }
 
         /// <summary>
-        /// Enqueues characters that are not written until any other characters
-        /// are written.
-        /// </summary>
-        /// <param name="str">String value</param>
-        void Enqueue(string str);
-
-        /// <summary>
         /// Writes a character to the buffer.
         /// </summary>
         /// <param name="c">Character to write.</param>

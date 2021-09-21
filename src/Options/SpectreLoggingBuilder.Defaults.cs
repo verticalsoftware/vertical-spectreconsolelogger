@@ -11,14 +11,16 @@ namespace Vertical.SpectreLogger.Options
         {
             ConfigureProfile(LogLevel.Trace, profile =>
             {
+                const string baseColor = "[grey35]";
                 profile.OutputTemplate = "[grey35][[{DateTime:T} Trce]] {Message}{NewLine}{Exception}[/]";
                 profile.DefaultLogValueStyle = "[grey46]";
                 profile
-                    .AddTypeStyle<ExceptionRenderer.MethodNameValue>("[grey35]")
-                    .AddTypeStyle<ExceptionRenderer.ParameterTypeValue>("[grey35]")
+                    .AddTypeStyle<ExceptionRenderer.MethodNameValue>(baseColor)
+                    .AddTypeStyle<ExceptionRenderer.ParameterTypeValue>(baseColor)
                     .AddTypeStyle<ExceptionRenderer.SourceLocationValue>("[darkviolet]")
                     .AddTypeStyle<ExceptionRenderer.SourceFileValue>("[darkgoldenrod]")
-                    .AddTypeStyle<CategoryNameRenderer.Value>("[grey35]");
+                    .AddTypeStyle<CategoryNameRenderer.Value>(baseColor)
+                    .AddTypeStyle<DateTimeRenderer.Value>(baseColor);
             });
             
             ConfigureProfile(LogLevel.Debug, profile =>
@@ -38,6 +40,7 @@ namespace Vertical.SpectreLogger.Options
                     .AddTypeStyle<ExceptionRenderer.SourceFileValue>("[darkgoldenrod]")
                     .AddTypeStyle<DestructuredKeyValue>("[grey70]")
                     .AddTypeStyle<CategoryNameRenderer.Value>("[grey46]")
+                    .AddTypeStyle<DateTimeRenderer.Value>("[grey46]")
                     .AddValueStyle(true, "[darkseagreen4]")
                     .AddValueStyle(false, "[darkred_1]")
                     .DefaultLogValueStyle = "[slateblue3_1]";
@@ -60,6 +63,7 @@ namespace Vertical.SpectreLogger.Options
                     .AddTypeStyle<ExceptionRenderer.SourceFileValue>("[gold3_1]")
                     .AddTypeStyle<DestructuredKeyValue>("[grey70]")
                     .AddTypeStyle<CategoryNameRenderer.Value>("[grey85]")
+                    .AddTypeStyle<DateTimeRenderer.Value>("[grey]")
                     .AddValueStyle(true, "[green3_1]")
                     .AddValueStyle(false, "[darkorange3_1]")
                     .DefaultLogValueStyle = "[skyblue3]";
@@ -82,6 +86,7 @@ namespace Vertical.SpectreLogger.Options
                     .AddTypeStyle<ExceptionRenderer.SourceFileValue>("[gold3_1]")
                     .AddTypeStyle<DestructuredKeyValue>("[grey70]")
                     .AddTypeStyle<CategoryNameRenderer.Value>("[grey85]")
+                    .AddTypeStyle<DateTimeRenderer.Value>("[grey85]")
                     .AddValueStyle(true, "[green3_1]")
                     .AddValueStyle(false, "[darkorange3_1]")
                     .DefaultLogValueStyle = "[skyblue3]";
@@ -104,6 +109,7 @@ namespace Vertical.SpectreLogger.Options
                     .AddTypeStyle<ExceptionRenderer.SourceFileValue>("[gold3_1]")
                     .AddTypeStyle<DestructuredKeyValue>("[grey70]")
                     .AddTypeStyle<CategoryNameRenderer.Value>("[grey85]")
+                    .AddTypeStyle<DateTimeRenderer.Value>("[grey85]")
                     .AddValueStyle(true, "[green3_1]")
                     .AddValueStyle(false, "[darkorange3_1]")
                     .DefaultLogValueStyle = "[skyblue3]";
@@ -126,6 +132,7 @@ namespace Vertical.SpectreLogger.Options
                     .AddTypeStyle<ExceptionRenderer.SourceFileValue>("[gold3_1]")
                     .AddTypeStyle<DestructuredKeyValue>("[grey70]")
                     .AddTypeStyle<CategoryNameRenderer.Value>("[grey85]")
+                    .AddTypeStyle<DateTimeRenderer.Value>("[grey85]")
                     .AddValueStyle(true, "[green3_1]")
                     .AddValueStyle(false, "[darkorange3_1]")
                     .DefaultLogValueStyle = "[skyblue3]";

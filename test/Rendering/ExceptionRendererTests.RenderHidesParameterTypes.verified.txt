@@ -2,11 +2,11 @@
 System.AggregateException: One or more errors occurred. (Sequence contains no elements)
    at System.Threading.Tasks.Task.Wait(millisecondsTimeout, cancellationToken)
    at System.Threading.Tasks.Task.Wait()
-   at Vertical.SpectreLogger.Tests.Infrastructure.ExceptionHelper.GetAggregateException() in {ProjectDirectory}Infrastructure\ExceptionHelper.cs:line {line}
+   at Vertical.SpectreLogger.Tests.Infrastructure.ExceptionHelper.GetAggregateException() in {ProjectDirectory}Infrastructure/ExceptionHelper.cs:line {line}
    -> System.InvalidOperationException: Sequence contains no elements
       at System.Linq.ThrowHelper.ThrowNoElementsException()
       at System.Linq.Enumerable.First[[TSource]](source)
-      at Vertical.SpectreLogger.Tests.Infrastructure.ExceptionHelper.<>c.<GetAggregateException>b__0_0() in {ProjectDirectory}Infrastructure\ExceptionHelper.cs:line {line}
+      at Vertical.SpectreLogger.Tests.Infrastructure.ExceptionHelper.<>c.<GetAggregateException>b__0_0() in {ProjectDirectory}Infrastructure/ExceptionHelper.cs:line {line}
       at System.Threading.Tasks.Task`1.InnerInvoke()
       at System.Threading.Tasks.Task.<>c.<.cctor>b__277_0(obj)
       +4 more...

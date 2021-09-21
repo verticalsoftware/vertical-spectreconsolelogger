@@ -24,7 +24,7 @@ namespace Vertical.SpectreLogger.Tests.Rendering
                 },
                 logger => logger.Log(logLevel, ""));
             
-            output.ShouldBe(expected + Environment.NewLine);
+            output.ShouldBe(expected);
         }
         
         public static IEnumerable<object[]> Theories = new[]

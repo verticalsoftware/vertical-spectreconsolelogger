@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using VerifyXunit;
@@ -88,12 +89,14 @@ namespace Vertical.SpectreLogger.Tests.Rendering
         {
             config.ConfigureProfiles(profile =>
             {
-                profile.OutputTemplate = "{LogLevel}: {Message}{NewLine+}{Exception}";
+                profile.OutputTemplate = "{LogLevel}: {Message}{NewLine}{Exception}";
                 profile.TypeFormatters.Clear();
                 profile.TypeStyles.Clear();
                 profile.DefaultLogValueStyle = null;
 
                 profile.AddTypeFormatter<ExceptionRenderer.SourceLocationValue>((_, _) => "{line}");
+                profile.AddTypeFormatter<ExceptionRenderer.SourceDirectoryValue>((_, path) =>
+                    Regex.Replace(path.Value, "[\\/]", "/"));
 
                 if (exceptionConfig != null)
                 {

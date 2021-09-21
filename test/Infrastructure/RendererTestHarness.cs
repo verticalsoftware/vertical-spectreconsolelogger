@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
@@ -15,20 +16,25 @@ namespace Vertical.SpectreLogger.Tests.Infrastructure
             Action<ILogger> log,
             string? loggerName = null)
         {
-            var buffer = new CapturingWriteBuffer(Substitute.For<IConsoleWriter>());
-            var logger = LoggerFactory.Create(builder =>
-                    builder
+            var builder = new StringBuilder();
+            var consoleWriter = Substitute.For<IConsoleWriter>();
+            consoleWriter
+                .When(w => w.Write(Arg.Any<string>()))
+                .Do(callInfo => builder.Append((string)callInfo.Args()[0]));
+            var buffer = new WriteBuffer(consoleWriter);
+            var logger = LoggerFactory.Create(logging =>
+                    logging
                         .SetMinimumLevel(LogLevel.Trace)
                         .AddSpectreConsole(opt =>
-                    {
-                        opt.Services.AddSingleton<IWriteBuffer>(buffer);
-                        configure(opt);
-                    }))
+                        {
+                            opt.Services.AddSingleton<IWriteBuffer>(buffer);
+                            configure(opt);
+                        }))
                 .CreateLogger(loggerName ?? "TestLogger");
 
             log(logger);
 
-            return buffer.ToString();
+            return builder.ToString();
         }
         
         internal static void RunScenario(
