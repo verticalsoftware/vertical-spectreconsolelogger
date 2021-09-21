@@ -36,13 +36,12 @@ namespace Vertical.SpectreLogger.Rendering
 
                 switch (current)
                 {
-                    case { exception: AggregateException ae } when options.UnwindAggregateExceptions:
+                    case { exception: AggregateException ae } when options.UnwindInnerExceptions: 
                         var childId = 0;
                         foreach (var item in ae.InnerExceptions)
                         {
                             stack.Push((item, current.level + 1, ++childId));
                         }
-
                         break;
                     
                     case { exception: { InnerException: { } }} when options.UnwindInnerExceptions:
@@ -76,6 +75,8 @@ namespace Vertical.SpectreLogger.Rendering
 
                 count++;
             }
+            
+            buffer.WriteLine();
         }
 
         private static void PrintNameAndMessage(
@@ -143,6 +144,13 @@ namespace Vertical.SpectreLogger.Rendering
                 @"at (?<_method>[^(]+)\((?<_sig>.+)?\)(?<_src> in (?<_file>.+)(?::line (?<_line>\d+)))?");
 
             buffer.WriteLine();
+
+            if (!frameMatch.Success)
+            {
+                buffer.Write(frame);
+                return;
+            }
+
             buffer.WriteLogValue(profile, null, new MethodNameValue(frameMatch.Groups["_method"].Value), method =>
             {
                 buffer.Write("at ");
@@ -165,7 +173,6 @@ namespace Vertical.SpectreLogger.Rendering
 
             PrintSourcePath(buffer, profile, frameMatch, options);
         }
-
 
         private static void PrintParameters(
             IWriteBuffer buffer, 
@@ -225,7 +232,7 @@ namespace Vertical.SpectreLogger.Rendering
                 
                 buffer.WriteLogValue(profile, null, new SourceFileValue(file));
 
-                if (hasLineNumber)
+                if (hasLineNumber && options.ShowSourceLocations)
                 {
                     buffer.Write(":line ");
                 }

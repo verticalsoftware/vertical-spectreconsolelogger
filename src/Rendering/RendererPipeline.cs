@@ -57,6 +57,8 @@ namespace Vertical.SpectreLogger.Rendering
                 {
                     renderers[c].Render(buffer, logEventContext);
                 }
+                
+                buffer.Margin = 0;
             }
             finally
             {

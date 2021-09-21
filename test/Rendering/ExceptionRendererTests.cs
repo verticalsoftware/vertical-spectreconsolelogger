@@ -22,20 +22,82 @@ namespace Vertical.SpectreLogger.Tests.Rendering
             return Verifier.Verify(output);
         }
 
+        [Fact]
+        public Task RenderHidesParameterTypes()
+        {
+            var output = RendererTestHarness.Capture(
+                config => ConfigureBaseOptions(config, ex => ex.ShowParameterTypes = false),
+                logger => logger.LogError(ExceptionHelper.GetAggregateException(), "Error occurred"));
+
+            return Verifier.Verify(output);
+        }
+        
+        [Fact]
+        public Task RenderHidesParameterNames()
+        {
+            var output = RendererTestHarness.Capture(
+                config => ConfigureBaseOptions(config, ex => ex.ShowParameterNames = false),
+                logger => logger.LogError(ExceptionHelper.GetAggregateException(), "Error occurred"));
+
+            return Verifier.Verify(output);
+        }
+        
+        [Fact]
+        public Task RenderHidesSourceLocations()
+        {
+            var output = RendererTestHarness.Capture(
+                config => ConfigureBaseOptions(config, ex => ex.ShowSourceLocations = false),
+                logger => logger.LogError(ExceptionHelper.GetAggregateException(), "Error occurred"));
+
+            return Verifier.Verify(output);
+        }
+        
+        [Fact]
+        public Task RenderHidesSourcePaths()
+        {
+            var output = RendererTestHarness.Capture(
+                config => ConfigureBaseOptions(config, ex => ex.ShowSourcePaths = false),
+                logger => logger.LogError(ExceptionHelper.GetAggregateException(), "Error occurred"));
+
+            return Verifier.Verify(output);
+        }
+        
+        [Fact]
+        public Task RenderHidesAggregateInnerExceptions()
+        {
+            var output = RendererTestHarness.Capture(
+                config => ConfigureBaseOptions(config, ex => ex.UnwindInnerExceptions = false),
+                logger => logger.LogError(ExceptionHelper.GetAggregateException(), "Error occurred"));
+
+            return Verifier.Verify(output);
+        }
+
+        [Fact]
+        public Task RenderLimitsStackFrames()
+        {
+            var output = RendererTestHarness.Capture(
+                config => ConfigureBaseOptions(config, ex => ex.MaxStackFrames = 10),
+                logger => logger.LogError(ExceptionHelper.GetAggregateException(), "Error occurred"));
+
+            return Verifier.Verify(output);
+        }
+
         private static void ConfigureBaseOptions(
             SpectreLoggingBuilder config,
             Action<ExceptionRenderer.Options>? exceptionConfig = null)
         {
             config.ConfigureProfiles(profile =>
             {
-                profile.OutputTemplate = "{LogLevel}: {Message}{Exception+}";
+                profile.OutputTemplate = "{LogLevel}: {Message}{NewLine+}{Exception}";
                 profile.TypeFormatters.Clear();
                 profile.TypeStyles.Clear();
                 profile.DefaultLogValueStyle = null;
 
+                profile.AddTypeFormatter<ExceptionRenderer.SourceLocationValue>((_, _) => "{line}");
+
                 if (exceptionConfig != null)
                 {
-                    profile.ConfigureOptions<ExceptionRenderer.Options>(exceptionConfig);
+                    profile.ConfigureOptions(exceptionConfig);
                 }
             });
         }

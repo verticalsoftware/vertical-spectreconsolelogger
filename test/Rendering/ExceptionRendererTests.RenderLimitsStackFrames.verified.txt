@@ -9,4 +9,7 @@ System.AggregateException: One or more errors occurred. (Sequence contains no el
       at Vertical.SpectreLogger.Tests.Infrastructure.ExceptionHelper.<>c.<GetAggregateException>b__0_0() in {ProjectDirectory}Infrastructure\ExceptionHelper.cs:line {line}
       at System.Threading.Tasks.Task`1.InnerInvoke()
       at System.Threading.Tasks.Task.<>c.<.cctor>b__277_0(Object obj)
-      +4 more...
+      at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)
+      --- End of stack trace from previous location ---
+      at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)
+      at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)

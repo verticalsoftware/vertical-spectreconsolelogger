@@ -17,7 +17,9 @@ namespace Vertical.SpectreLogger.Tests.Infrastructure
         {
             var buffer = new CapturingWriteBuffer(Substitute.For<IConsoleWriter>());
             var logger = LoggerFactory.Create(builder =>
-                    builder.AddSpectreConsole(opt =>
+                    builder
+                        .SetMinimumLevel(LogLevel.Trace)
+                        .AddSpectreConsole(opt =>
                     {
                         opt.Services.AddSingleton<IWriteBuffer>(buffer);
                         configure(opt);

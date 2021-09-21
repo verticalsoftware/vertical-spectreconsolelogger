@@ -53,12 +53,14 @@ namespace OutOfBoxStyles
                 LogLevel.Error,
                 LogLevel.Critical
             };
+
+            var exception = GetException();
             
             foreach (var logLevel in logLevels)
             {
                 logger.Log(
                     logLevel,
-                    null,
+                    exception,
                     "This is an example of a {logLevel} message. Sample type output:\n" +
                     "   Integers:       {short}, {int}, {long}\n" +
                     "   Reals:          {single}, {double}, {decimal}\n" +

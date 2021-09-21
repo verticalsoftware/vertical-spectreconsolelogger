@@ -91,11 +91,5 @@ namespace Vertical.SpectreLogger.Tests.Templates
             renderer.ShouldBeOfType<StaticSpanRenderer>();
             renderer.VerifyOutput(default, "{unknown}");
         }
-
-        [Fact]
-        public void GetRenderersShouldReturnEndEvent()
-        {
-            _testInstance.GetRenderers(string.Empty).Single().ShouldBeOfType<EndEventRenderer>();
-        }
     }
 }

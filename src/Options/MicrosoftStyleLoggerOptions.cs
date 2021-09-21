@@ -23,7 +23,7 @@ namespace Vertical.SpectreLogger.Options
                         LogLevel.Critical => "crit",
                         _ => string.Empty
                     })
-                .OutputTemplate = "{LogLevel}: {CategoryName}{Margin=6}{NewLine}{Message}{NewLine+}{Exception}");
+                .OutputTemplate = "{LogLevel}: {CategoryName}{Margin=6}{NewLine}{Message}{NewLine}{Exception}");
             
             config.ConfigureProfile(LogLevel.Information, profile => profile.AddTypeStyle<LogLevel>("[green]"));
             config.ConfigureProfile(LogLevel.Warning, profile => profile.AddTypeStyle<LogLevel>("[gold3_1]"));

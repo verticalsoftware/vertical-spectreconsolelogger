@@ -11,7 +11,7 @@ namespace Vertical.SpectreLogger.Options
         {
             ConfigureProfile(LogLevel.Trace, profile =>
             {
-                profile.OutputTemplate = "[grey35][[{DateTime:T} Trce]] {Message}{NewLine+}{Exception}[/]";
+                profile.OutputTemplate = "[grey35][[{DateTime:T} Trce]] {Message}{NewLine}{Exception}[/]";
                 profile.DefaultLogValueStyle = "[grey46]";
                 profile
                     .AddTypeStyle<ExceptionRenderer.MethodNameValue>("[grey35]")
@@ -23,7 +23,7 @@ namespace Vertical.SpectreLogger.Options
             
             ConfigureProfile(LogLevel.Debug, profile =>
             {
-                profile.OutputTemplate = "[grey46][[{DateTime:T} Dbug]] {Message}{NewLine+}{Exception}[/]";
+                profile.OutputTemplate = "[grey46][[{DateTime:T} Dbug]] {Message}{NewLine}{Exception}[/]";
                 profile
                     .AddTypeStyle(Types.Numerics, "[darkviolet]")
                     .AddTypeStyle(Types.Characters, "[darkorange3]")
@@ -45,7 +45,7 @@ namespace Vertical.SpectreLogger.Options
             
             ConfigureProfile(LogLevel.Information, profile =>
             {
-                profile.OutputTemplate = "[grey85][[{DateTime:T} [green3_1]Info[/]]] {Message}{NewLine+}{Exception}[/]";
+                profile.OutputTemplate = "[grey85][[{DateTime:T} [green3_1]Info[/]]] {Message}{NewLine}{Exception}[/]";
                 profile
                     .AddTypeStyle(Types.Numerics, "[magenta3_2]")
                     .AddTypeStyle(Types.Characters, "[gold3_1]")
@@ -67,7 +67,7 @@ namespace Vertical.SpectreLogger.Options
             
             ConfigureProfile(LogLevel.Warning, profile =>
             {
-                profile.OutputTemplate = "[grey85][[{DateTime:T} [gold1]Warn[/]]] {Message}{NewLine+}{Exception}[/]";
+                profile.OutputTemplate = "[grey85][[{DateTime:T} [gold1]Warn[/]]] {Message}{NewLine}{Exception}[/]";
                 profile
                     .AddTypeStyle(Types.Numerics, "[magenta3_2]")
                     .AddTypeStyle(Types.Characters, "[gold3_1]")
@@ -89,7 +89,7 @@ namespace Vertical.SpectreLogger.Options
             
             ConfigureProfile(LogLevel.Error, profile =>
             {
-                profile.OutputTemplate = "[grey85][[{DateTime:T} [red1]Fail[/]]] {Message}{NewLine+}{Exception}[/]";
+                profile.OutputTemplate = "[grey85][[{DateTime:T} [red1]Fail[/]]] {Message}{NewLine}{Exception}[/]";
                 profile
                     .AddTypeStyle(Types.Numerics, "[magenta3_2]")
                     .AddTypeStyle(Types.Characters, "[gold3_1]")
@@ -111,7 +111,7 @@ namespace Vertical.SpectreLogger.Options
             
             ConfigureProfile(LogLevel.Critical, profile =>
             {
-                profile.OutputTemplate = "[[[red1]{DateTime:T}[/] [white on red1]Crit[/]]] [red3] {Message}{NewLine+}{Exception}[/]";
+                profile.OutputTemplate = "[[[red1]{DateTime:T}[/] [white on red1]Crit[/]]] [red3] {Message}{NewLine}{Exception}[/]";
                 profile
                     .AddTypeStyle(Types.Numerics, "[magenta3_2]")
                     .AddTypeStyle(Types.Characters, "[gold3_1]")

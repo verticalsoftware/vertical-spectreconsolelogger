@@ -18,8 +18,8 @@ namespace Vertical.SpectreLogger.Options
                 profile.ValueStyles.Clear();
 
                 profile
-                    .AddTypeFormatter<LogLevel>((_, obj, _) =>
-                        (LogLevel) obj! switch
+                    .AddTypeFormatter<LogLevel>((_, value, _) =>
+                        value switch
                         {
                             LogLevel.Trace => "VRB",
                             LogLevel.Debug => "DBG",
@@ -46,7 +46,7 @@ namespace Vertical.SpectreLogger.Options
                     .AddTypeStyle<ExceptionRenderer.SourceLocationValue>(baseColor)
                     .AddTypeStyle<DestructuredKeyValue>(baseColor);
                 
-                profile.OutputTemplate = "[[{DateTime:HH:mm:ss} {LogLevel}]] {Message}{NewLine+}{Exception}";
+                profile.OutputTemplate = "[[{DateTime:HH:mm:ss} {LogLevel}]] {Message}{NewLine}{Exception}";
                 profile.DefaultLogValueStyle = "[aqua]";
             });
             

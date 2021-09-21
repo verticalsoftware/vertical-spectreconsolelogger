@@ -36,8 +36,6 @@ namespace Vertical.SpectreLogger.Templates
                 rendererList.Add(SelectRenderer(segment));
             });
             
-            rendererList.Add(EndEventRenderer.Default);
-
             return rendererList;
         }
 

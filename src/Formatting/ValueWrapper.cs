@@ -9,7 +9,11 @@ namespace Vertical.SpectreLogger.Formatting
     public abstract class ValueWrapper<T> where T : notnull
     {
         private static readonly EqualityComparer<T> Comparer = EqualityComparer<T>.Default;
-        
+
+        /// <summary>
+        /// Creates a new instance of this type.
+        /// </summary>
+        /// <param name="value"></param>
         protected ValueWrapper(T value) => Value = value;
         
         /// <summary>
