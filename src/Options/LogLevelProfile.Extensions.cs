@@ -165,7 +165,7 @@ namespace Vertical.SpectreLogger.Options
         /// <param name="profile">Log level profile</param>
         /// <param name="value">The value to associate with the style.</param>
         /// <param name="markup">The markup to write prior to rendering the value.</param>
-        /// <returns></returns>
+        /// <returns>A reference to the given profile.</returns>
         /// <exception cref="ArgumentException"><paramref name="value"/> is null.</exception>
         /// <exception cref="ArgumentException"><paramref name="markup"/> is null.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="markup"/> is whitespace.</exception>
@@ -189,7 +189,7 @@ namespace Vertical.SpectreLogger.Options
         /// <param name="profile">Log level profile</param>
         /// <param name="type">The type to associate with the style.</param>
         /// <param name="markup">The markup to write prior to rendering the value.</param>
-        /// <returns></returns>
+        /// <returns>A reference to the given profile.</returns>
         /// <exception cref="ArgumentException"><paramref name="type"/> is null.</exception>
         /// <exception cref="ArgumentException"><paramref name="markup"/> is null.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="markup"/> is whitespace.</exception>
@@ -213,7 +213,7 @@ namespace Vertical.SpectreLogger.Options
         /// <param name="profile">Log level profile</param>
         /// <param name="types">The types to associate with the style.</param>
         /// <param name="markup">The markup to write prior to rendering the value.</param>
-        /// <returns></returns>
+        /// <returns>A reference to the given profile.</returns>
         /// <exception cref="ArgumentException"><paramref name="types"/> is null.</exception>
         /// <exception cref="ArgumentException"><paramref name="markup"/> is null.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="markup"/> is whitespace.</exception>
@@ -237,7 +237,7 @@ namespace Vertical.SpectreLogger.Options
         /// <param name="profile">Log level profile</param>
         /// <param name="markup">The markup to write prior to rendering the value.</param>
         /// <typeparam name="T">The type to associate with the style.</typeparam>
-        /// <returns></returns>
+        /// <returns>A reference to the given profile.</returns>
         /// <exception cref="ArgumentException"><paramref name="markup"/> is null.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="markup"/> is whitespace.</exception>        
         public static LogLevelProfile AddTypeStyle<T>(
@@ -254,7 +254,7 @@ namespace Vertical.SpectreLogger.Options
         /// <param name="profile">Log level profile</param>
         /// <param name="configureOptions">A delegate that performs configuration on the provided options object.</param>
         /// <typeparam name="TOptions">Options type.</typeparam>
-        /// <returns></returns>
+        /// <returns>A reference to the given profile.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="configureOptions"/> is null.</exception>
         public static LogLevelProfile ConfigureOptions<TOptions>(
             this LogLevelProfile profile,
@@ -262,6 +262,28 @@ namespace Vertical.SpectreLogger.Options
             where TOptions : new()
         {
             profile.ConfiguredOptions.Configure(configureOptions);
+            return profile;
+        }
+
+        /// <summary>
+        /// Clears all type formatters.
+        /// </summary>
+        /// <param name="profile">Log level profile</param>
+        /// <returns>A reference to the given profile.</returns>
+        public static LogLevelProfile ClearTypeFormatters(this LogLevelProfile profile)
+        {
+            profile.TypeFormatters.Clear();
+            return profile;
+        }
+
+        /// <summary>
+        /// Clears all type styles.
+        /// </summary>
+        /// <param name="profile">Log level profile</param>
+        /// <returns>A reference to the given profile.</returns>
+        public static LogLevelProfile ClearTypeStyles(this LogLevelProfile profile)
+        {
+            profile.TypeStyles.Clear();
             return profile;
         }
     }

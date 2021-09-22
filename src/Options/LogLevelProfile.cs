@@ -33,12 +33,12 @@ namespace Vertical.SpectreLogger.Options
         /// <summary>
         /// Gets a dictionary of <see cref="ICustomFormatter"/> for value types.
         /// </summary>
-        public Dictionary<Type, ICustomFormatter> TypeFormatters { get; } = new();
+        internal Dictionary<Type, ICustomFormatter> TypeFormatters { get; } = new();
 
         /// <summary>
         /// Gets a dictionary of markup to apply before a specific value is rendered.
         /// </summary>
-        public Dictionary<object, string> ValueStyles { get; } = new();
+        internal Dictionary<object, string> ValueStyles { get; } = new();
 
         /// <summary>
         /// Gets a dictionary of markup to apply before a value of a specific type is rendered.

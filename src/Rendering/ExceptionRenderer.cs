@@ -216,20 +216,14 @@ namespace Vertical.SpectreLogger.Rendering
             Options options)
         {
             var path = frameMatch.Groups["_file"].Value;
-            var directory = Path.GetDirectoryName(path) ?? string.Empty;
+            var directory = (Path.GetDirectoryName(path) ?? string.Empty) + Path.DirectorySeparatorChar;
             var file = Path.GetFileName(path);
             var hasLineNumber = int.TryParse(frameMatch.Groups["_line"].Value, out var line);
 
             buffer.WriteLogValue(profile, null, new SourceDirectoryValue(directory), value =>
             {
                 buffer.Write(" in ");
-                
-                if (value.Length > 0)
-                {
-                    buffer.Write(value);
-                    buffer.Write(Path.DirectorySeparatorChar);
-                }
-                
+                buffer.Write(value);
                 buffer.WriteLogValue(profile, null, new SourceFileValue(file));
 
                 if (hasLineNumber && options.ShowSourceLocations)

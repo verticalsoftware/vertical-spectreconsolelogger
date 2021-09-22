@@ -23,13 +23,11 @@ namespace Vertical.SpectreLogger.Rendering
         /// </summary>
         /// <param name="optionsProvider">Options provider for <see cref="SpectreLoggerOptions"/></param>
         /// <param name="rendererBuilder">Object that builds renderers.</param>
-        /// <param name="consoleWriter">Console writer implementation</param>
-        /// <param name="serviceProvider">Service provider</param>
+        /// <param name="bufferPool">Buffer pool</param>
         public RendererPipeline(
             IOptions<SpectreLoggerOptions> optionsProvider,
             ITemplateRendererBuilder rendererBuilder,
-            IConsoleWriter consoleWriter,
-            IServiceProvider serviceProvider)
+            ObjectPool<IWriteBuffer> bufferPool)
         {
             var options = optionsProvider.Value;
             
@@ -39,9 +37,7 @@ namespace Vertical.SpectreLogger.Rendering
                     entry => entry.Key, 
                     entry => CreatePipeline(rendererBuilder, entry.Value));
 
-            _bufferPool = new DefaultObjectPool<IWriteBuffer>(
-                new WriteBufferPooledObjectPolicy(consoleWriter, serviceProvider.GetRequiredService<IWriteBuffer>),
-                options.MaxPooledBuffers);
+            _bufferPool = bufferPool;
         }
 
         /// <inheritdoc />

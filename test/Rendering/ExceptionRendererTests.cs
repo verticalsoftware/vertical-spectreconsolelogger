@@ -96,7 +96,7 @@ namespace Vertical.SpectreLogger.Tests.Rendering
 
                 profile.AddTypeFormatter<ExceptionRenderer.SourceLocationValue>((_, _) => "{line}");
                 profile.AddTypeFormatter<ExceptionRenderer.SourceDirectoryValue>((_, path) =>
-                    Regex.Replace(path.Value, "[\\/]", "/"));
+                    path.Value.Replace('\\', '/'));
 
                 if (exceptionConfig != null)
                 {
