@@ -19,13 +19,13 @@ namespace Vertical.SpectreLogger.Tests.Rendering
                 {
                     opt.ConfigureProfiles(profile =>
                     {
-                        profile.OutputTemplate = "{DateTime}";
+                        profile.OutputTemplate = "{DateTime:g}";
                         // Also tests the factory
                         profile.ConfigureOptions<DateTimeRenderer.Options>(dt => dt.ValueFactory = () => now);
                     });
                 },
                 logger => logger.LogInformation(""),
-                $@"^\[\w+\]{now}\[/\]$");
+                $@"^\[\w+\]{now:g}\[/\]$");
         }
     }
 }
