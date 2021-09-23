@@ -2,6 +2,14 @@
 
 A seriously customizable [Spectre Console](https://spectreconsole.net/) provider for Microsoft.Extensions.Logging.
 
+![.net](https://img.shields.io/badge/Frameworks-.netstandard20+net50-purple)
+![GitHub](https://img.shields.io/github/license/verticalsoftware/vertical-commandline)
+
+[![Dev build](https://github.com/verticalsoftware/vertical-commandline/actions/workflows/dev-build.yml/badge.svg)](https://github.com/verticalsoftware/vertical-commandline/actions/workflows/dev-build.yml)
+[![codecov](https://codecov.io/gh/verticalsoftware/vertical-spectreconsolelogger/branch/dev/graph/badge.svg?token=MVW0CUWLCW)](https://codecov.io/gh/verticalsoftware/vertical-spectreconsolelogger)
+[![Pre release](https://github.com/verticalsoftware/vertical-spectreconsolelogger/actions/workflows/pre-release.yml/badge.svg)](https://github.com/verticalsoftware/vertical-spectreconsolelogger/actions/workflows/pre-release.yml)
+[![Release](https://github.com/verticalsoftware/vertical-spectreconsolelogger/actions/workflows/release.yml/badge.svg)](https://github.com/verticalsoftware/vertical-spectreconsolelogger/actions/workflows/release.yml)
+
 ## Quick Start
 
 Add a package reference to your `.csproj` file:
@@ -24,7 +32,7 @@ logger.LogInformation("Hello world!");
 ## Features at a glance
 
 1. Decouples styling and formatting from logging (e.g. don't change your logging, customize how the events are displayed).
-2. Define different customizations for *each* log level.
+2. Define different customizations for _each_ log level.
 3. Customize the styling and formatting of specific values or specific types of values.
 4. Destructure and output complex types in JSON(ish) notation.
 5. Customize the rendering completely using output templates.
@@ -40,7 +48,7 @@ logger.LogInformation("Hello world!");
   - [Destructured Output](docs/destructuring.md)
 - Output Renderers
   - [Renderers Overview](docs/renderer-overview.md)
-  - [ActivityId](docs/activity-id.md)    
+  - [ActivityId](docs/activity-id.md)
   - [CategoryName](docs/category-name.md)
   - [DateTime](docs/date-time.md)
   - [Exception](docs/exceptions.md)
@@ -51,5 +59,3 @@ logger.LogInformation("Hello world!");
   - [ThreadId](docs/thread-id.md)
 - Advanced Topics
   - [Advanced Configuration](docs/advanced-config.md)
-  
-  
