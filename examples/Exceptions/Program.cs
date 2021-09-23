@@ -29,7 +29,6 @@ namespace Exceptions
                             opt.ShowParameterNames = false;
 
                             // Show inner exceptions
-                            opt.UnwindAggregateExceptions = true;
                             opt.UnwindInnerExceptions = true;
                         });
                         

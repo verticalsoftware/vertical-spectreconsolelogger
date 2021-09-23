@@ -12,8 +12,9 @@ namespace Vertical.SpectreLogger.Rendering
     {
         [Template]
         public static readonly string Template = TemplatePatternBuilder
-            .ForKey("ActivityId")
+            .ForKey("[Aa]ctivity[Ii]d")
             .AddAlignment()
+            .AddFormatting()
             .Build();
         
         /// <inheritdoc />

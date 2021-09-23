@@ -108,6 +108,11 @@ namespace Vertical.SpectreLogger.Templates
         /// Gets the template control code.
         /// </summary>
         public string? ControlCode => Match?.Groups[ControlGroup].Value;
+
+        /// <summary>
+        /// Gets whether the control code group was matched.
+        /// </summary>
+        public bool ControlCodeMatched => Match?.Groups[ControlGroup].Success == true;
         
         /// <summary>
         /// Gets the format group value.
@@ -117,12 +122,12 @@ namespace Vertical.SpectreLogger.Templates
         /// <summary>
         /// Gets the width span.
         /// </summary>
-        public string? WidthSpan => Match?.Groups[WidthSpanGroup].Value;
+        public string? AlignmentSpan => Match?.Groups[WidthSpanGroup].Value;
         
         /// <summary>
-        /// Gets the formatted width value, or 0 if the value is not available.
+        /// Gets the formatted width value, or null if the value is not available.
         /// </summary>
-        public int? Width => int.TryParse(Match?.Groups[WidthValueGroup].Value, out var i)
+        public int? Alignment => int.TryParse(Match?.Groups[WidthValueGroup].Value, out var i)
             ? i
             : null;
         

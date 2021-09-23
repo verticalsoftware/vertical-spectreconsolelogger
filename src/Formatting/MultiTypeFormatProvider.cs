@@ -10,9 +10,9 @@ namespace Vertical.SpectreLogger.Formatting
     {
         private readonly ICustomFormatter _typeFormatter;
 
-        internal MultiTypeFormatProvider(ICustomFormatter typeTypeFormatter)
+        internal MultiTypeFormatProvider(ICustomFormatter typeFormatter)
         {
-            _typeFormatter = typeTypeFormatter;
+            _typeFormatter = typeFormatter ?? throw new ArgumentNullException(nameof(typeFormatter));
         }
         
         /// <inheritdoc />

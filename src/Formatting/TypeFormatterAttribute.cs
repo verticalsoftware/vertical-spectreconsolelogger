@@ -11,7 +11,7 @@ namespace Vertical.SpectreLogger.Formatting
         /// <param name="type">The type this instance provides formatting for.</param>
         public TypeFormatterAttribute(Type type)
         {
-            Type = type;
+            Type = type ?? throw new ArgumentNullException(nameof(type));
         }
 
         /// <summary>

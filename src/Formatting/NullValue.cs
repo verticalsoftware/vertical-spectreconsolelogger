@@ -5,7 +5,7 @@ namespace Vertical.SpectreLogger.Formatting
     /// <summary>
     /// Provides a special representation of null that can be used for formatting.
     /// </summary>
-    public sealed class NullValue
+    public sealed class NullValue : IFormattable
     {
         private NullValue()
         {
@@ -18,15 +18,8 @@ namespace Vertical.SpectreLogger.Formatting
 
         /// <inheritdoc />
         public override string ToString() => string.Empty;
-        
-        /// <summary>
-        /// Represents the formatter for this type.
-        /// </summary>
-        [TypeFormatter(typeof(NullValue))]
-        public sealed class Formatter : ICustomFormatter
-        {
-            /// <inheritdoc />
-            public string Format(string? format, object? arg, IFormatProvider? formatProvider) => "(null)";
-        }
+
+        /// <inheritdoc />
+        public string ToString(string? format, IFormatProvider? formatProvider) => "(null)";
     }
 }

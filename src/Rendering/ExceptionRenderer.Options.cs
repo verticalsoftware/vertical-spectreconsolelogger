@@ -10,11 +10,6 @@ namespace Vertical.SpectreLogger.Rendering
         public class Options
         {
             /// <summary>
-            /// Gets or sets whether to display sub exceptions within an <see cref="AggregateException"/>
-            /// </summary>
-            public bool UnwindAggregateExceptions { get; set; } = true;
-
-            /// <summary>
             /// Gets or sets whether to unwind inner exceptions.
             /// </summary>
             public bool UnwindInnerExceptions { get; set; } = true;

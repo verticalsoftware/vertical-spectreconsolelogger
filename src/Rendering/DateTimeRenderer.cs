@@ -1,5 +1,6 @@
 ﻿using System;
 using Vertical.SpectreLogger.Core;
+using Vertical.SpectreLogger.Formatting;
 using Vertical.SpectreLogger.Output;
 using Vertical.SpectreLogger.Templates;
 
@@ -21,13 +22,24 @@ namespace Vertical.SpectreLogger.Rendering
             public Func<DateTimeOffset>? ValueFactory { get; set; } = () => DateTimeOffset.Now;
         }
         
-        [Template()]
+        [Template]
         public static readonly string Template = TemplatePatternBuilder
-            .ForKey("Date[Tt]ime")
+            .ForKey("[Dd]ate[Tt]ime")
             .AddAlignment()
             .AddFormatting()
             .Build();
-            
+
+        /// <summary>
+        /// Emits the date/time value
+        /// </summary>
+        public class Value : ValueWrapper<DateTimeOffset>
+        {
+            /// <inheritdoc />
+            public Value(DateTimeOffset value) : base(value)
+            {
+            }
+        }
+
         /// <summary>
         /// Creates a new instance of this type.
         /// </summary>
@@ -43,10 +55,10 @@ namespace Vertical.SpectreLogger.Rendering
                 .GetOptions<Options>()
                 .ValueFactory?.Invoke() ?? DateTimeOffset.Now;
             
-            buffer.WriteFormattedValue(
+            buffer.WriteLogValue(
                 context.Profile,
                 _template,
-                renderValue);
+                new Value(renderValue));
         }
     }
 }

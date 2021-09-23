@@ -7,7 +7,7 @@ If available, prints the `TraceId` portion of the current `System.Diagnostics.Ac
 ### Placeholder Syntax
 
 ```
-{ActivityId[,alignment]}
+{ActivityId[,alignment][:format]}
 ```
 
 ### Parameters
@@ -15,8 +15,9 @@ If available, prints the `TraceId` portion of the current `System.Diagnostics.Ac
 |Parameter|Description|
 |---|---|
 |`[,alignment]`|The preferred formatted field width.|
+|`[:format]`|Custom format string. Note there are no out-of-box formatters.|
 
-### Value Types
+### Emitted Types
 
 The following type can be formatted & styled:
 

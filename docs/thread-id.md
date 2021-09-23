@@ -10,7 +10,7 @@ Prints the managed thread id (obtained by `Thread.CurrentThread.ManagedThreadId`
 {ThreadId}
 ```
 
-### Value Types
+### Emitted Types
 
 The following type can be formatted & styled (the default formatter prints the `ManagedThreadId`).
 

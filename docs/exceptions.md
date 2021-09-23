@@ -7,16 +7,14 @@ Prints an exception to the console if available in the log event.
 ### Placeholder Syntax
 
 ```
-{Exception[+]}
+{Exception}
 ```
 
 ### Parameters
 
-| Parameter | Description                                                  |
-| --------- | ------------------------------------------------------------ |
-| `[+]`     | Inserts a newline character before the exception is printed. |
+None
 
-### Value Types
+### Emitted Types
 
 The following types can be formatted & styled:
 

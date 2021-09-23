@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Extensions.ObjectPool;
 using NSubstitute;
 using Shouldly;
@@ -21,7 +22,9 @@ namespace Vertical.SpectreLogger.Tests
 
             foreach (var item in source)
             {
-                queue.TryDequeue(out var nextExpected).ShouldBeTrue();
+                queue.Any().ShouldBeTrue();
+
+                var nextExpected = queue.Dequeue();
 
                 comparer(item, nextExpected!);
             }

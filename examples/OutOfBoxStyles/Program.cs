@@ -14,6 +14,8 @@ namespace OutOfBoxStyles
     {
         static void Main(string[] args)
         {
+            var v = string.Format("{0,10:x4}", 100);
+            
             var style = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
                     .Title("What console logging [italic yellow]style[/] would you like to see?")
@@ -53,12 +55,14 @@ namespace OutOfBoxStyles
                 LogLevel.Error,
                 LogLevel.Critical
             };
+
+            var exception = GetException();
             
             foreach (var logLevel in logLevels)
             {
                 logger.Log(
                     logLevel,
-                    GetException(),
+                    exception,
                     "This is an example of a {logLevel} message. Sample type output:\n" +
                     "   Integers:       {short}, {int}, {long}\n" +
                     "   Reals:          {single}, {double}, {decimal}\n" +

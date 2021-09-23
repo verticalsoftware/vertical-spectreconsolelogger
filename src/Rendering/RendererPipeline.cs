@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
@@ -21,11 +23,11 @@ namespace Vertical.SpectreLogger.Rendering
         /// </summary>
         /// <param name="optionsProvider">Options provider for <see cref="SpectreLoggerOptions"/></param>
         /// <param name="rendererBuilder">Object that builds renderers.</param>
-        /// <param name="consoleWriter">Console writer implementation</param>
+        /// <param name="bufferPool">Buffer pool</param>
         public RendererPipeline(
             IOptions<SpectreLoggerOptions> optionsProvider,
             ITemplateRendererBuilder rendererBuilder,
-            IConsoleWriter consoleWriter)
+            ObjectPool<IWriteBuffer> bufferPool)
         {
             var options = optionsProvider.Value;
             
@@ -35,9 +37,7 @@ namespace Vertical.SpectreLogger.Rendering
                     entry => entry.Key, 
                     entry => CreatePipeline(rendererBuilder, entry.Value));
 
-            _bufferPool = new DefaultObjectPool<IWriteBuffer>(
-                new WriteBufferPooledObjectPolicy(consoleWriter),
-                options.MaxPooledBuffers);
+            _bufferPool = bufferPool;
         }
 
         /// <inheritdoc />
@@ -53,6 +53,8 @@ namespace Vertical.SpectreLogger.Rendering
                 {
                     renderers[c].Render(buffer, logEventContext);
                 }
+                
+                buffer.Margin = 0;
             }
             finally
             {

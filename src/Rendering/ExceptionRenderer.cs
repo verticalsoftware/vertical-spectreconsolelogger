@@ -9,21 +9,12 @@ using Vertical.SpectreLogger.Templates;
 
 namespace Vertical.SpectreLogger.Rendering
 {
+    [Template("{Exception}")]
     public partial class ExceptionRenderer : ITemplateRenderer
     {
         private static readonly char[] SignatureSplitChars = {' ', ','};
         private static readonly string[] StackFrameSplitStrings = {Environment.NewLine};
 
-        [Template]
-        public static readonly string Template = TemplatePatternBuilder
-            .ForKey("Exception")
-            .AddControlPattern("\\+")
-            .Build();
-
-        private readonly bool _newLine;
-
-        public ExceptionRenderer(TemplateSegment template) => _newLine = "+" == template.ControlCode;
-            
         /// <inheritdoc />
         public void Render(IWriteBuffer buffer, in LogEventContext context)
         {
@@ -31,11 +22,6 @@ namespace Vertical.SpectreLogger.Rendering
             
             if (rootException == null)
                 return;
-
-            if (_newLine)
-            {
-                buffer.WriteLinePastMargin();
-            }
             
             var profile = context.Profile;
             var options = profile.ConfiguredOptions.GetOptions<Options>();
@@ -50,13 +36,12 @@ namespace Vertical.SpectreLogger.Rendering
 
                 switch (current)
                 {
-                    case { exception: AggregateException ae } when options.UnwindAggregateExceptions:
+                    case { exception: AggregateException ae } when options.UnwindInnerExceptions: 
                         var childId = 0;
                         foreach (var item in ae.InnerExceptions)
                         {
                             stack.Push((item, current.level + 1, ++childId));
                         }
-
                         break;
                     
                     case { exception: { InnerException: { } }} when options.UnwindInnerExceptions:
@@ -90,6 +75,8 @@ namespace Vertical.SpectreLogger.Rendering
 
                 count++;
             }
+            
+            buffer.WriteLine();
         }
 
         private static void PrintNameAndMessage(
@@ -157,6 +144,13 @@ namespace Vertical.SpectreLogger.Rendering
                 @"at (?<_method>[^(]+)\((?<_sig>.+)?\)(?<_src> in (?<_file>.+)(?::line (?<_line>\d+)))?");
 
             buffer.WriteLine();
+
+            if (!frameMatch.Success)
+            {
+                buffer.Write(frame);
+                return;
+            }
+
             buffer.WriteLogValue(profile, null, new MethodNameValue(frameMatch.Groups["_method"].Value), method =>
             {
                 buffer.Write("at ");
@@ -179,7 +173,6 @@ namespace Vertical.SpectreLogger.Rendering
 
             PrintSourcePath(buffer, profile, frameMatch, options);
         }
-
 
         private static void PrintParameters(
             IWriteBuffer buffer, 
@@ -223,23 +216,17 @@ namespace Vertical.SpectreLogger.Rendering
             Options options)
         {
             var path = frameMatch.Groups["_file"].Value;
-            var directory = Path.GetDirectoryName(path) ?? string.Empty;
+            var directory = (Path.GetDirectoryName(path) ?? string.Empty) + Path.DirectorySeparatorChar;
             var file = Path.GetFileName(path);
             var hasLineNumber = int.TryParse(frameMatch.Groups["_line"].Value, out var line);
 
             buffer.WriteLogValue(profile, null, new SourceDirectoryValue(directory), value =>
             {
                 buffer.Write(" in ");
-                
-                if (value.Length > 0)
-                {
-                    buffer.Write(value);
-                    buffer.Write(Path.DirectorySeparatorChar);
-                }
-                
+                buffer.Write(value);
                 buffer.WriteLogValue(profile, null, new SourceFileValue(file));
 
-                if (hasLineNumber)
+                if (hasLineNumber && options.ShowSourceLocations)
                 {
                     buffer.Write(":line ");
                 }

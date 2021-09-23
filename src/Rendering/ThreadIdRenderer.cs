@@ -16,8 +16,11 @@ namespace Vertical.SpectreLogger.Rendering
         public static readonly string Template = TemplatePatternBuilder
             .ForKey("ThreadId")
             .AddAlignment()
+            .AddFormatting()
             .Build();
-        
+
+        private readonly TemplateSegment _template;
+
         /// <summary>
         /// Wraps the thread value.
         /// </summary>
@@ -31,20 +34,25 @@ namespace Vertical.SpectreLogger.Rendering
             }
         }
 
-        [TypeFormatter(typeof(Thread))]
+        /// <summary>
+        /// The default formatter for this type.
+        /// </summary>
+        [TypeFormatter(typeof(Value))]
         public class DefaultFormatter : ICustomFormatter
         {
             /// <inheritdoc />
             public string Format(string? format, object? arg, IFormatProvider? formatProvider) =>
-                ((Thread) arg!).ManagedThreadId.ToString();
+                ((Value) arg!).Value.ManagedThreadId.ToString(format, formatProvider);
         }
+
+        public ThreadIdRenderer(TemplateSegment template) => _template = template;
 
         /// <inheritdoc />
         public void Render(IWriteBuffer buffer, in LogEventContext context)
         {
             buffer.WriteLogValue(
                 context.Profile,
-                null,
+                _template,
                 new Value());
         }
     }

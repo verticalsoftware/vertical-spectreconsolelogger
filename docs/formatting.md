@@ -56,15 +56,14 @@ public class CustomerFormatter : ICustomFormatter
 config.ConfigureProfiles(profile => profile.AddTypeFormatter<Customer>(new CustomerFormatter()));
 ```
 
-There are additional tools to make custom formatting less burdensome. First, instead of having to define an implementation of `ICustomFormatter`, you can register a delegate instead. The following example produces the same behavior
+There are additional tools to make custom formatting less burdensome. First, instead of having to define an implementation of `ICustomFormatter`, you can register a delegate instead. The following example produces the same behavior:
 
 ```csharp
 // Using a formatting delegate - note no additional registration
 // is necessary.
 
-config.ConfigureProfiles(profile => profile.AddTypeFormatter<Customer>((format, object, IFormatProvider) => 
+config.ConfigureProfiles(profile => profile.AddTypeFormatter<Customer>((format, customer, IFormatProvider) => 
 {
-    var customer = (Customer)arg;            
     return $"Id={customer.Id}, Name={customer.Name}";
 });
 ```

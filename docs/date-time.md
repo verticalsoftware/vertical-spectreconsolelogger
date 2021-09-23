@@ -37,7 +37,7 @@ config.ConfigureProfiles(profile =>
 });
 ```
 
-### Value Types
+### Emitted Types
 
 The following type(s) can be formatted & styled:
 

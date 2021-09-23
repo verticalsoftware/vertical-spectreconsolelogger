@@ -12,7 +12,6 @@ namespace Vertical.SpectreLogger.Options
     /// </summary>
     public class LogLevelProfile
     {
-        private readonly string _internalId = Guid.NewGuid().ToString("N");
         private ICustomFormatter? _formatter;
         private IFormatProvider? _formatProvider;
 
@@ -34,12 +33,12 @@ namespace Vertical.SpectreLogger.Options
         /// <summary>
         /// Gets a dictionary of <see cref="ICustomFormatter"/> for value types.
         /// </summary>
-        public Dictionary<Type, ICustomFormatter> TypeFormatters { get; } = new();
+        internal Dictionary<Type, ICustomFormatter> TypeFormatters { get; } = new();
 
         /// <summary>
         /// Gets a dictionary of markup to apply before a specific value is rendered.
         /// </summary>
-        public Dictionary<object, string> ValueStyles { get; } = new();
+        internal Dictionary<object, string> ValueStyles { get; } = new();
 
         /// <summary>
         /// Gets a dictionary of markup to apply before a value of a specific type is rendered.
@@ -66,11 +65,6 @@ namespace Vertical.SpectreLogger.Options
         /// Gets the format provider.
         /// </summary>
         internal IFormatProvider FormatProvider => _formatProvider ??= new MultiTypeFormatProvider(Formatter);
-
-        /// <summary>
-        /// Gets a cache of objects available internally.
-        /// </summary>
-        internal RuntimeCacheCollection RuntimeCache { get; } = new();
 
         /// <inheritdoc />
         public override string ToString() => LogLevel.ToString();
