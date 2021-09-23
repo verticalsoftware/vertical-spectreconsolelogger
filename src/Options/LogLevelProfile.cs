@@ -66,11 +66,6 @@ namespace Vertical.SpectreLogger.Options
         /// </summary>
         internal IFormatProvider FormatProvider => _formatProvider ??= new MultiTypeFormatProvider(Formatter);
 
-        /// <summary>
-        /// Gets a cache of objects available internally.
-        /// </summary>
-        internal RuntimeCacheCollection RuntimeCache { get; } = new();
-
         /// <inheritdoc />
         public override string ToString() => LogLevel.ToString();
     }

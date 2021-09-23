@@ -12,8 +12,8 @@ namespace Vertical.SpectreLogger.Internal
 
         internal WriteBufferPooledObjectPolicy(IConsoleWriter consoleWriter, Func<IWriteBuffer> writeBufferFactory)
         {
-            _consoleWriter = consoleWriter;
-            _writeBufferFactory = writeBufferFactory;
+            _consoleWriter = consoleWriter ?? throw new ArgumentNullException(nameof(consoleWriter));
+            _writeBufferFactory = writeBufferFactory ?? throw new ArgumentNullException(nameof(writeBufferFactory));
         }
 
         /// <inheritdoc />

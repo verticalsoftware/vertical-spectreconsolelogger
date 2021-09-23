@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Threading;
+using System.Diagnostics;
 using Vertical.SpectreLogger.Core;
 using Vertical.SpectreLogger.Formatting;
 using Vertical.SpectreLogger.Output;
@@ -10,11 +10,11 @@ namespace Vertical.SpectreLogger.Rendering
     /// <summary>
     /// Renders the thread id (at the time of capture).
     /// </summary>
-    public class ThreadIdRenderer : ITemplateRenderer
+    public class ProcessIdRenderer : ITemplateRenderer
     {
         [Template]
         public static readonly string Template = TemplatePatternBuilder
-            .ForKey("ThreadId")
+            .ForKey("ProcessId")
             .AddAlignment()
             .AddFormatting()
             .Build();
@@ -24,12 +24,12 @@ namespace Vertical.SpectreLogger.Rendering
         /// <summary>
         /// Wraps the thread value.
         /// </summary>
-        public class Value : ValueWrapper<Thread>
+        public class Value : ValueWrapper<Process>
         {
             /// <summary>
             /// Creates a new instance of this type. The thread id is automatically assigned.
             /// </summary>
-            public Value() : base(Thread.CurrentThread)
+            public Value() : base(Process.GetCurrentProcess())
             {
             }
         }
@@ -42,10 +42,14 @@ namespace Vertical.SpectreLogger.Rendering
         {
             /// <inheritdoc />
             public string Format(string? format, object? arg, IFormatProvider? formatProvider) =>
-                ((Value) arg!).Value.ManagedThreadId.ToString(format, formatProvider);
+                ((Value) arg!).Value.Id.ToString(format, formatProvider);
         }
 
-        public ThreadIdRenderer(TemplateSegment template) => _template = template;
+        /// <summary>
+        /// Creates a new instance of this type.
+        /// </summary>
+        /// <param name="template">Template</param>
+        public ProcessIdRenderer(TemplateSegment template) => _template = template;
 
         /// <inheritdoc />
         public void Render(IWriteBuffer buffer, in LogEventContext context)

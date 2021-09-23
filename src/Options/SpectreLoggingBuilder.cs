@@ -58,7 +58,7 @@ namespace Vertical.SpectreLogger.Options
         /// <returns>A reference to this instance,.</returns>
         public SpectreLoggingBuilder SetLogEventFilter(LogEventFilterDelegate filter)
         {
-            Services.Configure<SpectreLoggerOptions>(opt => opt.LogEventFilter = new DelegatingLogEventFilter(filter));
+            Services.Configure<SpectreLoggerOptions>(opt => opt.LogEventFilter = new DelegateLogEventFilter(filter));
             return this;
         }
 

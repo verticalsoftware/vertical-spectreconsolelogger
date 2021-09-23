@@ -14,6 +14,8 @@ namespace OutOfBoxStyles
     {
         static void Main(string[] args)
         {
+            var v = string.Format("{0,10:x4}", 100);
+            
             var style = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
                     .Title("What console logging [italic yellow]style[/] would you like to see?")

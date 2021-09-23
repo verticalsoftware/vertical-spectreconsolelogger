@@ -1,19 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Shouldly;
+using VerifyXunit;
 using Vertical.SpectreLogger.Destructuring;
 using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Output;
+using Vertical.SpectreLogger.Tests.Infrastructure;
 using Xunit;
 
 namespace Vertical.SpectreLogger.Tests.Destructuring
 {
+    [UsesVerify]
     public class DestructuringWriterTests
     {
         [Fact]
-        public void WriteDictionaryRendersExpectedContent()
+        public Task WriteDictionaryRendersExpectedContent()
         {
             var profile = new LogLevelProfile(LogLevel.Information);
             var buffer = new WriteBuffer(Substitute.For<IConsoleWriter>());
@@ -31,11 +35,11 @@ namespace Vertical.SpectreLogger.Tests.Destructuring
             
             DestructuringWriter.Write(buffer, profile, dictionary);
             
-            buffer.ToString().ShouldBe("{firstName: Testy, lastName: McTesterson, address: {street: 123 Main Street, city: Denver, state: CO}}");
+            return Verifier.Verify(buffer.ToString());
         }
 
         [Fact]
-        public void WriteObjectRendersExpectedContent()
+        public Task WriteObjectRendersExpectedContent()
         {
             var obj = new
             {
@@ -54,7 +58,7 @@ namespace Vertical.SpectreLogger.Tests.Destructuring
             
             DestructuringWriter.Write(buffer, profile, obj);
             
-            buffer.ToString().ShouldBe("{FirstName: Testy, LastName: McTesterson, Address: {Street: 123 Main Street, City: Denver, State: CO}}");
+            return Verifier.Verify(buffer.ToString());
         }
 
         [Fact]
@@ -70,14 +74,8 @@ namespace Vertical.SpectreLogger.Tests.Destructuring
             buffer.ToString().ShouldBe("[[one, two, three]]");
         }
 
-        record Person(string Name, Person[]? Children)
-        {
-            /// <inheritdoc />
-            public override string ToString() => $"{Name}, Children={Children?.Length}";
-        }
-
         [Fact]
-        public void WriteDictionaryRespectsMaxDepth()
+        public Task WriteDictionaryRespectsMaxDepth()
         {
             var obj = new Person(
                 "Testy",
@@ -102,6 +100,8 @@ namespace Vertical.SpectreLogger.Tests.Destructuring
 
             var buffer = new WriteBuffer(Substitute.For<IConsoleWriter>());
             DestructuringWriter.Write(buffer, profile, obj);
+
+            return Verifier.Verify(buffer.ToString());
         }
     }
 }

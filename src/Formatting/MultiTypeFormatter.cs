@@ -14,7 +14,7 @@ namespace Vertical.SpectreLogger.Formatting
 
         internal MultiTypeFormatter(Dictionary<Type, ICustomFormatter> typeFormatters)
         {
-            _typeFormatters = typeFormatters;
+            _typeFormatters = typeFormatters ?? throw new ArgumentNullException(nameof(typeFormatters));
         }
 
         /// <inheritdoc />
@@ -25,16 +25,13 @@ namespace Vertical.SpectreLogger.Formatting
                 return string.Empty;
             }
 
-            return _typeFormatters.TryGetValue(arg.GetType(), out var formatter)
-                ? formatter.Format(format, arg, formatProvider)
-                : FormatCore(format, arg);
-        }
+            if (_typeFormatters.TryGetValue(arg.GetType(), out var formatter))
+                return formatter.Format(format, arg, formatProvider);
 
-        private static string FormatCore(string? format, object arg)
-        {
-            return arg is IFormattable formattableValue
-                ? formattableValue.ToString(format, CultureInfo.CurrentCulture)
-                : arg.ToString() ?? string.Empty;
+            if (arg is IFormattable formattableValue)
+                return formattableValue.ToString(format, CultureInfo.CurrentCulture);
+
+            return arg.ToString() ?? string.Empty;
         }
     }
 }

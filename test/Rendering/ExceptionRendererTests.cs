@@ -20,7 +20,7 @@ namespace Vertical.SpectreLogger.Tests.Rendering
                 config => ConfigureBaseOptions(config),
                 logger => logger.LogError(ExceptionHelper.GetAggregateException(), "Error occurred"));
 
-            return Verifier.Verify(output);
+            return Verifier.Verify(output, SharedSettings.Verifier);
         }
 
         [Fact]
@@ -30,7 +30,7 @@ namespace Vertical.SpectreLogger.Tests.Rendering
                 config => ConfigureBaseOptions(config, ex => ex.ShowParameterTypes = false),
                 logger => logger.LogError(ExceptionHelper.GetAggregateException(), "Error occurred"));
 
-            return Verifier.Verify(output);
+            return Verifier.Verify(output, SharedSettings.Verifier);
         }
         
         [Fact]
@@ -40,7 +40,7 @@ namespace Vertical.SpectreLogger.Tests.Rendering
                 config => ConfigureBaseOptions(config, ex => ex.ShowParameterNames = false),
                 logger => logger.LogError(ExceptionHelper.GetAggregateException(), "Error occurred"));
 
-            return Verifier.Verify(output);
+            return Verifier.Verify(output, SharedSettings.Verifier);
         }
         
         [Fact]
@@ -50,7 +50,7 @@ namespace Vertical.SpectreLogger.Tests.Rendering
                 config => ConfigureBaseOptions(config, ex => ex.ShowSourceLocations = false),
                 logger => logger.LogError(ExceptionHelper.GetAggregateException(), "Error occurred"));
 
-            return Verifier.Verify(output);
+            return Verifier.Verify(output, SharedSettings.Verifier);
         }
         
         [Fact]
@@ -60,7 +60,7 @@ namespace Vertical.SpectreLogger.Tests.Rendering
                 config => ConfigureBaseOptions(config, ex => ex.ShowSourcePaths = false),
                 logger => logger.LogError(ExceptionHelper.GetAggregateException(), "Error occurred"));
 
-            return Verifier.Verify(output);
+            return Verifier.Verify(output, SharedSettings.Verifier);
         }
         
         [Fact]
@@ -70,7 +70,7 @@ namespace Vertical.SpectreLogger.Tests.Rendering
                 config => ConfigureBaseOptions(config, ex => ex.UnwindInnerExceptions = false),
                 logger => logger.LogError(ExceptionHelper.GetAggregateException(), "Error occurred"));
 
-            return Verifier.Verify(output);
+            return Verifier.Verify(output, SharedSettings.Verifier);
         }
 
         [Fact]
@@ -80,7 +80,7 @@ namespace Vertical.SpectreLogger.Tests.Rendering
                 config => ConfigureBaseOptions(config, ex => ex.MaxStackFrames = 10),
                 logger => logger.LogError(ExceptionHelper.GetAggregateException(), "Error occurred"));
 
-            return Verifier.Verify(output);
+            return Verifier.Verify(output, SharedSettings.Verifier);
         }
 
         private static void ConfigureBaseOptions(

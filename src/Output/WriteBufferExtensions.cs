@@ -24,19 +24,6 @@ namespace Vertical.SpectreLogger.Output
         }
 
         /// <summary>
-        /// Writes a newline only if the current line position is past
-        /// the set margin.
-        /// </summary>
-        /// <param name="buffer">Buffer</param>
-        public static void WriteLinePastMargin(this IWriteBuffer buffer)
-        {
-            if (buffer.LinePosition > buffer.Margin)
-            {
-                buffer.WriteLine();
-            }
-        }
-
-        /// <summary>
         /// Writes a template state value, considering it may be a FormattedLogValues instance.
         /// </summary>
         /// <param name="buffer">Buffer</param>
@@ -125,26 +112,6 @@ namespace Vertical.SpectreLogger.Output
             {
                 buffer.Write(closeTag);
             }
-        }
-
-        /// <summary>
-        /// Writes a log value to the buffer, only applying profile formatting.
-        /// </summary>
-        /// <param name="buffer">Write buffer</param>
-        /// <param name="profile">The profile that contains the styles and formatting to apply</param>
-        /// <param name="templateSegment">The template segment</param>
-        /// <param name="value">The value to write</param>
-        /// <typeparam name="T">The value type</typeparam>
-        public static void WriteFormattedValue<T>(
-            this IWriteBuffer buffer,
-            LogLevelProfile profile,
-            TemplateSegment? templateSegment,
-            T value)
-            where T : notnull
-        {
-            var valueFormatted = value.Format(profile.FormatProvider, templateSegment?.CompositeFormatSpan);
-
-            buffer.Write(valueFormatted.EscapeMarkup());
         }
 
         /// <summary>
