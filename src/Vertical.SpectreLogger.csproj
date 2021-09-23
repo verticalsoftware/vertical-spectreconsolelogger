@@ -20,7 +20,7 @@
     <SymbolsPackageFormat>snupkg</SymbolsPackageFormat>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>..\assets\vertical-software.snk</AssemblyOriginatorKeyFile>
-    <PublicSign Condition="'$(OS)' != 'Windows_NT'">true</PublicSign>
+<!--    <PublicSign Condition="'$(OS)' != 'Windows_NT'">true</PublicSign>-->
   </PropertyGroup>
   
   <ItemGroup>
