@@ -8,6 +8,9 @@ using Vertical.SpectreLogger.Formatting;
 
 namespace Vertical.SpectreLogger.Options
 {
+    /// <summary>
+    /// Extensions for <see cref="LogLevelProfile"/>
+    /// </summary>
     public static class LogLevelProfileExtensions
     {
         /// <summary>
@@ -94,7 +97,6 @@ namespace Vertical.SpectreLogger.Options
         /// <param name="types">The types to associate the formatter to.</param>
         /// <param name="formatter">The formatter delegate.</param>
         /// <returns><see cref="LogLevelProfile"/></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="type"/> is null.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="formatter"/> is null.</exception>
         public static LogLevelProfile AddTypeFormatter(
             this LogLevelProfile profile,

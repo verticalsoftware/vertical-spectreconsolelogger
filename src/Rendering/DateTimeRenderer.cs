@@ -6,6 +6,9 @@ using Vertical.SpectreLogger.Templates;
 
 namespace Vertical.SpectreLogger.Rendering
 {
+    /// <summary>
+    /// Renders the date time produced by the configured factory.
+    /// </summary>
     public class DateTimeRenderer : ITemplateRenderer
     {
         private readonly TemplateSegment _template;
@@ -22,6 +25,9 @@ namespace Vertical.SpectreLogger.Rendering
             public Func<DateTimeOffset>? ValueFactory { get; set; } = () => DateTimeOffset.Now;
         }
         
+        /// <summary>
+        /// Defines the template for this renderer.
+        /// </summary>
         [Template]
         public static readonly string Template = TemplatePatternBuilder
             .ForKey("[Dd]ate[Tt]ime")

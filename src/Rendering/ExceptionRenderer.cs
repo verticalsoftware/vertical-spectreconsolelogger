@@ -9,6 +9,9 @@ using Vertical.SpectreLogger.Templates;
 
 namespace Vertical.SpectreLogger.Rendering
 {
+    /// <summary>
+    /// Renders the event exception.
+    /// </summary>
     [Template("{Exception}")]
     public partial class ExceptionRenderer : ITemplateRenderer
     {

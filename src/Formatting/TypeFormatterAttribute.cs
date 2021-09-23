@@ -2,6 +2,9 @@
 
 namespace Vertical.SpectreLogger.Formatting
 {
+    /// <summary>
+    /// Attributes used to describe the type a formatter supports.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
     public class TypeFormatterAttribute : Attribute
     {

@@ -6,8 +6,16 @@ using Vertical.SpectreLogger.Rendering;
 
 namespace Vertical.SpectreLogger.Options
 {
+    /// <summary>
+    /// Extensions for <see cref="SpectreLoggingBuilder"/>
+    /// </summary>
     public static class SerilogStyleLoggerOptions
     {
+        /// <summary>
+        /// Configures the log level profiles to render closely to the style of Serilog.
+        /// </summary>
+        /// <param name="config">Configuration</param>
+        /// <returns><see cref="SpectreLoggingBuilder"/></returns>
         public static SpectreLoggingBuilder UseSerilogConsoleStyle(this SpectreLoggingBuilder config)
         {
             const string baseColor = "[grey85]";

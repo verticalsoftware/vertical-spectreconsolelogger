@@ -8,6 +8,9 @@ namespace Vertical.SpectreLogger.Formatting
     /// </summary>
     public static class Types
     {
+        /// <summary>
+        /// Represents an array of types that are unsigned integers.
+        /// </summary>
         public static readonly Type[] UnsignedIntegers =
         {
             typeof(byte),
@@ -20,6 +23,9 @@ namespace Vertical.SpectreLogger.Formatting
             typeof(ulong?)
         };
 
+        /// <summary>
+        /// Represents an array of types that are signed integers.
+        /// </summary>
         public static readonly Type[] SignedIntegers =
         {
             typeof(sbyte),
@@ -31,7 +37,10 @@ namespace Vertical.SpectreLogger.Formatting
             typeof(long),
             typeof(long?)
         };
-
+        
+        /// <summary>
+        /// Represents an array of types that are real numbers.
+        /// </summary>
         public static readonly Type[] RealNumbers =
         {
             typeof(float),
@@ -42,11 +51,17 @@ namespace Vertical.SpectreLogger.Formatting
             typeof(decimal?)
         };
 
+        /// <summary>
+        /// Represents an array of types that are numeric types.
+        /// </summary>
         public static readonly Type[] Numerics = UnsignedIntegers
             .Concat(SignedIntegers)
             .Concat(RealNumbers)
             .ToArray();
         
+        /// <summary>
+        /// Represents an array of types that are characters.
+        /// </summary>
         public static readonly Type[] Characters =
         {
             typeof(char),
@@ -54,6 +69,9 @@ namespace Vertical.SpectreLogger.Formatting
             typeof(string)
         };
 
+        /// <summary>
+        /// Represents an array of types that are pointers.
+        /// </summary>
         public static readonly Type[] Pointers =
         {
             typeof(IntPtr),
@@ -61,7 +79,10 @@ namespace Vertical.SpectreLogger.Formatting
             typeof(UIntPtr),
             typeof(UIntPtr?)
         };
-
+        
+        /// <summary>
+        /// Represents an array of types that are temporal values.
+        /// </summary>
         public static readonly Type[] Temporal =
         {
             typeof(DateTime),

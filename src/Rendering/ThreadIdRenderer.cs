@@ -12,6 +12,9 @@ namespace Vertical.SpectreLogger.Rendering
     /// </summary>
     public class ThreadIdRenderer : ITemplateRenderer
     {
+        /// <summary>
+        /// Defines the template for this renderer.
+        /// </summary>
         [Template]
         public static readonly string Template = TemplatePatternBuilder
             .ForKey("ThreadId")
@@ -45,6 +48,10 @@ namespace Vertical.SpectreLogger.Rendering
                 ((Value) arg!).Value.ManagedThreadId.ToString(format, formatProvider);
         }
 
+        /// <summary>
+        /// Creates a new instance of this type.
+        /// </summary>
+        /// <param name="template">Template segment</param>
         public ThreadIdRenderer(TemplateSegment template) => _template = template;
 
         /// <inheritdoc />

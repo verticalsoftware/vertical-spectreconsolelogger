@@ -5,10 +5,16 @@ using Vertical.SpectreLogger.Templates;
 
 namespace Vertical.SpectreLogger.Rendering
 {
+    /// <summary>
+    /// Renders the logger category.
+    /// </summary>
     public partial class CategoryNameRenderer : ITemplateRenderer
     {
         private readonly TemplateSegment _template;
 
+        /// <summary>
+        /// Defines the template for this renderer.
+        /// </summary>
         [Template]
         public static readonly string Template = TemplatePatternBuilder
             .ForKey("[Cc]ategory[Nn]ame")

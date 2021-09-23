@@ -4,6 +4,9 @@ using Vertical.SpectreLogger.Templates;
 
 namespace Vertical.SpectreLogger.Rendering
 {
+    /// <summary>
+    /// Renders scope values in the log event.
+    /// </summary>
     [Template("{Scopes}")]
     public class ScopeValuesRenderer : ITemplateRenderer
     {
