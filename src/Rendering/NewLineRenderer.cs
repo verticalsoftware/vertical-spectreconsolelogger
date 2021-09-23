@@ -4,6 +4,9 @@ using Vertical.SpectreLogger.Templates;
 
 namespace Vertical.SpectreLogger.Rendering
 {
+    /// <summary>
+    /// Renders a new line.
+    /// </summary>
     [Template("{NewLine}")]
     public class NewLineRenderer : ITemplateRenderer
     {

@@ -7,6 +7,9 @@ using Vertical.SpectreLogger.Scopes;
 
 namespace Vertical.SpectreLogger
 {
+    /// <summary>
+    /// Implementation of the logger.
+    /// </summary>
     public class SpectreLogger : ILogger
     {
         private readonly ILogEventFilter? _logEventFilter;

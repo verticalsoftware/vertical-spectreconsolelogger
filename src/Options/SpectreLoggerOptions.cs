@@ -6,6 +6,9 @@ using Vertical.SpectreLogger.Internal;
 
 namespace Vertical.SpectreLogger.Options
 {
+    /// <summary>
+    /// Represents the options global to the logging provider.
+    /// </summary>
     public class SpectreLoggerOptions
     {
         private int _maxPooledBuffers = 5;

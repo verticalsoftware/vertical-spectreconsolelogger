@@ -4,6 +4,9 @@ using Vertical.SpectreLogger.Templates;
 
 namespace Vertical.SpectreLogger.Rendering
 {
+    /// <summary>
+    /// Renders the message portion of the log event.
+    /// </summary>
     [Template("{Message}")]
     public class MessageRenderer : ITemplateRenderer
     {

@@ -1,0 +1,32 @@
+name: Dev build
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: ["5.0.x"]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET Code SDK ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v1.7.2
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build -c Release --no-restore
+      - name: Test
+        run: dotnet test --no-restore --collect:"XPlat Code Coverage"
+      - name: Publish code coverage
+        uses: codecov/codecov-action@v1
+        with:
+          files: "**/coverage.cobertura.xml"
+          flags: unittests
+          name: vertical-spectreconsolelogger-codecov

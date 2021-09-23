@@ -14,6 +14,9 @@ namespace Vertical.SpectreLogger.Rendering
     {
         private readonly TemplateSegment _template;
 
+        /// <summary>
+        /// Defines the template for this renderer.
+        /// </summary>
         [Template] 
         public static readonly string Template = TemplatePatternBuilder
             .ForKey("LogLevel")
@@ -21,6 +24,9 @@ namespace Vertical.SpectreLogger.Rendering
             .AddFormatting()
             .Build();
 
+        /// <summary>
+        /// Implements a formatter for <see cref="LogLevel"/> values.
+        /// </summary>
         [TypeFormatter(typeof(LogLevel))]
         public class Formatter : ICustomFormatter
         {

@@ -14,6 +14,9 @@ using Vertical.SpectreLogger.Templates;
 
 namespace Vertical.SpectreLogger
 {
+    /// <summary>
+    /// Extensions for <see cref="ILoggingBuilder"/>
+    /// </summary>
     public static class LoggingBuilderExtensions
     {
         /// <summary>

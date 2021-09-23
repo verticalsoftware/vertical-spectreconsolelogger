@@ -2,6 +2,9 @@
 
 namespace Vertical.SpectreLogger.Options
 {
+    /// <summary>
+    /// Extensions for <see cref="SpectreLoggingBuilder"/>
+    /// </summary>
     public static class MicrosoftStyleLoggerOptions
     {
         /// <summary>

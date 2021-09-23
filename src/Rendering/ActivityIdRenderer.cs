@@ -10,6 +10,9 @@ namespace Vertical.SpectreLogger.Rendering
     /// </summary>
     public class ActivityIdRenderer : ITemplateRenderer
     {
+        /// <summary>
+        /// Defines the template for this renderer.
+        /// </summary>
         [Template]
         public static readonly string Template = TemplatePatternBuilder
             .ForKey("[Aa]ctivity[Ii]d")

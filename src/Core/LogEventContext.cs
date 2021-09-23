@@ -5,6 +5,9 @@ using Vertical.SpectreLogger.Options;
 
 namespace Vertical.SpectreLogger.Core
 {
+    /// <summary>
+    /// Defines the properties of a log event.
+    /// </summary>
     public readonly struct LogEventContext
     {
         internal LogEventContext(

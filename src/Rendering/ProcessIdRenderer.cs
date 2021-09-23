@@ -12,6 +12,9 @@ namespace Vertical.SpectreLogger.Rendering
     /// </summary>
     public class ProcessIdRenderer : ITemplateRenderer
     {
+        /// <summary>
+        /// Defines the template for this renderer.
+        /// </summary>
         [Template]
         public static readonly string Template = TemplatePatternBuilder
             .ForKey("ProcessId")

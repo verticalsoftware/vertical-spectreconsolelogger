@@ -3,6 +3,9 @@ using System.Text.RegularExpressions;
 
 namespace Vertical.SpectreLogger.Templates
 {
+    /// <summary>
+    /// Defines methods to parse templates.
+    /// </summary>
     public static class TemplateString
     {
         /// <summary>
