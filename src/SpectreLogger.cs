@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using Vertical.SpectreLogger.Core;
 using Vertical.SpectreLogger.Internal;
@@ -39,11 +40,8 @@ namespace Vertical.SpectreLogger
             Exception exception, 
             Func<TState, Exception, string> formatter)
         {
-            if (ReferenceEquals(null, state))
-            {
-                // Nothing to render?
+            if (!IsEnabled(logLevel))
                 return;
-            }
 
             var profile = _options.LogLevelProfiles[logLevel];
             var scopeValues = _scopeManager.GetValues();
@@ -63,10 +61,12 @@ namespace Vertical.SpectreLogger
             _rendererPipeline.Render(eventInfo);
         }
 
+        
         /// <inheritdoc />
+        [ExcludeFromCodeCoverage]
         public bool IsEnabled(LogLevel logLevel)
         {
-            return logLevel > LogLevel.None && logLevel >= _options.MinimumLogLevel;
+            return logLevel != LogLevel.None && logLevel >= _options.MinimumLogLevel;
         }
 
         /// <inheritdoc />

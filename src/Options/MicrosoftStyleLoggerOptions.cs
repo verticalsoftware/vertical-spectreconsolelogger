@@ -15,8 +15,8 @@ namespace Vertical.SpectreLogger.Options
         public static SpectreLoggingBuilder UseMicrosoftConsoleStyle(this SpectreLoggingBuilder config)
         {
             config.ConfigureProfiles(profile => profile
-                .AddTypeFormatter<LogLevel>((_, obj, __) =>
-                    (LogLevel) obj! switch
+                .AddTypeFormatter<LogLevel>((_, level) =>
+                    level switch
                     {
                         LogLevel.Trace => "trce",
                         LogLevel.Debug => "dbug",

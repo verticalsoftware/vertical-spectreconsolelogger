@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Spectre.Console;
 
 namespace Vertical.SpectreLogger.Output
@@ -20,6 +21,7 @@ namespace Vertical.SpectreLogger.Output
         /// Writes a value to the console.
         /// </summary>
         /// <param name="str">Content to write.</param>
+        [ExcludeFromCodeCoverage]
         protected void WriteToConsole(string str)
         {
             try

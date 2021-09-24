@@ -33,5 +33,14 @@ namespace Vertical.SpectreLogger.Tests.Rendering
                 activity.Stop();
             }
         }
+
+        [Fact]
+        public void RendererWritesNothingWithNoActivityId()
+        {
+            RendererTestHarness.RunScenario(
+                config => config.ConfigureProfiles(p => p.OutputTemplate = "{ActivityId}"),
+                logger => logger.LogInformation(""),
+                "");
+        }
     }
 }

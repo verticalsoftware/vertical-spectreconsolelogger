@@ -49,11 +49,15 @@ namespace Vertical.SpectreLogger.Destructuring
             writer.WriteValue(value);
         }
 
-        public bool WriteProperty(string key, object? value) => WriteNode(key, value);
+        public bool WriteProperty(string key, object? value) => WriteNode(key, value, _options.MaxProperties);
 
         /// <inheritdoc />
-        public bool WriteElement(object? value) => WriteNode(null, value);
-        
+        public bool WriteElement(object? value)
+        {
+            
+            return WriteNode(null, value, _options.MaxCollectionItems);
+        }
+
         public void WriteIntegral(object? value)
         {
             _buffer.WriteLogValue(_profile, null, value ?? NullValue.Default);
@@ -88,9 +92,9 @@ namespace Vertical.SpectreLogger.Destructuring
             valueWriter(this, value);
         }
         
-        private bool WriteNode(string? key, object? value)
+        private bool WriteNode(string? key, object? value, int maxCount)
         {
-            if (_innerCount++ == _options.MaxProperties)
+            if (_innerCount++ == maxCount)
             {
                 _buffer.Write(", ...");
                 return false;

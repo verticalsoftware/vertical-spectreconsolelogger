@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Spectre.Console;
 using Spectre.Console.Rendering;
+using Vertical.SpectreLogger.Output;
 using Xunit;
 
 namespace Vertical.SpectreLogger.Tests.Output
@@ -33,6 +34,18 @@ namespace Vertical.SpectreLogger.Tests.Output
             logger.LogInformation("Test event successful");
 
             await services.DisposeAsync();
+            
+            console.Received().Write(Arg.Any<IRenderable>());
+        }
+        
+        [Fact]
+        public void WritePushedContentAfterDispose()
+        {
+            var console = Substitute.For<IAnsiConsole>();
+            var writer = new BackgroundConsoleWriter(console);
+            
+            writer.Dispose();
+            writer.Write("test");
             
             console.Received().Write(Arg.Any<IRenderable>());
         }

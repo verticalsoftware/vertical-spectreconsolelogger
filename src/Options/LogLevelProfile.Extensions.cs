@@ -288,5 +288,16 @@ namespace Vertical.SpectreLogger.Options
             profile.TypeStyles.Clear();
             return profile;
         }
+
+        /// <summary>
+        /// Clears all value styles.
+        /// </summary>
+        /// <param name="profile">Log level profile.</param>
+        /// <returns></returns>
+        public static LogLevelProfile ClearValueStyles(this LogLevelProfile profile)
+        {
+            profile.ValueStyles.Clear();
+            return profile;
+        }
     }
 }

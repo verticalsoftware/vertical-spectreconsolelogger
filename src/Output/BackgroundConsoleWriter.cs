@@ -58,7 +58,7 @@ namespace Vertical.SpectreLogger.Output
             }
             catch (ThreadStateException)
             {
-                // Ignored
+                // Ignored because there is no recovery
             }
         }
 
