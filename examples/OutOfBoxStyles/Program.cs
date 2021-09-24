@@ -24,15 +24,15 @@ namespace OutOfBoxStyles
             switch (style)
             {
                 case "Default":
-                    Run(builder => { });
+                    Run(builder => builder.SetMinimumLevel(LogLevel.Trace));
                     break;
                 
                 case "Microsoft":
-                    Run(builder => builder.UseMicrosoftConsoleStyle());
+                    Run(builder => builder.UseMicrosoftConsoleStyle().SetMinimumLevel(LogLevel.Trace));
                     break;
                 
                 case "Serilog":
-                    Run(builder => builder.UseSerilogConsoleStyle());
+                    Run(builder => builder.UseSerilogConsoleStyle().SetMinimumLevel(LogLevel.Trace));
                     break;
             }
         }
