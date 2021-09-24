@@ -20,8 +20,10 @@ jobs:
           dotnet-version: ${{ matrix.dotnet-version }}
       - name: Install dependencies
         run: dotnet restore
-      - name: Build
+      - name: Build package sources
         run: dotnet build -c Release --no-restore
+      - name: Build samples
+        run: dotnet build ./examples/solution.sln
       - name: Test
         run: dotnet test --no-restore --collect:"XPlat Code Coverage"
       - name: Publish code coverage

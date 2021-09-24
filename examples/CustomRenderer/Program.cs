@@ -13,7 +13,7 @@ namespace CustomRenderer
                 {
                     config.AddTemplateRenderers();
 
-                    const string template = "[grey85][[{DateTime:T} [green3_1]Info[/]]] (logId={IncrementingId}) {Message}{Exception+}[/]";
+                    const string template = "[grey85][[{DateTime:T} [green3_1]Info[/]]] (logId={IncrementingId}) {Message}{NewLine}{Exception}[/]";
                     
                     config.ConfigureProfiles(profile => profile.OutputTemplate = template);
                 });
