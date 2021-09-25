@@ -38,3 +38,7 @@ The library defines several `Type` arrays that can be used to apply styling to s
 |`Types.Temporal`|`DateTime`, `DateTimeOffset`, `TimeSpan` + their `Nullable` variants.|
 |`Types.UnsignedIntegers`|`byte`, `ushort`, `uint`, `ulong` + their `Nullable` variants.|
 
+## See Also
+
+- [(Next) Destructured Output](./destructuring.md)
+- [Formatting Log Values](./formatting.md)

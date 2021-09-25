@@ -24,3 +24,7 @@ The following type can be formatted & styled:
 |Type|Description|
 |---|---|
 |`System.Diagnostics.ActivityTraceId`|The [trace id](https://docs.microsoft.com/en-us/dotnet/api/system.diagnostics.activity.traceid?view=net-5.0) portion of the activity id.|
+
+## See Also
+- [Next: Category Name](./category-name.md)
+- [Rendering Overview](./renderer-overview.md)

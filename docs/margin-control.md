@@ -38,3 +38,7 @@ config.ConfigureProfiles(profile =>
     profile.OutputTemplate = "{LogLevel}: {CategoryName}{Margin=6}{NewLine}{Message}{NewLine+}{Exception}"
 );
 ```
+
+## See Also
+- [Next: Message](./message.md)
+- [Rendering Overview](./renderer-overview.md)

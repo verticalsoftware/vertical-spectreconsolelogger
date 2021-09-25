@@ -7,8 +7,15 @@ Prints the managed thread id (obtained by `Thread.CurrentThread.ManagedThreadId`
 ### Placeholder Syntax
 
 ```
-{ThreadId}
+{ThreadId[,alignment]}
 ```
+
+### Parameters
+
+|Parameter|Description|
+|---|---|
+|`[,alignment]`|The preferred formatted field width.|
+
 
 ### Emitted Types
 

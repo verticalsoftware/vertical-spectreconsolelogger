@@ -46,3 +46,8 @@ config.ConfigureProfile(LogLevel.Information, profile =>
     profile.OutputTemplate = "[grey85][[{DateTime:T} [green3_1]Info[/]]] {Message}{NewLine+}{Exception}[/]"));
 });
 ```
+
+## See Also
+
+- [(Next) Formatting Log Values](./formatting.md)
+- [Styling Log Values](./styling.md)

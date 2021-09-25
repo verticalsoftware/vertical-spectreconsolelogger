@@ -24,3 +24,6 @@ The logging provider pools write buffers to try to reuse string builders (defaul
 // Set buffers to 1 for a single-threaded application
 config.MaxPooledBuffers = 3;
 ```
+
+## See Also
+- [Basic Configuration](./basic-configuration.md)

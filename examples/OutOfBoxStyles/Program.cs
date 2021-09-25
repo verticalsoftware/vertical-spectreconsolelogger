@@ -14,8 +14,6 @@ namespace OutOfBoxStyles
     {
         static void Main(string[] args)
         {
-            var v = string.Format("{0,10:x4}", 100);
-            
             var style = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
                     .Title("What console logging [italic yellow]style[/] would you like to see?")
@@ -63,7 +61,7 @@ namespace OutOfBoxStyles
                 logger.Log(
                     logLevel,
                     exception,
-                    "This is an example of a {logLevel} message. Sample type output:\n" +
+                    "This is an example of a {logLevel} message (with an exception). Sample type output:\n" +
                     "   Integers:       {short}, {int}, {long}\n" +
                     "   Reals:          {single}, {double}, {decimal}\n" +
                     "   Strings:        {string}, chars: {char}\n" +

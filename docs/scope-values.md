@@ -47,3 +47,7 @@ logger.LogInformation("Session created");
 // Output
 // Information: connection=103ae4ff => user=tester@vertical.com => Session created 
 ```
+
+## See Also
+- [Next: Thread Id](./thread-id.md)
+- [Rendering Overview](./renderer-overview.md)

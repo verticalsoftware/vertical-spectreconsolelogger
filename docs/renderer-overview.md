@@ -15,17 +15,16 @@ If the renderer supports custom formatting, a table of format codes with their s
 ### Emitted Types
 
 The logging provider framework associates formatting with specific types, but this can be problematic because most of the values are intrinsic types such as strings and integers which can be ambiguous with other values.
-The provider solves this by wrapping these intrinsic values in specific types. Therefore, when you wish to custom format values like the log level or the category name, you associate your formatter with the wrapper type and not the intrinsic type.
+The provider solves this by wrapping these intrinsic values in specific types. Therefore, when you wish to custom format values like the category name (which is a string), you associate your formatter with the wrapper type and not the intrinsic type.
 
 Example: You want to make sure all category names are capitalized, but category names are strings. The `CategoryNameRenderer` will not send a `string` to the formatting system, it will send an instance of the `CatgegoryNameRenderer.Value` type which simply encapsulates the string. Therefore, could implement the requirement as follows:
 
 ```csharp
 config.ConfigureProfiles(profile =>
 {
-    profile.AddTypeFormatter<CategoryNameRenderer.Value>((format, obj, provider) =>
-    {
-        // (use Humainzer instead...)            
-        var categoryName = (CategoryNameRenderer.Value)obj;
+    profile.AddTypeFormatter<CategoryNameRenderer.Value>((format, obj) =>
+    {            
+        var categoryName = obj.Value;
         return char.IsLower(categoryName[0])
             ? char.ToUpper(categoryName[0]) + categoryName[1..]
             : categoryName;

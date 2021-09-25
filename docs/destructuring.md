@@ -31,9 +31,23 @@ You can control certain aspects of destructuring by configuring the `Destructuri
 |MaxCollectionItems|Gets/sets the maximum number of items to display in a collection.|
 |MaxProperties|Gets/sets the maximum number of properties to display of an object.|
 
+### Emitted Types
+
+The following types can be formatted & styled:
+
+| Type                                      | Description                                                                                        |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `DestructuredKeyValue`    | Wraps the value of a destructured object key.                                                         |
+
+
 ### Example
 
 ```csharp
 config.ConfigureProfiles(profile => profile.ConfigureOptions<DestructuringOptions>(
     destructuring => destructuring.MaxDepth = 3));
 ```
+
+## See Also
+
+- [Rendering Overview](./renderer-overview.md)
+- [Basic Configuration](./basic-configuration.md)

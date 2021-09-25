@@ -38,6 +38,18 @@ logger.LogInformation("Hello world!");
 5. Customize the rendering completely using output templates.
 6. Extend the logger with your own renderers.
 
+#### Format/style log values
+
+![cap-1](./assets/cap1.png)
+
+#### Destructured output follows configuration
+
+![cap-2](./assets/cap2.png)
+
+#### Precisely control exception output
+
+![cap-3](./assets/cap3.png)
+
 ## Documentation
 
 - Introductory Topics
@@ -59,3 +71,7 @@ logger.LogInformation("Hello world!");
   - [ThreadId](docs/thread-id.md)
 - Advanced Topics
   - [Advanced Configuration](docs/advanced-config.md)
+
+## Examples
+
+Checkout and run our [examples](https://github.com/verticalsoftware/vertical-spectreconsolelogger/tree/dev/examples) to see the logger in action.

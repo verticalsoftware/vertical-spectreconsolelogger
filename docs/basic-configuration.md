@@ -99,5 +99,8 @@ optiosn.ConfigureProfiles(profile =>
 > 
 > Configure profiles from the least specific to the most specific. Keep in mind you can overwrite settings made in previous configuration calls.
 
+## See Also
 
-
+- [(Next) Output Templates](./output-template.md)
+- [Advanced Configuration](./advanced-config.md)
+- [Rendering Overview](./renderer-overview.md)
