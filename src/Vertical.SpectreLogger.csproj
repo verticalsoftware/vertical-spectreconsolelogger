@@ -8,7 +8,7 @@
     <Description>Seriously configurable ILogger/ILoggerProvider implementation for Spectre Console</Description>
     <Authors>Vertical Software Contributors</Authors>
     <VersionPrefix>0.9.0</VersionPrefix>
-    <PackageId>vertical-spectrelogger</PackageId>
+    <PackageId>vertical-spectreconsolelogger</PackageId>
     <PackageTags>infrastructure;utilities;logging</PackageTags>
     <PackageProjectUrl>https://github.com/verticalsoftware/vertical-spectreconsolelogger</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
