@@ -1,5 +1,6 @@
 ﻿Error: Error occurred
 System.AggregateException: One or more errors occurred. (Sequence contains no elements)
+   at System.Threading.Tasks.Task.ThrowIfExceptional(Boolean includeTaskCanceledExceptions)
    at System.Threading.Tasks.Task.Wait(Int32 millisecondsTimeout, CancellationToken cancellationToken)
    at System.Threading.Tasks.Task.Wait()
    at Vertical.SpectreLogger.Tests.Infrastructure.ExceptionHelper.GetAggregateException() in {ProjectDirectory}Infrastructure/ExceptionHelper.cs:line {line}
@@ -8,5 +9,5 @@ System.AggregateException: One or more errors occurred. (Sequence contains no el
       at System.Linq.Enumerable.First[[TSource]](IEnumerable`1 source)
       at Vertical.SpectreLogger.Tests.Infrastructure.ExceptionHelper.<>c.<GetAggregateException>b__0_0() in {ProjectDirectory}Infrastructure/ExceptionHelper.cs:line {line}
       at System.Threading.Tasks.Task`1.InnerInvoke()
-      at System.Threading.Tasks.Task.<>c.<.cctor>b__277_0(Object obj)
+      at System.Threading.Tasks.Task.<>c.<.cctor>b__271_0(Object obj)
       +4 more...

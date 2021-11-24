@@ -1,5 +1,6 @@
 ﻿Error: Error occurred
 System.AggregateException: One or more errors occurred. (Sequence contains no elements)
+   at System.Threading.Tasks.Task.ThrowIfExceptional(Boolean includeTaskCanceledExceptions)
    at System.Threading.Tasks.Task.Wait(Int32 millisecondsTimeout, CancellationToken cancellationToken)
    at System.Threading.Tasks.Task.Wait()
    at Vertical.SpectreLogger.Tests.Infrastructure.ExceptionHelper.GetAggregateException() in {ProjectDirectory}Infrastructure/ExceptionHelper.cs:line {line}
