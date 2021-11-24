@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
-using Vertical.SpectreLogger.Core;
+using Spectre.Console;
 using Vertical.SpectreLogger.Formatting;
 
 namespace Vertical.SpectreLogger.Options
@@ -186,6 +185,19 @@ namespace Vertical.SpectreLogger.Options
         }
 
         /// <summary>
+        /// Adds markup that is used to style the rendering of a specific value.
+        /// </summary>
+        /// <param name="profile">Log level profile</param>
+        /// <param name="value">The value to associate with the style.</param>
+        /// <param name="color">The color to write prior to rendering the value.</param>
+        /// <returns>A reference to the given profile.</returns>
+        /// <exception cref="ArgumentException"><paramref name="value"/> is null.</exception>
+        public static LogLevelProfile AddValueStyle(
+            this LogLevelProfile profile,
+            object value,
+            Color color) => profile.AddValueStyle(value, $"[{color}]");
+
+        /// <summary>
         /// Adds markup that is used to style the rendering of values of the given type.
         /// </summary>
         /// <param name="profile">Log level profile</param>
@@ -210,6 +222,19 @@ namespace Vertical.SpectreLogger.Options
         }
 
         /// <summary>
+        /// Adds markup that is used to style the rendering of values of the given type.
+        /// </summary>
+        /// <param name="profile">Log level profile</param>
+        /// <param name="type">The type to associate with the style.</param>
+        /// <param name="color">The color to write prior to rendering the value.</param>
+        /// <returns>A reference to the given profile.</returns>
+        /// <exception cref="ArgumentException"><paramref name="type"/> is null.</exception>
+        public static LogLevelProfile AddTypeStyle(
+            this LogLevelProfile profile,
+            Type type,
+            Color color) => profile.AddTypeStyle(type, $"[{color}]");
+
+        /// <summary>
         /// Adds markup that is used to style the rendering of values of the given types.
         /// </summary>
         /// <param name="profile">Log level profile</param>
@@ -232,6 +257,18 @@ namespace Vertical.SpectreLogger.Options
             return profile;
         }
 
+        /// <summary>
+        /// Adds markup that is used to style the rendering of values of the given types.
+        /// </summary>
+        /// <param name="profile">Log level profile</param>
+        /// <param name="types">The types to associate with the style.</param>
+        /// <param name="color">The color to write prior to rendering the value.</param>
+        /// <returns>A reference to the given profile.</returns>
+        /// <exception cref="ArgumentException"><paramref name="types"/> is null.</exception>
+        public static LogLevelProfile AddTypeStyle(
+            this LogLevelProfile profile,
+            IEnumerable<Type> types,
+            Color color) => profile.AddTypeStyle(types, $"[{color}]");
 
         /// <summary>
         /// Adds markup that is used to style the rendering of values of the given type.
@@ -249,6 +286,18 @@ namespace Vertical.SpectreLogger.Options
         {
             return profile.AddTypeStyle(typeof(T), markup);
         }
+
+        /// <summary>
+        /// Adds markup that is used to style the rendering of values of the given type.
+        /// </summary>
+        /// <param name="profile">Log level profile</param>
+        /// <param name="color">The color to write prior to rendering the value.</param>
+        /// <typeparam name="T">The type to associate with the style.</typeparam>
+        /// <returns>A reference to the given profile.</returns>
+        public static LogLevelProfile AddTypeStyle<T>(
+            this LogLevelProfile profile,
+            Color color)
+            where T : notnull => profile.AddTypeStyle<T>($"[{color}]");
 
         /// <summary>
         /// Registers a delegate that provides configuration for a specific renderer.

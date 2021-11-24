@@ -35,7 +35,6 @@ This renderer defines an `Options` type. The following properties are exposed:
 
 | Property                    | Description                                                                                                                                                               |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `UnwindAggregateExceptions` | Gets/sets whether to display the child exceptions of an `AggregateException`.                                                                                             |
 | `UnwindInnerExceptions`     | Gets/sets whether to recursively display inner exceptions.                                                                                                                |
 | `MaxStackFrames`            | Gets/sets the maximum number of stack frames to render. If this value is less than the number of available stack frames, the renderer will indicate how many were hidden. |
 | `StackFrameIndent`          | Gets/sets the number of indent spaces for the stack frame methods.                                                                                                        |

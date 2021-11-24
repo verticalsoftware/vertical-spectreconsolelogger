@@ -14,6 +14,8 @@ namespace Vertical.SpectreLogger.Output
     /// </summary>
     public static class WriteBufferExtensions
     {
+        private static readonly char[] MarkupChars = { '[', ']' };
+        
         /// <summary>
         /// Writes a newline to the buffer.
         /// </summary>
@@ -54,6 +56,12 @@ namespace Vertical.SpectreLogger.Output
             {
                 buffer.WriteLogValue(profile, template, state);
                 return;
+            }
+
+            if (originalFormatString.IndexOfAny(MarkupChars) != -1)
+            {
+                // Save allocation at the expense of searching
+                originalFormatString = Markup.Escape(originalFormatString);
             }
 
             TemplateString.Split(originalFormatString, (in TemplateSegment segment) =>
