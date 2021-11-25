@@ -5,7 +5,10 @@
     <LangVersion>9.0</LangVersion>
     <Nullable>enable</Nullable>
     <Title>vertical-spectrelogger</Title>
-    <Description>Seriously configurable ILogger/ILoggerProvider implementation for Spectre Console. </Description>
+    <Description>
+      Seriously configurable ILogger/ILoggerProvider implementation for Spectre Console. Don't
+      change how your app logs - change how the logs are presented.
+    </Description>
     <Authors>Vertical Software Contributors</Authors>
     <VersionPrefix>0.9.0</VersionPrefix>
     <PackageId>vertical-spectreconsolelogger</PackageId>

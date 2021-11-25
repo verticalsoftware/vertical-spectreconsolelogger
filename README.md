@@ -1,9 +1,10 @@
 # vertical-spectreconsolelogger
 
-A seriously customizable [Spectre Console](https://spectreconsole.net/) provider for Microsoft.Extensions.Logging.
+A seriously customizable [Spectre Console](https://spectreconsole.net/) provider for Microsoft.Extensions.Logging. **Don't** change how your app logs - change how the logs are presented.
 
-![.net](https://img.shields.io/badge/Frameworks-.netstandard20+net50-purple)
+![.net](https://img.shields.io/badge/Frameworks-.netstandard20+net5+net6-purple)
 ![GitHub](https://img.shields.io/github/license/verticalsoftware/vertical-commandline)
+![Package info](https://img.shields.io/nuget/v/vertical-spectreconsolelogger.svg)
 
 [![Dev build](https://github.com/verticalsoftware/vertical-commandline/actions/workflows/dev-build.yml/badge.svg)](https://github.com/verticalsoftware/vertical-commandline/actions/workflows/dev-build.yml)
 [![codecov](https://codecov.io/gh/verticalsoftware/vertical-spectreconsolelogger/branch/dev/graph/badge.svg?token=MVW0CUWLCW)](https://codecov.io/gh/verticalsoftware/vertical-spectreconsolelogger)
