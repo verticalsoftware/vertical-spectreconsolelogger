@@ -20,7 +20,7 @@ jobs:
       - name: Build
         run: dotnet build -c Release --no-restore
       - name: Test
-        run: dotnet test --no-restore --filter Category!=flaky_on_CI
+        run: dotnet test --no-restore --filter
       - name: Set build label
         run: echo "DEVLABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV
       - name: Build pre-release packages

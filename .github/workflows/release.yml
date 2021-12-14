@@ -20,7 +20,7 @@ jobs:
       - name: Build
         run: dotnet build -c Release --no-restore
       - name: Test
-        run: dotnet test --no-restore  --filter Category!=flaky_on_CI
+        run: dotnet test --no-restore
       - name: Build pre-release packages
         run: dotnet pack -c Release --no-restore -o ./pack
       - name: Publish packages to NuGet
