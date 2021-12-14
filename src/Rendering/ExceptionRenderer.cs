@@ -118,9 +118,7 @@ namespace Vertical.SpectreLogger.Rendering
 
                 var frames = exception
                     .StackTrace
-                    .Split(StackFrameSplitStrings, StringSplitOptions.None)
-                    .Select(Markup.Escape)
-                    .ToArray();
+                    .Split(StackFrameSplitStrings, StringSplitOptions.None);
                 
                 var length = Math.Min(frames.Length, options.MaxStackFrames);
                 var hiddenCount = frames.Length - options.MaxStackFrames;
@@ -213,6 +211,12 @@ namespace Vertical.SpectreLogger.Rendering
             in StackFrameInfo stackFrame, 
             Options options)
         {
+            if (!options.ShowSourcePaths)
+                return;
+            
+            if (stackFrame.File == null)
+                return;
+
             var path = stackFrame.File;
             var directory = (Path.GetDirectoryName(path) ?? string.Empty) + Path.DirectorySeparatorChar;
             var file = Path.GetFileName(path);

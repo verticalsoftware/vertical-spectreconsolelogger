@@ -8,10 +8,10 @@ namespace Vertical.SpectreLogger.Internal
     /// <summary>
     /// Represents the info of a stack frame.
     /// </summary>
-    public readonly struct StackFrameInfo
+    internal readonly struct StackFrameInfo
     {
         private static readonly Regex CompiledRegex = new(
-            @"(?:at )(?:(?<method>[\w\.<>`\[\]]+)\((?:(?:,\s)?(?<type>[\w\[\]`]+)\s(?<name>[\w]+))*\))(?:(?: in )(?<file>.+)(?::line )(?<line>\d+))?",
+            @"(?:at )(?:(?<method>[\w\.<>`\[\]]+)\((?:(?:,\s)?(?<type>[\w\[\]\.*&`]+)\s(?<name>[\w]+))*\))(?:(?: in )(?<file>.+)(?::line )(?<line>\d+))?",
             RegexOptions.Compiled);
             
         private readonly Match _match;
