@@ -10,6 +10,7 @@ namespace Vertical.SpectreLogger.Tests.Rendering
     public class MarginControlRendererTests
     {
         [Fact]
+        [Trait("Category", "flaky_on_CI")]
         public Task RenderWritesExpectedOutputForSet()
         {
             var output = RendererTestHarness.Capture(
@@ -19,10 +20,11 @@ namespace Vertical.SpectreLogger.Tests.Rendering
                 }),
                 logger => logger.LogInformation(""));
 
-            return Verifier.Verify(output);
+            return Verifier.Verify(output, SharedSettings.Verifier);
         }
 
         [Fact]
+        [Trait("Category", "flaky_on_CI")]
         public Task RenderWritesExpectedOutputForAdjust()
         {
             var output = RendererTestHarness.Capture(
@@ -30,7 +32,7 @@ namespace Vertical.SpectreLogger.Tests.Rendering
                     .OutputTemplate = "Indent-0{Margin+2}{NewLine}Indent+2{Margin-2}{NewLine}Indent-0"),
                 logger => logger.LogInformation(""));
 
-            return Verifier.Verify(output);  
+            return Verifier.Verify(output, SharedSettings.Verifier);  
         }
     }
 }

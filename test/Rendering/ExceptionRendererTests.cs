@@ -14,6 +14,7 @@ namespace Vertical.SpectreLogger.Tests.Rendering
     public class ExceptionRendererTests
     {
         [Fact]
+        [Trait("Category", "flaky_on_CI")]
         public Task RenderWritesExpected()
         {
             var output = RendererTestHarness.Capture(
@@ -24,6 +25,7 @@ namespace Vertical.SpectreLogger.Tests.Rendering
         }
 
         [Fact]
+        [Trait("Category", "flaky_on_CI")]
         public Task RenderHidesParameterTypes()
         {
             var output = RendererTestHarness.Capture(
@@ -34,6 +36,7 @@ namespace Vertical.SpectreLogger.Tests.Rendering
         }
         
         [Fact]
+        [Trait("Category", "flaky_on_CI")]
         public Task RenderHidesParameterNames()
         {
             var output = RendererTestHarness.Capture(
@@ -44,6 +47,7 @@ namespace Vertical.SpectreLogger.Tests.Rendering
         }
         
         [Fact]
+        [Trait("Category", "flaky_on_CI")]
         public Task RenderHidesSourceLocations()
         {
             var output = RendererTestHarness.Capture(
@@ -54,6 +58,7 @@ namespace Vertical.SpectreLogger.Tests.Rendering
         }
         
         [Fact]
+        [Trait("Category", "flaky_on_CI")]
         public Task RenderHidesSourcePaths()
         {
             var output = RendererTestHarness.Capture(
@@ -64,6 +69,7 @@ namespace Vertical.SpectreLogger.Tests.Rendering
         }
         
         [Fact]
+        [Trait("Category", "flaky_on_CI")]
         public Task RenderHidesAggregateInnerExceptions()
         {
             var output = RendererTestHarness.Capture(
@@ -74,6 +80,7 @@ namespace Vertical.SpectreLogger.Tests.Rendering
         }
 
         [Fact]
+        [Trait("Category", "flaky_on_CI")]
         public Task RenderLimitsStackFrames()
         {
             var output = RendererTestHarness.Capture(
