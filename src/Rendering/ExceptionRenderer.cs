@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
+using System.Linq;
+using Spectre.Console;
 using Vertical.SpectreLogger.Core;
+using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Output;
 using Vertical.SpectreLogger.Templates;
@@ -15,7 +17,6 @@ namespace Vertical.SpectreLogger.Rendering
     [Template("{Exception}")]
     public partial class ExceptionRenderer : ITemplateRenderer
     {
-        private static readonly char[] SignatureSplitChars = {' ', ','};
         private static readonly string[] StackFrameSplitStrings = {Environment.NewLine};
 
         /// <inheritdoc />
@@ -115,7 +116,12 @@ namespace Vertical.SpectreLogger.Rendering
             {
                 buffer.Margin += options.StackFrameIndent;
 
-                var frames = exception.StackTrace.Split(StackFrameSplitStrings, StringSplitOptions.None);
+                var frames = exception
+                    .StackTrace
+                    .Split(StackFrameSplitStrings, StringSplitOptions.None)
+                    .Select(Markup.Escape)
+                    .ToArray();
+                
                 var length = Math.Min(frames.Length, options.MaxStackFrames);
                 var hiddenCount = frames.Length - options.MaxStackFrames;
 
@@ -135,58 +141,43 @@ namespace Vertical.SpectreLogger.Rendering
                 buffer.Margin -= options.StackFrameIndent;
             }
         }
-
+      
         private static void PrintStackFrame(
             IWriteBuffer buffer, 
             LogLevelProfile profile, 
             string frame, 
             Options options)
         {
-            var frameMatch = Regex.Match(
-                frame, 
-                @"at (?<_method>[^(]+)\((?<_sig>.+)?\)(?<_src> in (?<_file>.+)(?::line (?<_line>\d+)))?");
-
             buffer.WriteLine();
 
-            if (!frameMatch.Success)
+            if (!StackFrameInfo.TryParse(frame, out var stackFrame))
             {
                 buffer.Write(frame);
                 return;
             }
 
-            buffer.WriteLogValue(profile, null, new MethodNameValue(frameMatch.Groups["_method"].Value), method =>
+            buffer.WriteLogValue(profile, null, new MethodNameValue(stackFrame.Method), method =>
             {
                 buffer.Write("at ");
                 buffer.Write(method);
-                buffer.Write("(");
 
-                var signature = frameMatch.Groups["_sig"];
-                if (signature.Success)
-                {
-                    PrintParameters(buffer, profile, signature, options);
-                }
-
-                buffer.Write(")");
+                PrintParameters(buffer, profile, stackFrame, options);
             });
 
-            var source = frameMatch.Groups["_src"];
-            
-            if (!(source.Success && options.ShowSourcePaths))
-                return;
-
-            PrintSourcePath(buffer, profile, frameMatch, options);
+            PrintSourcePath(buffer, profile, stackFrame, options);
         }
 
         private static void PrintParameters(
             IWriteBuffer buffer, 
             LogLevelProfile profile, 
-            Group signatureGroup, 
+            in StackFrameInfo stackFrame, 
             Options options)
         {
-            var signatureWords = signatureGroup.Value.Split(SignatureSplitChars, StringSplitOptions.RemoveEmptyEntries);
-            var length = signatureWords.Length;
+            buffer.Write('(');
+            
+            var c = 0;
 
-            for (var c = 0; c < length; c += 2)
+            foreach (var (type, name) in stackFrame.Parameters)
             {
                 if (c != 0)
                 {
@@ -197,7 +188,7 @@ namespace Vertical.SpectreLogger.Rendering
 
                 if (options.ShowParameterTypes)
                 {
-                    buffer.WriteLogValue(profile, null, new ParameterTypeValue(signatureWords[c]));
+                    buffer.WriteLogValue(profile, null, new ParameterTypeValue(type));
                     spaceChar = true;
                 }
 
@@ -207,21 +198,28 @@ namespace Vertical.SpectreLogger.Rendering
                     {
                         buffer.Write(' ');
                     }
-                    buffer.WriteLogValue(profile, null, new ParameterNameValue(signatureWords[c+1]));
+                    buffer.WriteLogValue(profile, null, new ParameterNameValue(name));
                 }
+
+                c++;
             }
+            
+            buffer.Write(')');
         }
         
         private static void PrintSourcePath(
             IWriteBuffer buffer, 
             LogLevelProfile profile, 
-            Match frameMatch, 
+            in StackFrameInfo stackFrame, 
             Options options)
         {
-            var path = frameMatch.Groups["_file"].Value;
+            var path = stackFrame.File;
             var directory = (Path.GetDirectoryName(path) ?? string.Empty) + Path.DirectorySeparatorChar;
             var file = Path.GetFileName(path);
-            var hasLineNumber = int.TryParse(frameMatch.Groups["_line"].Value, out var line);
+            var lineNumber = stackFrame.LineNumber;
+
+            if (string.IsNullOrWhiteSpace(file))
+                return;
 
             buffer.WriteLogValue(profile, null, new SourceDirectoryValue(directory), value =>
             {
@@ -229,16 +227,16 @@ namespace Vertical.SpectreLogger.Rendering
                 buffer.Write(value);
                 buffer.WriteLogValue(profile, null, new SourceFileValue(file));
 
-                if (hasLineNumber && options.ShowSourceLocations)
+                if (lineNumber.HasValue && options.ShowSourceLocations)
                 {
                     buffer.Write(":line ");
                 }
             });
 
-            if (!(hasLineNumber && options.ShowSourceLocations))
+            if (!(lineNumber.HasValue && options.ShowSourceLocations))
                 return;
 
-            buffer.WriteLogValue(profile, null, new SourceLocationValue(line));
+            buffer.WriteLogValue(profile, null, new SourceLocationValue(lineNumber.Value));
         }
     }
 }

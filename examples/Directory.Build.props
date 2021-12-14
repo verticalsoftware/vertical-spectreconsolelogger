@@ -1,4 +1,7 @@
 ﻿<Project>
+    <PropertyGroup>
+        <ExamplesRuntime>net6.0</ExamplesRuntime>
+    </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="../../src/Vertical.SpectreLogger.csproj" />
     </ItemGroup>
