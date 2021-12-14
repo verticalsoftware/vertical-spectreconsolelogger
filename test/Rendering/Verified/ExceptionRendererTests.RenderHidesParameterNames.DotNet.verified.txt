@@ -7,7 +7,7 @@ System.AggregateException: One or more errors occurred. (Sequence contains no el
    -> System.InvalidOperationException: Sequence contains no elements
       at System.Linq.ThrowHelper.ThrowNoElementsException()
       at System.Linq.Enumerable.First[[TSource]](IEnumerable`1)
-      at Vertical.SpectreLogger.Tests.Infrastructure.ExceptionHelper.<>c.<GetAggregateException>b__0_0() in {ProjectDirectory}Infrastructure/ExceptionHelper.cs:line {line}
+      at Vertical.SpectreLogger.Tests.Infrastructure.ExceptionHelper.<>c.<GetAggregateException>b__ANY() in {ProjectDirectory}Infrastructure/ExceptionHelper.cs:line {line}
       at System.Threading.Tasks.Task`1.InnerInvoke()
-      at System.Threading.Tasks.Task.<>c.<.cctor>b__271_0(Object)
+      at System.Threading.Tasks.Task.<>c.<.cctor>b__ANY(Object)
       +4 more...
