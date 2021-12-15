@@ -14,17 +14,18 @@ namespace Vertical.SpectreLogger.Destructuring
         private readonly LogLevelProfile _profile;
         private readonly DestructuringOptions _options;
         private readonly int _availableDepth;
+        private readonly int _indentation;
         private int _innerCount;
-
+        
         private DestructuringWriter(
             IWriteBuffer buffer,
-            LogLevelProfile profile,
-            int? depth = null)
+            LogLevelProfile profile)
         {
             _buffer = buffer;
             _profile = profile;
             _options = profile.ConfiguredOptions.GetOptions<DestructuringOptions>();
-            _availableDepth = depth.GetValueOrDefault(_options.MaxDepth);
+            _availableDepth = _options.MaxDepth;
+            _indentation = _options.IndentSpaces;
         }
 
         private DestructuringWriter(
@@ -37,6 +38,7 @@ namespace Vertical.SpectreLogger.Destructuring
             _profile = profile;
             _options = options;
             _availableDepth = availableDepth;
+            _indentation = (options.MaxDepth - _availableDepth) * _options.IndentSpaces;
         }
         
         public static void Write(
@@ -62,27 +64,37 @@ namespace Vertical.SpectreLogger.Destructuring
         {
             _buffer.WriteLogValue(_profile, null, value ?? NullValue.Default);
         }
-        
-        public void WriteStartObject()
-        {
-            _buffer.Write('{');
-        }
-        
-        public void WriteEndObject()
-        {
-            _buffer.Write('}');
-        }
+
+        public void WriteStartObject() => WriteStartSection("{");
+
+        public void WriteEndObject() => WriteEndSection("}");
 
         /// <inheritdoc />
-        public void WriteStartArray()
-        {
-            _buffer.Write("[[");
-        }
+        public void WriteStartArray() => WriteStartSection("[[");
 
         /// <inheritdoc />
-        public void WriteEndArray()
+        public void WriteEndArray() => WriteEndSection("]]");
+
+        private void WriteStartSection(string c)
         {
-            _buffer.Write("]]");
+            _buffer.Write(c);
+            
+            if (_options.WriteIndented)
+            {
+                _buffer.Margin += _indentation;
+                _buffer.WriteLine();
+            }
+        }
+
+        private void WriteEndSection(string c)
+        {
+            if (_options.WriteIndented)
+            {
+                _buffer.Margin -= _indentation;
+                _buffer.WriteLine();
+            }
+            
+            _buffer.Write(c);
         }
 
         private void WriteValue(object value)
@@ -103,6 +115,11 @@ namespace Vertical.SpectreLogger.Destructuring
             if (_innerCount > 1)
             {
                 _buffer.Write(", ");
+                
+                if (_options.WriteIndented)
+                {
+                    _buffer.WriteLine();
+                }
             }
 
             if (key != null)
@@ -126,7 +143,7 @@ namespace Vertical.SpectreLogger.Destructuring
                 _options,
                 _availableDepth - 1
             ).WriteValue(value ?? NullValue.Default);
-
+            
             return true;
         }
 

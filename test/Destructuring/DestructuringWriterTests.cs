@@ -103,5 +103,32 @@ namespace Vertical.SpectreLogger.Tests.Destructuring
 
             return Verifier.Verify(buffer.ToString());
         }
+
+        [Fact]
+        public Task WriteObjectIndented()
+        {
+            var obj = new
+            {
+                Id = Guid.Parse("5e093875-2c3f-4d28-9718-1339aa03f9ca"),
+                FirstName = "Testy",
+                LastName = "McTesterson",
+                Address = new
+                {
+                    Street = "6715 W Colfax Ave",
+                    City = "Lakewood",
+                    State = "CO",
+                    ZipCode = "80214"
+                },
+                Roles = new[] { "Manager", "Cook" }
+            };
+
+            var profile = new LogLevelProfile(LogLevel.Information);
+            profile.ConfigureOptions<DestructuringOptions>(opt => opt.WriteIndented = true);
+
+            var buffer = new WriteBuffer(Substitute.For<IConsoleWriter>());
+            DestructuringWriter.Write(buffer, profile, obj);
+
+            return Verifier.Verify(buffer.ToString());
+        }
     }
 }

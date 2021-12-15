@@ -34,16 +34,23 @@ namespace Vertical.SpectreLogger.Output
         public int LinePosition { get; private set; }
         
         /// <inheritdoc />
-        public void Write(char c)
+        public void Write(char c, int count = 1)
         {
+            if (count == 0)
+                return;
+            
             if (_lastChar == '\n' && Margin > 0)
             {
                 // Set the margin
                 _buffer.Append(' ', Margin);
                 LinePosition = Margin;
             }
-            
-            _buffer.Append(c);
+
+            while (--count >= 0)
+            {
+                _buffer.Append(c);
+            }
+
             _lastChar = c;
 
             LinePosition = c == '\n' ? 0 : LinePosition + 1;

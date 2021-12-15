@@ -23,7 +23,8 @@ namespace Vertical.SpectreLogger.Output
         /// Writes a character to the buffer.
         /// </summary>
         /// <param name="c">Character to write.</param>
-        void Write(char c);
+        /// <param name="count">The number of times to repeat writing <paramref name="c"/></param>
+        void Write(char c, int count = 1);
 
         /// <summary>
         /// Writes a string to the buffer.
