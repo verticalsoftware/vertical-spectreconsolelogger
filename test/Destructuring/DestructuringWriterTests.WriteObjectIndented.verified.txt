@@ -1,0 +1,15 @@
+﻿{
+    Id: 5e093875-2c3f-4d28-9718-1339aa03f9ca, 
+    FirstName: Testy, 
+    LastName: McTesterson, 
+    Address: {
+        Street: 6715 W Colfax Ave, 
+        City: Lakewood, 
+        State: CO, 
+        ZipCode: 80214
+    }, 
+    Roles: [[
+        Manager, 
+        Cook
+    ]]
+}

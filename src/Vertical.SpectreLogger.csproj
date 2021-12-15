@@ -10,7 +10,7 @@
       change how your app logs - change how the logs are presented.
     </Description>
     <Authors>Vertical Software Contributors</Authors>
-    <VersionPrefix>0.9.1</VersionPrefix>
+    <VersionPrefix>0.10.0</VersionPrefix>
     <PackageId>vertical-spectreconsolelogger</PackageId>
     <PackageTags>infrastructure;utilities;logging</PackageTags>
     <PackageProjectUrl>https://github.com/verticalsoftware/vertical-spectreconsolelogger</PackageProjectUrl>

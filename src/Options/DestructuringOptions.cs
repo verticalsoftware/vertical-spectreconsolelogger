@@ -21,5 +21,15 @@
         /// Gets or sets the maximum number of properties to show of an object.
         /// </summary>
         public int MaxProperties { get; set; } = 10;
+        
+        /// <summary>
+        /// Gets or sets whether to pretty-print (e.g. indenting)
+        /// </summary>
+        public bool WriteIndented { get; set; }
+
+        /// <summary>
+        /// Gets or sets the number of spaces that comprise an indent.
+        /// </summary>
+        public int IndentSpaces { get; set; } = 4;
     }
 }

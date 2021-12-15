@@ -27,9 +27,11 @@ You can control certain aspects of destructuring by configuring the `Destructuri
 
 |Property|Description|
 |---|---|
+|IndentSize|Get/sets the number of spaces that comprise an indentation level - defaults to 4.|
 |MaxDepth|Gets/sets how many times the writer will recursively descend into the child properties of an object.|
 |MaxCollectionItems|Gets/sets the maximum number of items to display in a collection.|
 |MaxProperties|Gets/sets the maximum number of properties to display of an object.|
+|WriteIndented|Get/sets whether to indent the output on multiple lines, e.g. *pretty-print*|
 
 ### Emitted Types
 
