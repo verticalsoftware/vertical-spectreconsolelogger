@@ -13,6 +13,9 @@ namespace Vertical.SpectreLogger.Output
         }
 
         /// <inheritdoc />
+        public void ResetLine() => ResetLineCore();
+
+        /// <inheritdoc />
         public void Write(string content) => WriteToConsole(content);
     }
 }
