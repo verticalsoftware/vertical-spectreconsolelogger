@@ -78,6 +78,7 @@ namespace Vertical.SpectreLogger.Output
         public void Flush()
         {
             _consoleWriter.Write(_buffer.ToString());
+            _consoleWriter.ResetLine();
             _buffer.Clear();
             _margin = 0;
         }

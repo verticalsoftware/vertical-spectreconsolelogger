@@ -35,5 +35,13 @@ namespace Vertical.SpectreLogger.Output
                 _console.WriteLine(str);
             }
         }
+
+        /// <summary>
+        /// Resets the console position.
+        /// </summary>
+        protected void ResetLineCore()
+        {
+            AnsiConsole.Cursor.Move(CursorDirection.Left, Console.CursorLeft);
+        }
     }
 }

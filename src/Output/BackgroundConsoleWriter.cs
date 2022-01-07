@@ -8,6 +8,7 @@ namespace Vertical.SpectreLogger.Output
     internal class BackgroundConsoleWriter : ConsoleWriter, IConsoleWriter, IDisposable
     {
         private const int MaxQueuedMessages = 1024;
+        private const char ResetLineCoreFlag = '\x3';
         
         private readonly BlockingCollection<string> _queue = new(MaxQueuedMessages);
         private readonly Thread _outputThread;
@@ -32,6 +33,12 @@ namespace Vertical.SpectreLogger.Output
             {
                 foreach (var entry in _queue.GetConsumingEnumerable())
                 {
+                    if (entry.Length == 1 && entry[0] == ResetLineCoreFlag)
+                    {
+                        ResetLineCore();
+                        continue;
+                    }
+                    
                     WriteToConsole(entry);
                 }
             }
@@ -60,6 +67,12 @@ namespace Vertical.SpectreLogger.Output
             {
                 // Ignored because there is no recovery
             }
+        }
+
+        /// <inheritdoc />
+        public void ResetLine()
+        {
+            _queue.Add($"{ResetLineCoreFlag}");
         }
 
         /// <inheritdoc />
