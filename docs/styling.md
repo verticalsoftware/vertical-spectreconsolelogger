@@ -16,7 +16,7 @@ Examples:
 config.ConfigureProfiles(profile => profile.AddTypeStyle<string>("[orange3]"));
 
 // Print all strings in orange in Debug events only
-config.ConfigureProfile(LogLevel.Debug, profile => profile.AddTyleStyle<string>("[orange3"));
+config.ConfigureProfile(LogLevel.Debug, profile => profile.AddTypeStyle<string>("[orange3"));
 
 // Print all numbers in magenta (see the Types class for more groups)
 config.ConfigureProfiles(profile => profile.AddTypeStyle(Types.Numerics, "[magenta1]")); 
