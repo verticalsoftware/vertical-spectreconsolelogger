@@ -1,13 +1,13 @@
 ﻿Error: Error occurred
 System.AggregateException: One or more errors occurred. (Sequence contains no elements)
-   at System.Threading.Tasks.Task.ThrowIfExceptional(Boolean includeTaskCanceledExceptions)
-   at System.Threading.Tasks.Task.Wait(Int32 millisecondsTimeout, CancellationToken cancellationToken)
+   at System.Threading.Tasks.Task.ThrowIfExceptional(System.Boolean includeTaskCanceledExceptions)
+   at System.Threading.Tasks.Task.Wait(System.Int32 millisecondsTimeout, System.Threading.CancellationToken cancellationToken)
    at System.Threading.Tasks.Task.Wait()
    at Vertical.SpectreLogger.Tests.Infrastructure.ExceptionHelper.GetAggregateException()
    -> System.InvalidOperationException: Sequence contains no elements
       at System.Linq.ThrowHelper.ThrowNoElementsException()
-      at System.Linq.Enumerable.First[[TSource]](IEnumerable`1 source)
-      at Vertical.SpectreLogger.Tests.Infrastructure.ExceptionHelper.<>c.<GetAggregateException>b__ANY()
+      at System.Linq.Enumerable.First(System.Collections.Generic.IEnumerable`1 source)
+      at Vertical.SpectreLogger.Tests.Infrastructure.<>c.<GetAggregateException>b__ANY()
       at System.Threading.Tasks.Task`1.InnerInvoke()
-      at System.Threading.Tasks.Task.<>c.<.cctor>b__ANY(Object obj)
+      at System.Threading.Tasks.<>c.<.cctor>b__ANY(System.Object obj)
       +4 more...

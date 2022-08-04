@@ -30,7 +30,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="3.0.0" />
-    <PackageReference Include="Spectre.Console" Version="0.42.1-preview.0.20" />
+    <PackageReference Include="Spectre.Console" Version="0.44.1-preview.0.29" />
   </ItemGroup>
   
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
