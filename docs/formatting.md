@@ -62,7 +62,7 @@ There are additional tools to make custom formatting less burdensome. First, ins
 // Using a formatting delegate - note no additional registration
 // is necessary.
 
-config.ConfigureProfiles(profile => profile.AddTypeFormatter<Customer>((format, customer, IFormatProvider) => 
+config.ConfigureProfiles(profile => profile.AddTypeFormatter<Customer>((format, customer, formatProvider) => 
 {
     return $"Id={customer.Id}, Name={customer.Name}";
 });
