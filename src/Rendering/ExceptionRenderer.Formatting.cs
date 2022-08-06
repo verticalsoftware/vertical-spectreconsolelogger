@@ -68,5 +68,13 @@ namespace Vertical.SpectreLogger.Rendering
         {
             internal SourceLocationValue(int lineNumber) : base(lineNumber) {}
         }
+
+        /// <summary>
+        /// Wraps any other text in an exception message.
+        /// </summary>
+        public sealed class TextValue : ValueWrapper<string>
+        {
+            internal TextValue(string str) : base(str) {}
+        }
     }
 }

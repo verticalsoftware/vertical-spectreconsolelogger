@@ -12,7 +12,7 @@ namespace Vertical.SpectreLogger.Options
         {
             ConfigureProfile(LogLevel.Trace, profile =>
             {
-                var baseColor = $"[{Color.Grey35}]";
+                var baseColor = Color.Grey35;
                 profile.OutputTemplate = "[grey35][[{DateTime:T} Trce]] {Message}{NewLine}{Exception}[/]";
                 profile.DefaultLogValueStyle = $"[{Color.Grey46}]";
                 profile
@@ -20,6 +20,7 @@ namespace Vertical.SpectreLogger.Options
                     .AddTypeStyle<ExceptionRenderer.ParameterTypeValue>(baseColor)
                     .AddTypeStyle<ExceptionRenderer.SourceLocationValue>(Color.DarkViolet)
                     .AddTypeStyle<ExceptionRenderer.SourceFileValue>(Color.DarkGoldenrod)
+                    .AddTypeStyle<ExceptionRenderer.TextValue>(baseColor)
                     .AddTypeStyle<CategoryNameRenderer.Value>(baseColor)
                     .AddTypeStyle<DateTimeRenderer.Value>(baseColor);
             });
@@ -39,6 +40,7 @@ namespace Vertical.SpectreLogger.Options
                     .AddTypeStyle<ExceptionRenderer.SourceLocationValue>(Color.DarkViolet)
                     .AddTypeStyle<ExceptionRenderer.SourceDirectoryValue>(Color.Grey66)
                     .AddTypeStyle<ExceptionRenderer.SourceFileValue>(Color.DarkGoldenrod)
+                    .AddTypeStyle<ExceptionRenderer.TextValue>(Color.Grey35)
                     .AddTypeStyle<DestructuredKeyValue>(Color.Grey70)
                     .AddTypeStyle<CategoryNameRenderer.Value>(Color.Grey46)
                     .AddTypeStyle<DateTimeRenderer.Value>(Color.Grey46)
@@ -62,6 +64,7 @@ namespace Vertical.SpectreLogger.Options
                     .AddTypeStyle<ExceptionRenderer.SourceLocationValue>(Color.Magenta3_2)
                     .AddTypeStyle<ExceptionRenderer.SourceDirectoryValue>(Color.Grey66)
                     .AddTypeStyle<ExceptionRenderer.SourceFileValue>(Color.Gold3_1)
+                    .AddTypeStyle<ExceptionRenderer.TextValue>(Color.Grey42)
                     .AddTypeStyle<DestructuredKeyValue>(Color.Grey70)
                     .AddTypeStyle<CategoryNameRenderer.Value>(Color.Grey85)
                     .AddTypeStyle<DateTimeRenderer.Value>(Color.Grey)
@@ -85,6 +88,7 @@ namespace Vertical.SpectreLogger.Options
                     .AddTypeStyle<ExceptionRenderer.SourceLocationValue>(Color.Magenta3_2)
                     .AddTypeStyle<ExceptionRenderer.SourceDirectoryValue>(Color.Grey66)
                     .AddTypeStyle<ExceptionRenderer.SourceFileValue>(Color.Gold3_1)
+                    .AddTypeStyle<ExceptionRenderer.TextValue>(Color.Grey42)
                     .AddTypeStyle<DestructuredKeyValue>(Color.Grey70)
                     .AddTypeStyle<CategoryNameRenderer.Value>(Color.Grey85)
                     .AddTypeStyle<DateTimeRenderer.Value>(Color.Grey85)
@@ -108,6 +112,7 @@ namespace Vertical.SpectreLogger.Options
                     .AddTypeStyle<ExceptionRenderer.SourceLocationValue>(Color.Magenta3_2)
                     .AddTypeStyle<ExceptionRenderer.SourceDirectoryValue>(Color.Grey66)
                     .AddTypeStyle<ExceptionRenderer.SourceFileValue>(Color.Gold3_1)
+                    .AddTypeStyle<ExceptionRenderer.TextValue>(Color.Grey42)
                     .AddTypeStyle<DestructuredKeyValue>(Color.Grey70)
                     .AddTypeStyle<CategoryNameRenderer.Value>(Color.Grey85)
                     .AddTypeStyle<DateTimeRenderer.Value>(Color.Grey85)
@@ -131,6 +136,7 @@ namespace Vertical.SpectreLogger.Options
                     .AddTypeStyle<ExceptionRenderer.SourceLocationValue>(Color.Magenta3_2)
                     .AddTypeStyle<ExceptionRenderer.SourceDirectoryValue>(Color.Grey66)
                     .AddTypeStyle<ExceptionRenderer.SourceFileValue>(Color.Gold3_1)
+                    .AddTypeStyle<ExceptionRenderer.TextValue>(Color.Grey42)
                     .AddTypeStyle<DestructuredKeyValue>(Color.Grey70)
                     .AddTypeStyle<CategoryNameRenderer.Value>(Color.Grey85)
                     .AddTypeStyle<DateTimeRenderer.Value>(Color.Grey85)
