@@ -56,7 +56,6 @@ namespace Vertical.SpectreLogger.Destructuring
         /// <inheritdoc />
         public bool WriteElement(object? value)
         {
-            
             return WriteNode(null, value, _options.MaxCollectionItems);
         }
 
@@ -91,7 +90,10 @@ namespace Vertical.SpectreLogger.Destructuring
             if (_options.WriteIndented)
             {
                 _buffer.Margin -= _indentation;
-                _buffer.WriteLine();
+                if (_innerCount > 0)
+                {
+                    _buffer.WriteLine();
+                }
             }
             
             _buffer.Write(c);

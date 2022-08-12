@@ -75,6 +75,18 @@ namespace Vertical.SpectreLogger.Tests.Destructuring
         }
 
         [Fact]
+        public void WriteEmptyArrayIndentedRendersExpectedContent()
+        {
+            var buffer = new WriteBuffer(Substitute.For<IConsoleWriter>());
+            var profile = new LogLevelProfile(LogLevel.Information);
+            profile.ConfigureOptions<DestructuringOptions>(opt => opt.WriteIndented = true);
+
+            DestructuringWriter.Write(buffer, profile, Array.Empty<string>());
+
+            buffer.ToString().ShouldBe("[[" + Environment.NewLine + "]]");
+        }
+
+        [Fact]
         public Task WriteDictionaryRespectsMaxDepth()
         {
             var obj = new Person(
