@@ -81,7 +81,6 @@ namespace Vertical.SpectreLogger.Destructuring
             if (_options.WriteIndented)
             {
                 _buffer.Margin += _indentation;
-                _buffer.WriteLine();
             }
         }
 
@@ -112,6 +111,11 @@ namespace Vertical.SpectreLogger.Destructuring
             {
                 _buffer.Write(", ...");
                 return false;
+            }
+
+            if (_innerCount == 1 && _options.WriteIndented)
+            {
+                _buffer.WriteLine();
             }
 
             if (_innerCount > 1)

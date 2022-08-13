@@ -83,7 +83,19 @@ namespace Vertical.SpectreLogger.Tests.Destructuring
 
             DestructuringWriter.Write(buffer, profile, Array.Empty<string>());
 
-            buffer.ToString().ShouldBe("[[" + Environment.NewLine + "]]");
+            buffer.ToString().ShouldBe("[[]]");
+        }
+        
+        [Fact]
+        public void WriteEmptyDictionaryIndentedRendersExpectedContent()
+        {
+            var buffer = new WriteBuffer(Substitute.For<IConsoleWriter>());
+            var profile = new LogLevelProfile(LogLevel.Information);
+            profile.ConfigureOptions<DestructuringOptions>(opt => opt.WriteIndented = true);
+
+            DestructuringWriter.Write(buffer, profile, new Dictionary<string, string>());
+
+            buffer.ToString().ShouldBe("{}");
         }
 
         [Fact]
