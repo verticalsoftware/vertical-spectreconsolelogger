@@ -38,6 +38,46 @@ namespace Vertical.SpectreLogger.Tests.Rendering
             
             output.ShouldBe(expected);
         }
+
+        [Fact]
+        public void RenderUsesContentBetween()
+        {
+            var output = RendererTestHarness.Capture(config => config.ConfigureProfile(LogLevel.Information,
+                    profile =>
+                    {
+                        profile.OutputTemplate = "{Scopes}{Message}";
+                        profile.ConfigureOptions<ScopeValuesRenderer.Options>(options =>
+                            options.ContentBetween = ">");
+                    }),
+                logger =>
+                {
+                    using var scope1 = logger.BeginScope("First");
+                    using var scope2 = logger.BeginScope("Second");
+                    logger.LogInformation("test");
+                });
+            
+            output.ShouldBe("[gold3_1]First[/]>[gold3_1]Second[/] => test");
+        }
+        
+        [Fact]
+        public void RenderUsesContentAfter()
+        {
+            var output = RendererTestHarness.Capture(config => config.ConfigureProfile(LogLevel.Information,
+                    profile =>
+                    {
+                        profile.OutputTemplate = "{Scopes}{Message}";
+                        profile.ConfigureOptions<ScopeValuesRenderer.Options>(options =>
+                            options.ContentAfter = ">");
+                    }),
+                logger =>
+                {
+                    using var scope1 = logger.BeginScope("First");
+                    using var scope2 = logger.BeginScope("Second");
+                    logger.LogInformation("test");
+                });
+            
+            output.ShouldBe("[gold3_1]First[/] => [gold3_1]Second[/]>test");
+        }
         
         public static IEnumerable<object[]> Theories => new[]
         {
