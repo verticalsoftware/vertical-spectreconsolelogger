@@ -30,7 +30,7 @@ namespace Vertical.SpectreLogger.Output
         /// </summary>
         /// <param name="buffer">Buffer</param>
         /// <param name="profile">Log level profile</param>
-        /// <param name="destructureValues">Whether to destructure valuess</param>
+        /// <param name="destructureValues">Whether to destructure values</param>
         /// <param name="state">Value to evaluate</param>
         public static void WriteTemplateValue(
             this IWriteBuffer buffer,

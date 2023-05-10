@@ -4,7 +4,7 @@
 
 The output template controls the content that is displayed for each log event. The output template is a property of a `LogLevelProfile`, so you can customize the output of events specifically for each level.
 
-The output template is a string that contains Spectre Console markup, static text, and (most importantly) handlebar style placeholders that map to specific rendering components. Displayed below is an exmaple output template:
+The output template is a string that contains Spectre Console markup, static text, and (most importantly) handlebar style placeholders that map to specific rendering components. Displayed below is an example output template:
 
 ```
 [grey85][[{DateTime:T} [green3_1]Info[/]]] {Message}{NewLine}{Exception}[/]

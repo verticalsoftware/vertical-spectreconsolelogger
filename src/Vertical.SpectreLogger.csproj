@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net5.0;net6.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net6.0;net7.0</TargetFrameworks>
     <LangVersion>9.0</LangVersion>
     <Nullable>enable</Nullable>
     <Title>vertical-spectrelogger</Title>
@@ -10,11 +10,13 @@
       change how your app logs - change how the logs are presented.
     </Description>
     <Authors>Vertical Software Contributors</Authors>
-    <VersionPrefix>0.10.0</VersionPrefix>
+    <VersionPrefix>0.10.1</VersionPrefix>
     <PackageId>vertical-spectreconsolelogger</PackageId>
     <PackageTags>infrastructure;utilities;logging</PackageTags>
     <PackageProjectUrl>https://github.com/verticalsoftware/vertical-spectreconsolelogger</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/verticalsoftware/vertical-spectreconsolelogger</RepositoryUrl>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
@@ -30,7 +32,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="3.0.0" />
-    <PackageReference Include="Spectre.Console" Version="0.44.1-preview.0.29" />
+    <PackageReference Include="Spectre.Console" Version="0.46.1-preview.0.20" />
   </ItemGroup>
   
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
