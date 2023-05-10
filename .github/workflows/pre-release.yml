@@ -7,23 +7,23 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dotnet-version: ["6.0.x"]
+        dotnet-version: ["7.0.x"]
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Setup .NET Code SDK ${{ matrix.dotnet-version }}
-        uses: actions/setup-dotnet@v1.7.2
-        with:
-          dotnet-version: ${{ matrix.dotnet-version }}
-      - name: Install dependencies
-        run: dotnet restore
-      - name: Build
-        run: dotnet build -c Release --no-restore
-      - name: Test
-        run: dotnet test --no-restore
-      - name: Set build label
-        run: echo "DEVLABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV
-      - name: Build pre-release packages
-        run: dotnet pack -c Release --no-restore -p:VersionSuffix=dev.${{ env.DEVLABEL }}.${{ github.run_number }} -o ./pack
-      - name: Publish packages to NuGet
-        run: dotnet nuget push ./pack/*[^.symbols].nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_ORG_PUSH_KEY }}
+    - uses: actions/checkout@v2
+    - name: Setup .NET Code SDK ${{ matrix.dotnet-version }}
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ matrix.dotnet-version }}
+    - name: Install dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build -c Release --no-restore
+    - name: Test
+      run: dotnet test --no-restore
+    - name: Set build label
+      run: echo "DEVLABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV
+    - name: Build pre-release packages
+      run: dotnet pack -c Release --no-restore -p:VersionSuffix=dev.${{ env.DEVLABEL }}.${{ github.run_number }} -o ./pack
+    - name: Publish packages to NuGet
+      run: dotnet nuget push ./pack/*[^.symbols].nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_ORG_PUSH_KEY }}
