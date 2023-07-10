@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scopes", "Scopes\Scopes.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DestructuredValues", "DestructuredValues\DestructuredValues.csproj", "{1A636677-808E-47ED-A030-0099136E5771}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiThreaded", "MultiThreaded\MultiThreaded.csproj", "{295D81EE-7C8F-4BD9-B684-2CE5AB7F1D8F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -116,6 +118,18 @@ Global
 		{1A636677-808E-47ED-A030-0099136E5771}.Release|x64.Build.0 = Release|Any CPU
 		{1A636677-808E-47ED-A030-0099136E5771}.Release|x86.ActiveCfg = Release|Any CPU
 		{1A636677-808E-47ED-A030-0099136E5771}.Release|x86.Build.0 = Release|Any CPU
+		{295D81EE-7C8F-4BD9-B684-2CE5AB7F1D8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{295D81EE-7C8F-4BD9-B684-2CE5AB7F1D8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{295D81EE-7C8F-4BD9-B684-2CE5AB7F1D8F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{295D81EE-7C8F-4BD9-B684-2CE5AB7F1D8F}.Debug|x64.Build.0 = Debug|Any CPU
+		{295D81EE-7C8F-4BD9-B684-2CE5AB7F1D8F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{295D81EE-7C8F-4BD9-B684-2CE5AB7F1D8F}.Debug|x86.Build.0 = Debug|Any CPU
+		{295D81EE-7C8F-4BD9-B684-2CE5AB7F1D8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{295D81EE-7C8F-4BD9-B684-2CE5AB7F1D8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{295D81EE-7C8F-4BD9-B684-2CE5AB7F1D8F}.Release|x64.ActiveCfg = Release|Any CPU
+		{295D81EE-7C8F-4BD9-B684-2CE5AB7F1D8F}.Release|x64.Build.0 = Release|Any CPU
+		{295D81EE-7C8F-4BD9-B684-2CE5AB7F1D8F}.Release|x86.ActiveCfg = Release|Any CPU
+		{295D81EE-7C8F-4BD9-B684-2CE5AB7F1D8F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{604CEE06-4509-4C17-B876-A1112805F916} = {834A235D-0DCB-4561-8FE0-B0B51529A954}
