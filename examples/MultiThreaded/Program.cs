@@ -30,6 +30,9 @@ var threads = Enumerable.Range(0, 25).Select(i =>
 
 await Task.WhenAll(threads);
 
+Console.Write("Press <enter> to exit");
+Console.ReadLine();
+
 static void Throw()
 {
     throw new InvalidOperationException();
