@@ -1,15 +1,20 @@
 ﻿using Microsoft.Extensions.Logging;
 using Vertical.SpectreLogger;
 
+const int threadCount = 25;
+const int logsPerThread = 150;
+const int delayMs = 250;
+
 var loggerFactory = LoggerFactory.Create(builder => builder.AddSpectreConsole());
 var logger = loggerFactory.CreateLogger("Test");
-var threads = Enumerable.Range(0, 25).Select(i =>
+var threads = Enumerable.Range(0, threadCount).Select(i =>
     Task.Run(async () =>
     {
-        await Task.Delay(250);
-        for (var c = 0; c < 25; c++)
+        await Task.Delay(delayMs);
+
+        for (var c = 0; c < logsPerThread; c++)
         {
-            if (c % 25 == 0)
+            if (c % 5 == 0)
             {
                 try
                 {

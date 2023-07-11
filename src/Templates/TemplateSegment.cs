@@ -72,10 +72,25 @@ namespace Vertical.SpectreLogger.Templates
             Source = source;
             StartIndex = startIndex;
             Length = length;
+            IsTemplate = match?.Success ?? false;
+            Value = match?.Value ?? Source.Substring(startIndex, length);
+            var groups = match?.Groups;
             
-            // Force the regular expression's materialization of internal data - prevents issues
-            // with multi-threaded logging where the RegEx has deferred evaluation.
-            var _ = match?.Groups;
+            if (groups == null)
+                return;
+            
+            HasDestructureSpecifier = groups[DestructuringGroup].Success;
+            InnerTemplate = groups[InnerTemplateGroup].Value;
+            Key = groups[KeyGroup].Value;
+            ControlCode = groups[ControlGroup].Value;
+            ControlCodeMatched = groups[ControlGroup].Success;
+            CompositeFormatSpan = groups[CompositeFormatSpanGroup].Value;
+            AlignmentSpan = groups[WidthSpanGroup].Value;
+            Alignment = int.TryParse(groups[WidthValueGroup].Value, out var i)
+                ? i
+                : null;
+            FormatSpan = groups[FormatSpanGroup].Value;
+            Format = groups[FormatValueGroup].Value;
         }
 
         /// <summary>
@@ -86,64 +101,62 @@ namespace Vertical.SpectreLogger.Templates
         /// <summary>
         /// Gets whether the segment is a template.
         /// </summary>
-        public bool IsTemplate => Match?.Success == true;
+        public bool IsTemplate { get; }
 
         /// <summary>
         /// Gets the segment value.
         /// </summary>
-        public string Value => Match?.Value ?? Source.Substring(StartIndex, Length);
+        public string Value { get; }
 
         /// <summary>
         /// Gets whether the destructure operator was specified.
         /// </summary>
-        public bool HasDestructureSpecifier => Match?.Groups[DestructuringGroup].Success == true;
+        public bool HasDestructureSpecifier { get; }
 
         /// <summary>
         /// Gets the inner content of the template with the braces removed.
         /// </summary>
-        public string? InnerTemplate => Match?.Groups[InnerTemplateGroup].Value;
+        public string? InnerTemplate { get; }
         
         /// <summary>
         /// Gets the template key.
         /// </summary>
-        public string? Key => Match?.Groups[KeyGroup].Value;
+        public string? Key { get; }
 
         /// <summary>
         /// Gets the template control code.
         /// </summary>
-        public string? ControlCode => Match?.Groups[ControlGroup].Value;
+        public string? ControlCode { get; }
 
         /// <summary>
         /// Gets whether the control code group was matched.
         /// </summary>
-        public bool ControlCodeMatched => Match?.Groups[ControlGroup].Success == true;
+        public bool ControlCodeMatched { get; }
         
         /// <summary>
         /// Gets the format group value.
         /// </summary>
-        public string? CompositeFormatSpan => Match?.Groups[CompositeFormatSpanGroup].Value;
+        public string? CompositeFormatSpan { get; }
         
         /// <summary>
         /// Gets the width span.
         /// </summary>
-        public string? AlignmentSpan => Match?.Groups[WidthSpanGroup].Value;
+        public string? AlignmentSpan { get; }
         
         /// <summary>
         /// Gets the formatted width value, or null if the value is not available.
         /// </summary>
-        public int? Alignment => int.TryParse(Match?.Groups[WidthValueGroup].Value, out var i)
-            ? i
-            : null;
+        public int? Alignment { get; }
         
         /// <summary>
         /// Gets the format span.
         /// </summary>
-        public string? FormatSpan => Match?.Groups[FormatSpanGroup].Value;
+        public string? FormatSpan { get; }
 
         /// <summary>
         /// Gets the format value.
         /// </summary>
-        public string? Format => Match?.Groups[FormatValueGroup].Value;
+        public string? Format { get; }
         
         /// <summary>
         /// Gets the complete source string.
