@@ -4,9 +4,10 @@ using Vertical.SpectreLogger;
 var loggerFactory = LoggerFactory.Create(builder => builder.AddSpectreConsole());
 var logger = loggerFactory.CreateLogger("Test");
 var threads = Enumerable.Range(0, 25).Select(i =>
-    Task.Run(() =>
+    Task.Run(async () =>
     {
-        for (var c = 0; c < 100; c++)
+        await Task.Delay(250);
+        for (var c = 0; c < 25; c++)
         {
             if (c % 25 == 0)
             {

@@ -72,6 +72,10 @@ namespace Vertical.SpectreLogger.Templates
             Source = source;
             StartIndex = startIndex;
             Length = length;
+            
+            // Force the regular expression's materialization of internal data - prevents issues
+            // with multi-threaded logging where the RegEx has deferred evaluation.
+            var _ = match?.Groups;
         }
 
         /// <summary>
