@@ -71,7 +71,10 @@ logger.LogInformation("Hello world!");
   - [Scopes](docs/scopes-value)
   - [ThreadId](docs/thread-id.md)
 - Advanced Topics
-  - [Advanced Configuration](docs/advanced-config.md)
+  - [Advanced Configuration](docs/advanced-config.md)  
+- API
+  - Browse assembly documentation on [Tripleslash.io](https://tripleslash.io/docs/.net/vertical-spectreconsolelogger/0.10.1-dev.20230712.19/api/@index?view=net7.0)
+  
 
 ## Examples
 
