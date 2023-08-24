@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - dev
+    - "feature/fix-invalid-handle-windows"
   pull_request:
     branches: 
     - dev
