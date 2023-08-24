@@ -41,7 +41,10 @@ namespace Vertical.SpectreLogger.Output
         /// </summary>
         protected void ResetLineCore()
         {
-            AnsiConsole.Cursor.Move(CursorDirection.Left, Console.CursorLeft);
+            if (!Console.IsOutputRedirected)
+            {
+                AnsiConsole.Cursor.Move(CursorDirection.Left, Console.CursorLeft);
+            }
         }
     }
 }
