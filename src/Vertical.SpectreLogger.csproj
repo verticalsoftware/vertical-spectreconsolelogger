@@ -23,7 +23,7 @@
     <PackageIcon>icon.png</PackageIcon>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolsPackageFormat>snupkg</SymbolsPackageFormat>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>false</SignAssembly>    
     <AssemblyOriginatorKeyFile>..\assets\vertical-software.snk</AssemblyOriginatorKeyFile>
 <!--    <PublicSign Condition="'$(OS)' != 'Windows_NT'">true</PublicSign>-->
   </PropertyGroup>
@@ -44,6 +44,7 @@
 
   <ItemGroup>
     <None Include="../assets/icon.png" Pack="true" Visible="false" PackagePath="" />
+    <None Include="../README.md" Pack="true" PackagePath="/" />
   </ItemGroup>
   
 </Project>
