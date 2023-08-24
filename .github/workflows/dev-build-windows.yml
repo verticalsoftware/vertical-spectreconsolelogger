@@ -1,4 +1,4 @@
-name: Dev build
+name: Dev build - Windows
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     strategy:
       matrix:
         dotnet-version: ["7.0.x"]
