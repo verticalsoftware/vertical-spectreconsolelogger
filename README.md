@@ -2,7 +2,7 @@
 
 A seriously customizable [Spectre Console](https://spectreconsole.net/) provider for Microsoft.Extensions.Logging. **Don't** change how your app logs - change how the logs are presented.
 
-![.net](https://img.shields.io/badge/Frameworks-.netstandard20+net5+net6-purple)
+![.net](https://img.shields.io/badge/Frameworks-.netstandard2.0+net6/7-purple)
 ![GitHub](https://img.shields.io/github/license/verticalsoftware/vertical-commandline)
 ![Package info](https://img.shields.io/nuget/v/vertical-spectreconsolelogger.svg)
 
@@ -41,15 +41,15 @@ logger.LogInformation("Hello world!");
 
 #### Format/style log values
 
-![cap-1](./assets/cap1.png)
+![cap-1](https://cdn.githubraw.com/verticalsoftware/vertical-spectreconsolelogger/54678022b573264b2889cda745fff743f0fb5f25/assets/cap1.png)
 
 #### Destructured output follows configuration
 
-![cap-2](./assets/cap2.png)
+![cap-2](https://cdn.githubraw.com/verticalsoftware/vertical-spectreconsolelogger/54678022b573264b2889cda745fff743f0fb5f25/assets/cap2.png)
 
 #### Precisely control exception output
 
-![cap-3](./assets/cap3.png)
+![cap-3](https://cdn.githubraw.com/verticalsoftware/vertical-spectreconsolelogger/54678022b573264b2889cda745fff743f0fb5f25/assets/cap3.png)
 
 ## Documentation
 
