@@ -26,6 +26,7 @@
     <SignAssembly>false</SignAssembly>    
     <AssemblyOriginatorKeyFile>..\assets\vertical-software.snk</AssemblyOriginatorKeyFile>
 <!--    <PublicSign Condition="'$(OS)' != 'Windows_NT'">true</PublicSign>-->
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
   
   <ItemGroup>
