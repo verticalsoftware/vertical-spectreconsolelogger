@@ -41,15 +41,15 @@ logger.LogInformation("Hello world!");
 
 #### Format/style log values
 
-![cap-1](https://cdn.githubraw.com/verticalsoftware/vertical-spectreconsolelogger/54678022b573264b2889cda745fff743f0fb5f25/assets/cap1.png)
+![cap-1](https://raw.githubusercontent.com/verticalsoftware/vertical-spectreconsolelogger/dev/assets/cap1.png)
 
 #### Destructured output follows configuration
 
-![cap-2](https://cdn.githubraw.com/verticalsoftware/vertical-spectreconsolelogger/54678022b573264b2889cda745fff743f0fb5f25/assets/cap2.png)
+![cap-2](https://raw.githubusercontent.com/verticalsoftware/vertical-spectreconsolelogger/dev/assets/cap2.png)
 
 #### Precisely control exception output
 
-![cap-3](https://cdn.githubraw.com/verticalsoftware/vertical-spectreconsolelogger/54678022b573264b2889cda745fff743f0fb5f25/assets/cap3.png)
+![cap-3](https://raw.githubusercontent.com/verticalsoftware/vertical-spectreconsolelogger/dev/assets/cap3.png)
 
 ## Documentation
 
