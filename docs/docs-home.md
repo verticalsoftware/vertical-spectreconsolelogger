@@ -53,7 +53,27 @@ logger.LogInformation("Hello world!");
 
 ## Documentation
 
-Read the full [docs](https://github.com/verticalsoftware/vertical-spectreconsolelogger/blob/dev/docs/docs-home.md) here.
+- Introductory Topics
+  - [Basic Configuration](docs/basic-configuration.md)
+  - [Output Templates](docs/output-template.md)
+  - [Formatting Log Values](docs/formatting.md)
+  - [Styling Log Values](docs/styling.md)
+  - [Destructured Output](docs/destructuring.md)
+- Output Renderers
+  - [Renderers Overview](docs/renderer-overview.md)
+  - [ActivityId](docs/activity-id.md)
+  - [CategoryName](docs/category-name.md)
+  - [DateTime](docs/date-time.md)
+  - [Exception](docs/exceptions.md)
+  - [MarginControl](docs/margin-control.md)
+  - [NewLine](docs/newline.md)
+  - [Scope](docs/scope-value.md)
+  - [Scopes](docs/scopes-value)
+  - [ThreadId](docs/thread-id.md)
+- Advanced Topics
+  - [Advanced Configuration](docs/advanced-config.md)  
+- API
+  - Browse assembly documentation on [Tripleslash.io](https://tripleslash.io/docs/.net/vertical-spectreconsolelogger/0.10.1-dev.20230712.19/api/@index?view=net7.0)
   
 
 ## Examples
