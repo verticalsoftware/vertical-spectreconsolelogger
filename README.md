@@ -54,8 +54,3 @@ logger.LogInformation("Hello world!");
 ## Documentation
 
 Read the full [docs](https://github.com/verticalsoftware/vertical-spectreconsolelogger/blob/dev/docs/docs-home.md) here.
-  
-
-## Examples
-
-Checkout and run our [examples](https://github.com/verticalsoftware/vertical-spectreconsolelogger/tree/dev/examples) to see the logger in action.
