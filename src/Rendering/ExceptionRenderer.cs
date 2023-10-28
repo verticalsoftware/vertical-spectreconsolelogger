@@ -115,6 +115,9 @@ namespace Vertical.SpectreLogger.Rendering
 
                 var trace = new StackTrace(exception, fNeedFileInfo: true);
                 var frames = trace.GetFrames();
+
+                if (frames == null)
+                    return;
                 
                 var length = Math.Min(frames.Length, options.MaxStackFrames);
                 var hiddenCount = frames.Length - options.MaxStackFrames;
@@ -153,10 +156,13 @@ namespace Vertical.SpectreLogger.Rendering
 
             buffer.WriteLogValue(profile, null, new MethodNameValue(method.Name), name =>
             {
-                var formattedMethodType = TypeNameFormatter.Format(method.DeclaringType!);
+                if (method.DeclaringType != null)
+                {
+                    var formattedMethodType = TypeNameFormatter.Format(method.DeclaringType);
+                    buffer.Write(formattedMethodType);
+                    buffer.Write('.');
+                }
 
-                buffer.Write(formattedMethodType);
-                buffer.Write('.');
                 buffer.Write(name);
 
                 PrintParameters(buffer, profile, frame, options);
