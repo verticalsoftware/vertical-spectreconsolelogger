@@ -2,7 +2,6 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using Vertical.SpectreLogger.Core;
-using Vertical.SpectreLogger.Internal;
 using Vertical.SpectreLogger.Options;
 using Vertical.SpectreLogger.Scopes;
 
@@ -18,6 +17,7 @@ namespace Vertical.SpectreLogger
         private readonly ScopeManager _scopeManager;
         private readonly string _categoryName;
         private readonly SpectreLoggerOptions _options;
+        private readonly LogLevel _minimumLevel;
 
         internal SpectreLogger(
             IRendererPipeline rendererPipeline,
@@ -30,8 +30,9 @@ namespace Vertical.SpectreLogger
             _categoryName = categoryName;
             _options = options;
             _logEventFilter = _options.LogEventFilter;
+            _minimumLevel = ResolveMinimumLevel();
         }
-        
+
         /// <inheritdoc />
         public void Log<TState>(
             LogLevel logLevel, 
@@ -61,18 +62,27 @@ namespace Vertical.SpectreLogger
             _rendererPipeline.Render(eventInfo);
         }
 
-        
+
         /// <inheritdoc />
         [ExcludeFromCodeCoverage]
         public bool IsEnabled(LogLevel logLevel)
         {
-            return logLevel != LogLevel.None && logLevel >= _options.MinimumLogLevel;
+            return logLevel != LogLevel.None && logLevel >= _minimumLevel;
         }
 
         /// <inheritdoc />
         public IDisposable BeginScope<TState>(TState state)
         {
             return _scopeManager.BeginScope(state);
+        }
+
+        private LogLevel ResolveMinimumLevel()
+        {
+            return _options.MinimumLevelOverrides.TryGetValue(_categoryName, out var logLevel) switch
+            {
+                true when logLevel > _options.MinimumLogLevel => logLevel,
+                _ => _options.MinimumLogLevel
+            };
         }
     }
 }

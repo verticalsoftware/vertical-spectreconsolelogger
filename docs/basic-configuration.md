@@ -30,13 +30,19 @@ var loggerFactory = LoggerFactory
 
 ### Setting the minimum log event level.
 
-The provider will not display any log events introduced that are of less of a severity than the configured value. By default, the provider sets the minimum level to `LogLevel.Information`.
+The provider will not display any log events introduced that are of less of a severity than the configured value. By default, the provider sets the minimum level to `LogLevel.Information`. Additionally, you can configure the minimum log level for specific logging categories.
 
 ```csharp
-// Trace & debug events are not displayed
+// Trace & debug events are not displayed for any events
 
 config.SetMinimumLevel(LogLevel.Information);
+
+// Override minimum levels for specific logging categories
+
+config.SetMinimumLevel("System", LogLevel.Warning);
+config.SetMinimumLevel("System.Net.HttpClient", LogLevel.Warning);
 ```
+
 
 ### Filtering log events using a service.
 

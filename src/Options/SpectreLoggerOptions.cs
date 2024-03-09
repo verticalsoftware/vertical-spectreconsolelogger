@@ -22,6 +22,11 @@ namespace Vertical.SpectreLogger.Options
         /// Gets or sets an object that controls log event filtering.
         /// </summary>
         public ILogEventFilter? LogEventFilter { get; set; }
+
+        /// <summary>
+        /// Gets a dictionary of log level overrides.
+        /// </summary>
+        public IDictionary<string, LogLevel> MinimumLevelOverrides { get; } = new Dictionary<string, LogLevel>();
         
         /// <summary>
         /// Gets the log level profiles.

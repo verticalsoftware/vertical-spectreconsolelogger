@@ -41,6 +41,24 @@ namespace Vertical.SpectreLogger.Options
         }
 
         /// <summary>
+        /// Sets the minimum log level for a specific logger category.
+        /// </summary>
+        /// <param name="category">The logger category.</param>
+        /// <param name="logLevel">The minimum log level used to evaluated whether events should be emitted.</param>
+        /// <returns>A reference to this instance.</returns>
+        /// <exception cref="ArgumentException"><paramref name="category"/> is null or whitespace.</exception>
+        public SpectreLoggingBuilder SetMinimumLevel(string category, LogLevel logLevel)
+        {
+            if (string.IsNullOrWhiteSpace(category))
+            {
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(category));
+            }
+
+            Services.Configure<SpectreLoggerOptions>(opt => opt.MinimumLevelOverrides[category] = logLevel);
+            return this;
+        }
+
+        /// <summary>
         /// Sets an object that can filter log events from the rendering pipeline.
         /// </summary>
         /// <param name="eventFilter"></param>
