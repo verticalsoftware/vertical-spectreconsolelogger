@@ -123,7 +123,7 @@ namespace Vertical.SpectreLogger.Options
             
             ConfigureProfile(LogLevel.Critical, profile =>
             {
-                profile.OutputTemplate = "[[[red1]{DateTime:T}[/] [white on red1]Crit[/]]] [red3] {Message}{NewLine}{Exception}[/]";
+                profile.OutputTemplate = "[[[red1]{DateTime:T}[/] [white on red1]Crit[/]]][red3] {Message}{NewLine}{Exception}[/]";
                 profile
                     .AddTypeStyle(Types.Numerics, Color.Magenta3_2)
                     .AddTypeStyle(Types.Characters, Color.Gold3_1)
