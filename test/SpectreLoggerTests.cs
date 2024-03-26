@@ -35,17 +35,17 @@ namespace Vertical.SpectreLogger.Tests
         public void LoggerEmitsWhenEventIsAboveMinimumOverride()
         {
             RendererTestHarness.Capture(
-                cfg =>
-                {
-                    cfg.SetMinimumLevel(LogLevel.Information);
-                    cfg.SetMinimumLevel("Minimum", LogLevel.Warning);
-                    cfg.ConfigureProfiles(profile => profile.OutputTemplate = "{Message}");
-                },
-                log => log.LogWarning("warning"),
-                "Minimum")
+                    cfg =>
+                    {
+                        cfg.SetMinimumLevel(LogLevel.Information);
+                        cfg.SetMinimumLevel("Minimum", LogLevel.Warning);
+                        cfg.ConfigureProfiles(profile => profile.OutputTemplate = "{Message}");
+                    },
+                    log => log.LogWarning("warning"),
+                    "Minimum")
                 .ShouldBe("warning");
         }
-        
+
         [Fact]
         public void LoggerDoesNotEmitWhenEventIsBelowMinimumOverride()
         {
@@ -59,6 +59,20 @@ namespace Vertical.SpectreLogger.Tests
                     log => log.LogInformation("information"),
                     "Minimum")
                 .ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void LoggerPreservesFormatStringWhenConfigured()
+        {
+            RendererTestHarness.Capture(
+                cfg => cfg.ConfigureProfiles(profiles =>
+                {
+                    profiles.PreserveMarkupInFormatStrings = true;
+                    profiles.OutputTemplate = "{Message}";
+                }),
+                log => log.LogInformation("Here is [yellow]yellow[/], and here is [green1]green[/]."),
+                "Program")
+                .ShouldBe("Here is [yellow]yellow[/], and here is [green1]green[/].");            
         }
     }
 }

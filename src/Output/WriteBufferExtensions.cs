@@ -58,7 +58,7 @@ namespace Vertical.SpectreLogger.Output
                 return;
             }
 
-            if (originalFormatString.IndexOfAny(MarkupChars) != -1)
+            if (!profile.PreserveMarkupInFormatStrings && originalFormatString.IndexOfAny(MarkupChars) != -1)
             {
                 // Save allocation at the expense of searching
                 originalFormatString = Markup.Escape(originalFormatString);

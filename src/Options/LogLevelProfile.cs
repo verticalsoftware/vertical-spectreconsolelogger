@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Vertical.SpectreLogger.Formatting;
-using Vertical.SpectreLogger.Internal;
 
 namespace Vertical.SpectreLogger.Options
 {
@@ -24,11 +22,16 @@ namespace Vertical.SpectreLogger.Options
         /// Gets the log level.
         /// </summary>
         public LogLevel LogLevel { get; }
+        
+        /// <summary>
+        /// Gets or sets whether to preserve markup found in message template format strings.
+        /// </summary>
+        public bool PreserveMarkupInFormatStrings { get; set; }
 
         /// <summary>
         /// Gets or sets the output template.
         /// </summary>
-        public string? OutputTemplate { get; set; } = default!;
+        public string? OutputTemplate { get; set; }
 
         /// <summary>
         /// Gets a dictionary of <see cref="ICustomFormatter"/> for value types.
